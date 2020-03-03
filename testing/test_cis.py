@@ -5,14 +5,18 @@ import os
 
 class TestCIS(unittest.TestCase):
 
-    def test_exercise(self):
-        result_dir  = "testing"
-        result_file = "composable.cis"
-        result_fullpath = os.path.join(result_dir, result_file)
+    def __init__(self, *args, **kwargs):
+        super(TestCIS, self).__init__(*args, **kwargs)
+
+        self.result_dir  = "testing"
+        self.result_file = "composable.cis"
+        self.result_fullpath = os.path.join(self.result_dir, self.result_file)
+
+    def test_create_hdf5(self):
 
         channels = ["depth", "lighting", "temperature", "pressure", "procID"]
 
-        myCIS = cinemagic.cis.cis(result_fullpath)
+        myCIS = cinemagic.cis.cis(self.result_fullpath)
         myCIS.set_size(1024, 768)
 
         ptable = pandas.read_csv("testing/data/example.csv", dtype=str, keep_default_na=False) 
@@ -53,8 +57,12 @@ class TestCIS(unittest.TestCase):
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
 
-        assert os.path.exists(result_fullpath)
-        os.remove(result_fullpath)
+        self.check_hdf5()
+
+    def check_hdf5(self):
+        assert os.path.exists(self.result_fullpath)
+        os.remove(self.result_fullpath)
+        assert not os.path.exists(self.result_fullpath)
 
 
 if __name__ == '__main__':
