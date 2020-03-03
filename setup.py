@@ -8,7 +8,6 @@ setuptools.setup(
     description="Tools for the Cinema scientific toolset.",
     url="https://github.com/cinemascience",
     packages=["cinemagic"],
-    scripts=["cinema"],
     install_requires=[
     ],
     classifiers=[
