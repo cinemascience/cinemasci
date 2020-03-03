@@ -16,6 +16,14 @@ class cis:
         self.variablelist  = {} 
         self.images        = {} 
 
+    def get_image(self, key):
+        result = None
+        if key in self.images:
+            result = self.images[key]
+        return result
+
+    def get_image_names(self):
+        return list(self.images.keys())
 
     def set_parameter_table(self, table):
         self.p_table = table.copy(deep=True)

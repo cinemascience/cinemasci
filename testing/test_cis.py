@@ -57,6 +57,8 @@ class TestCIS(unittest.TestCase):
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
 
+        print(myCIS.get_image_names())
+
         self.check_hdf5()
 
     def check_hdf5(self):
