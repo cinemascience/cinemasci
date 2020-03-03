@@ -1,17 +1,18 @@
 import unittest
 import cinemagic
 import pandas
+import os
 
 class TestCIS(unittest.TestCase):
 
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-
     def test_exercise(self):
+        result_dir  = "testing"
+        result_file = "composable.cis"
+        result_fullpath = os.path.join(result_dir, result_file)
 
         channels = ["depth", "lighting", "temperature", "pressure", "procID"]
 
-        myCIS = cinemagic.cis("testing/composable.cis")
+        myCIS = cinemagic.cis(result_fullpath)
         myCIS.set_size(1024, 768)
 
         ptable = pandas.read_csv("testing/data/example.csv", dtype=str, keep_default_na=False) 
@@ -48,9 +49,12 @@ class TestCIS(unittest.TestCase):
         for c in channels: 
             channel = layer.add_channel(c)
 
-# write to different storage formats 
+        # write to different storage formats 
         hdf5_writer = cinemagic.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
+
+        assert os.path.exists(result_fullpath)
+        os.remove(result_fullpath)
 
 
 if __name__ == '__main__':
