@@ -12,7 +12,7 @@ class TestCIS(unittest.TestCase):
 
         channels = ["depth", "lighting", "temperature", "pressure", "procID"]
 
-        myCIS = cinemagic.cis(result_fullpath)
+        myCIS = cinemagic.cis.cis(result_fullpath)
         myCIS.set_size(1024, 768)
 
         ptable = pandas.read_csv("testing/data/example.csv", dtype=str, keep_default_na=False) 
@@ -50,7 +50,7 @@ class TestCIS(unittest.TestCase):
             channel = layer.add_channel(c)
 
         # write to different storage formats 
-        hdf5_writer = cinemagic.write.hdf5.hdf5_writer()
+        hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
 
         assert os.path.exists(result_fullpath)
