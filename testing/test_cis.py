@@ -19,12 +19,12 @@ class TestCIS(unittest.TestCase):
         ptable = pandas.read_csv('testing/data/example.csv', dtype=str, keep_default_na=False)
         myCIS.set_parameter_table(ptable)
 
-        variables = [ ['temperature', 10.0, 100.0],
-                      ['pressure',    20.0, 200.0],
-                      ['procID',      30.0, 300.0]
+        variables = [ ['temperature', 'float', 10.0, 100.0],
+                      ['pressure',    'float', 20.0, 200.0],
+                      ['procID',      'float', 30.0, 300.0]
                     ]
         for v in variables:
-            myCIS.add_variable(v[0], 'float', v[1], v[2])
+            myCIS.add_variable(v[0], v[1], v[2], v[3])
 
         parameters = ['time', 'phi', 'theta', 'isovar', 'isoval']
         for p in parameters:
