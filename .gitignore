@@ -1,3 +1,4 @@
 __pycache__
 *.cis
 .idea
+.DS_Store
