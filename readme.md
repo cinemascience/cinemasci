@@ -8,6 +8,8 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 Tools for reading, writing and manipulating a cinema database
 
+- Current [docs](cdb.md)
+
 ### cis
 
 Tools for reading, writing and manipulating *composable image sets*
