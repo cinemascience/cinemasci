@@ -20,22 +20,3 @@ class layer:
 
         return self.channels[name]
 
-class layer_state:
-
-    def __init__(self, layer):
-        self.state    = False
-        self.channel  = None
-        self.lighting = True
-        self.depth    = True
-
-    def set_cur_channel(self, name):
-        self.cur_channel = name
-
-    def set_lighting(self, state):
-        self.lighting = state
-
-    def set_depth(self, state):
-        self.depth = state
-
-    def set_state(self, state):
-        self.state = state
