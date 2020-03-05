@@ -15,3 +15,7 @@ For each submodule included:
 1. There shall be a unit testing file in `testing/` named `test_<modulename>.py`
 2. All tests are expected to **pass**.
 
+## Coding standards
+
+This project uses coding standards spelled out in [PEP8](https://www.python.org/dev/peps/pep-0008/)
+
