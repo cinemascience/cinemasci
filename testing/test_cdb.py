@@ -1,6 +1,5 @@
 import unittest
 import cinemagic
-import cv2
 
 class TestCIS(unittest.TestCase):
 
@@ -17,18 +16,13 @@ class TestCIS(unittest.TestCase):
         print(cdb.get_extract_pathname())
 
         extract = cdb.get_extract({"theta": "0", "phi": "36"})
-        # self.show_extract(extract)
+        self.show_extract(extract)
 
         extract = cdb.get_extract({"phi": "36", "theta": "0"})
-        # self.show_extract(extract)
+        self.show_extract(extract)
 
         extract = cdb.get_extract({"phi": "96", "theta": "0"})
-        # self.show_extract(extract)
+        self.show_extract(extract)
 
     def show_extract(self, extract):
         print(extract)
-        if extract is not None:
-            im_extract = cv2.imread(extract)
-            cv2.imshow("image", im_extract)
-            cv2.waitKey(0)
-
