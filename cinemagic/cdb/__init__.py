@@ -13,7 +13,11 @@ class cdb:
         self.extractnames   = []
 
     def read(self):
-        result = os.path.exists(self.path)
+        """Read in a Cinema database.
+
+        Returns true on success, false on failure
+        """
+        result = self.check_database() 
 
         if result:
             self.con = sqlite3.connect(":memory:")
@@ -25,28 +29,36 @@ class cdb:
         return result
 
     def parameter_exists(self, parameter):
+        """Check if a parameter exists
+        """
         return parameter in self.parameternames
 
     def extract_parameter_exists(self, parameter):
+        """Check if an extract parameter exists
+        """
         return parameter in self.extractnames
 
     def set_extract_parameter_names(self,names):
+        """Set the parameter names that are considered extracts
+        """
         for n in names:
             self.parameternames.remove(n)
             self.extractnames.append(n)
 
-    def get_extract_pathname(self): 
+    def __get_extract_pathname(self): 
+        """Get the form for the extract paths 
+        """
         return "/" + "/".join(str(elem) for elem in self.parameternames) 
+ 
+#   def __get_extract_path(self, parameters):
+#       (path, query) = self.__get_extract_paths(parameters)
+#       return path
 
-    def get_extract_path(self, parameters):
-        (path, query) = self.get_extract_paths(parameters)
-        return path
+#   def __get_extract_query(self, parameters):
+#       (path, query) = self.__get_extract_paths(parameters)
+#       return query
 
-    def get_extract_query(self, parameters):
-        (path, query) = self.get_extract_paths(parameters)
-        return query
-
-    def get_extract_paths(self, parameters):
+    def __get_extract_paths(self, parameters):
         query = "SELECT FILE from {} WHERE ".format(self.tablename)
         res = ""
         
@@ -70,7 +82,7 @@ class cdb:
         return path, query
 
     def get_extract(self, parameters):
-        (extract_path, query) = self.get_extract_paths(parameters)
+        (extract_path, query) = self.__get_extract_paths(parameters)
 
         cur = self.con.cursor()
         cur.execute(query)
@@ -83,3 +95,9 @@ class cdb:
             extract = self.extracts[extract_path]
 
         return extract 
+
+    def check_database(self):
+        return os.path.exists(self.path) and os.path.exists(self.datapath)
+
+
+
