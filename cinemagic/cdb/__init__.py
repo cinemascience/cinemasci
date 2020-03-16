@@ -3,6 +3,10 @@ import sqlite3
 import pandas
 
 class cdb:
+    """Cinema Database Class
+
+    Class that loads, verifies and manages access to a Cinema Database
+    """
 
     def __init__(self, path):
         self.tablename = "CINEMA"
