@@ -13,11 +13,16 @@ class cdb:
         self.extractnames   = []
 
     def read(self):
-        self.con = sqlite3.connect(":memory:")
-        cur = self.con.cursor()
-        df = pandas.read_csv(self.datapath)
-        self.parameternames = list(df.columns)
-        df.to_sql(self.tablename, self.con, if_exists='append', index=False)
+        result = os.path.exists(self.path)
+
+        if result:
+            self.con = sqlite3.connect(":memory:")
+            cur = self.con.cursor()
+            df = pandas.read_csv(self.datapath)
+            self.parameternames = list(df.columns)
+            df.to_sql(self.tablename, self.con, if_exists='append', index=False)
+
+        return result
 
     def parameter_exists(self, parameter):
         return parameter in self.parameternames
