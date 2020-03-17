@@ -26,7 +26,7 @@ class cdb:
         if result:
             self.con = sqlite3.connect(":memory:")
             cur = self.con.cursor()
-            df = pandas.read_csv(self.datapath)
+            df = pandas.read_csv(self.datapath, na_filter=False)
             self.parameternames = list(df.columns)
             df.to_sql(self.tablename, self.con, if_exists='append', index=False)
 
@@ -63,7 +63,7 @@ class cdb:
 #       return query
 
     def __get_extract_paths(self, parameters):
-        query = "SELECT FILE from {} WHERE ".format(self.tablename)
+        query = "SELECT {} from {} WHERE ".format(", ".join(self.extractnames), self.tablename)
         res = ""
         
         path = "/"
