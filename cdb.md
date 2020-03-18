@@ -1,6 +1,6 @@
 # Python modules for Cinema
 
-# Constraints
+## Constraints
 
 When reading in a table, these are the steps:
 
