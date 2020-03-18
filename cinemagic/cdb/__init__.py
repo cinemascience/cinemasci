@@ -49,22 +49,26 @@ class cdb:
             self.parameternames.remove(n)
             self.extractnames.append(n)
 
-    def __get_extract_pathname(self): 
-        """Get the form for the extract paths 
-        """
-        return "/" + "/".join(str(elem) for elem in self.parameternames) 
- 
-#   def __get_extract_path(self, parameters):
-#       (path, query) = self.__get_extract_paths(parameters)
-#       return path
-
-#   def __get_extract_query(self, parameters):
-#       (path, query) = self.__get_extract_paths(parameters)
-#       return query
-
     def __get_extract_paths(self, parameters):
+        """Get an extract path for a set of parameters
+        
+        An extract path is a string that embodies a set of (key, value) pairs for the
+        parameters in a cinema database. For example, if the parameter path is
+
+           /phi/theta
+        
+        Then some possible extract paths are:
+
+          /10/10
+          /20/24.5
+          ...
+
+        These can provide a unique hash for the extracts uniquely defined by the set of values
+        """
         query = "SELECT {} from {} WHERE ".format(", ".join(self.extractnames), self.tablename)
         res = ""
+
+        # print("query: {}".format(query))
         
         path = "/"
         first = True
@@ -83,25 +87,34 @@ class cdb:
             query = query + "{} = \'{}\' ".format(key, value)
             path = path + value  
 
+        # print("extract path: {}".format(path))
         return path, query
 
-    def get_extract(self, parameters):
+    def get_extracts(self, parameters):
         (extract_path, query) = self.__get_extract_paths(parameters)
 
         cur = self.con.cursor()
         cur.execute(query)
 
-        extract  = None
+        extracts = [] 
         fullpath = None
         for row in cur.fetchall():
-            fullpath = os.path.join(self.path, row[0])
-            self.extracts[extract_path] = fullpath 
-            extract = self.extracts[extract_path]
+            self.extracts[extract_path] = [] 
+            for r in row:
+                fullpath = os.path.join(self.path, r)
+                self.extracts[extract_path].append(fullpath)
+                extracts.append(fullpath)
 
-        return extract 
+        return extracts 
 
     def check_database(self):
         return os.path.exists(self.path) and os.path.exists(self.datapath)
 
+#   def __get_extract_path(self, parameters):
+#       (path, query) = self.__get_extract_paths(parameters)
+#       return path
 
+#   def __get_extract_query(self, parameters):
+#       (path, query) = self.__get_extract_paths(parameters)
+#       return query
 

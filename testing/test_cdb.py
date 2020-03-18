@@ -28,15 +28,14 @@ class TestCIS(unittest.TestCase):
         self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
 
         # test the same query with parameters in different order
-        extract = cdb.get_extract({"theta": "0", "phi": "36"})
-        print(extract)
-        self.assertEqual(extract, "testing/data/sphere.cdb/image/36/0.png")
-        extract = cdb.get_extract({"phi": "36", "theta": "0"})
-        self.assertEqual(extract, "testing/data/sphere.cdb/image/36/0.png")
+        extract = cdb.get_extracts({"theta": "0", "phi": "36"})
+        self.assertEqual(extract, ["testing/data/sphere.cdb/image/36/0.png"])
+        extract = cdb.get_extracts({"phi": "36", "theta": "0"})
+        self.assertEqual(extract, ["testing/data/sphere.cdb/image/36/0.png"])
 
         # test a negative query (doesn't exist)
-        extract = cdb.get_extract({"phi": "96", "theta": "0"})
-        self.assertEqual(extract, None)
+        extract = cdb.get_extracts({"phi": "96", "theta": "0"})
+        self.assertEqual(extract, [])
 
     def test_null_nan_values(self):
         cdb_path = "testing/data/test_values.cdb"
@@ -53,11 +52,33 @@ class TestCIS(unittest.TestCase):
         self.assertFalse(cdb.extract_parameter_exists("FILE"))
 
         # test the same query with parameters in different order
-        extract = cdb.get_extract({"time": "2.0", "phi": "1.0", "theta": "1.0"})
-        self.assertEqual(extract, "testing/data/test_values.cdb/0002/0000")
-        extract = cdb.get_extract({"time": "", "phi": "1.0", "theta": "1.0"})
-        self.assertEqual(extract, "testing/data/test_values.cdb/0000/0000")
-        extract = cdb.get_extract({"time": "1.0", "phi": "NaN", "theta": "1.0"})
-        self.assertEqual(extract, "testing/data/test_values.cdb/0001/0000")
+        extract = cdb.get_extracts({"time": "2.0", "phi": "1.0", "theta": "1.0"})
+        self.assertEqual(extract, ["testing/data/test_values.cdb/0002/0000"])
+        extract = cdb.get_extracts({"time": "", "phi": "1.0", "theta": "1.0"})
+        self.assertEqual(extract, ["testing/data/test_values.cdb/0000/0000"])
+        extract = cdb.get_extracts({"time": "1.0", "phi": "NaN", "theta": "1.0"})
+        self.assertEqual(extract, ["testing/data/test_values.cdb/0001/0000"])
 
+    def test_multiple_artifacts(self):
+        # testing a single extract database
+        cdb_path = "testing/data/multiple_artifacts.cdb"
+        cdb = cinemagic.cdb.cdb(cdb_path)
+        self.assertTrue(cdb.read())
+        cdb.set_extract_parameter_names(["FILE"])
+        cdb.set_extract_parameter_names(["FILE2"])
 
+        # testing queries
+        self.assertTrue(cdb.parameter_exists("theta"))
+        self.assertFalse(cdb.parameter_exists("nothing"))
+        self.assertTrue(cdb.extract_parameter_exists("FILE"))
+        self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
+
+        # test the same query with parameters in different order
+        extract = cdb.get_extracts({"theta": "0", "phi": "36"})
+        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
+        extract = cdb.get_extracts({"phi": "36", "theta": "0"})
+        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
+
+        # test a negative query (doesn't exist)
+        extract = cdb.get_extracts({"phi": "96", "theta": "0"})
+        self.assertEqual(extract, [])
