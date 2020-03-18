@@ -1,12 +1,5 @@
 # Python modules for Cinema
 
-## Definitions
-
-- **parameter path** A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
-	- Example: ```/phi/theta/variable```
-- **extract path** A specific instance of a *parameter path*, giving values for each parameter.
-    - Example: ```/0/90/temperature```
-
 # Constraints
 
 When reading in a table, these are the steps:
@@ -22,7 +15,13 @@ When reading in a table, these are the steps:
 4. Establish a path order for the extract path columns (optional)
     - default is the order in the source file
 
-# 'parameter path' and 'extract path'
+## Definitions
+
+- **parameter path** A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
+	- Example: `/phi/theta/variable`
+- **extract path** A specific instance of a *parameter path*, giving values for each parameter.
+    - Example: `/0/90/temperature`
+
 An example of data from table to path. Table read in:
 
 | phi | theta | FILE  |
