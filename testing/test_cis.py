@@ -16,7 +16,7 @@ class TestCIS(unittest.TestCase):
         myCIS = cinemagic.cis.cis(self.result_fullpath)
         myCIS.set_size(1024, 768)
 
-        ptable = pandas.read_csv('testing/data/example.csv', dtype=str, keep_default_na=False)
+        ptable = pandas.read_csv('testing/data/sphere.cdb/data.csv', dtype=str, keep_default_na=False)
         myCIS.set_parameter_table(ptable)
 
         variables = [ ['temperature', 'float', 10.0, 100.0],
