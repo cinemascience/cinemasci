@@ -1,0 +1,25 @@
+language: python
+
+# Notification settings
+notifications:
+  email: false
+
+# Get the repository
+git:
+  # Depth of commits to grab. Less is faster
+  depth: 1
+
+# Matrix of operating systems and dependencies
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+
+# Install dependencies here      
+install:
+        - pip install h5py pandas
+
+# The build step
+script:
+        - pip install .
+        - python -m unittest discover testing
