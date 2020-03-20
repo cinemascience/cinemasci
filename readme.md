@@ -1,4 +1,5 @@
 # Cinemagic python tools
+[![Build Status](https://travis-ci.org/cinemascience/cinemagic.svg?branch=master)](https://travis-ci.org/cinemascience/cinemagic)
 
 A set of python tools for reading, writing and viewing Cinema databases
 
