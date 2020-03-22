@@ -6,15 +6,15 @@ import h5py
 class cis:
 
     def __init__(self, filename):
-        self.fname         = filename
-        self.classname     = "COMPOSABLE_IMAGE_SET"
-        self.size          = [0,0]
-        self.version       = "1.0"
-        self.flags         = "CONSTANT_CHANNELS"
-        self.parameterlist = []
-        self.p_table       = None
-        self.variablelist  = {} 
-        self.images        = {} 
+        self.fname          = filename
+        self.classname      = "COMPOSABLE_IMAGE_SET"
+        self.dims           = [0,0]
+        self.flags          = "CONSTANT_CHANNELS"
+        self.version        = "1.0"
+        self.parameterlist  = []
+        self.parametertable = None
+        self.variables      = {}
+        self.images         = {}
 
     def get_image(self, key):
         result = None
@@ -26,7 +26,7 @@ class cis:
         return list(self.images.keys())
 
     def set_parameter_table(self, table):
-        self.p_table = table.copy(deep=True)
+        self.parametertable = table.copy(deep=True)
 
     def add_parameter(self, name, type):
         # check for duplicates
@@ -34,7 +34,7 @@ class cis:
 
     def add_variable(self, name, type, min, max):
         # check for duplicates
-        self.variablelist[name] = [type, min, max]
+        self.variables[name] = [type, min, max]
 
     def add_image(self, name):
         # check for duplicates
@@ -48,14 +48,14 @@ class cis:
 
         return image
 
-    def set_size(self, w, h):
-        self.size = [w, h]
+    def set_dims(self, w, h):
+        self.dims = [w, h]
 
     def read_hdf5(self, fname):
         self.fname = fname
         with h5py.File(fname, "r") as f:
             self.classname  = f.attrs["class"]
-            self.size       = f.attrs["size"]
+            self.dims       = f.attrs["dims"]
             self.version    = f.attrs["version"]
             self.flags      = f.attrs["flags"]
             for i in f["image"]:
