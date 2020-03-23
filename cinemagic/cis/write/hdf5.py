@@ -5,14 +5,14 @@ class hdf5_writer:
     def write(self, cis):
         with h5py.File(cis.fname, "w") as f:
             f.attrs["class"]    = cis.classname
-            f.attrs["size"]     = cis.size
+            f.attrs["dims"]     = cis.dims
             f.attrs["version"]  = cis.version
             f.attrs["flags"]    = cis.flags
 
-            vlist = f.create_group("variablelist")
-            for v in cis.variablelist:
+            vlist = f.create_group("variables")
+            for v in cis.variables:
                 var = vlist.create_group(v)
-                values = cis.variablelist[v]
+                values = cis.variables[v]
                 var.attrs["type"] = values[0] 
                 var.attrs["min"]  = values[1]
                 var.attrs["max"]  = values[2]
@@ -24,8 +24,8 @@ class hdf5_writer:
 
 
     def write_cis_parameter_table(self, cis, h5file):
-        if not cis.p_table is None:
-            data = cis.p_table
+        if not cis.parametertable is None:
+            data = cis.parametertable
             table = h5file.create_group("parametertable")
             table.attrs["columns"] = ','.join(data.columns)
             table.attrs["num_rows"] = data.shape[0]
