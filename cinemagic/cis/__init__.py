@@ -6,6 +6,7 @@ import h5py
 class cis:
 
     def __init__(self, filename):
+        """ The constructor. """
         self.fname          = filename
         self.classname      = "COMPOSABLE_IMAGE_SET"
         self.dims           = [0,0]
@@ -15,6 +16,8 @@ class cis:
         self.parametertable = None
         self.variables      = {}
         self.images         = {}
+        #self.origin
+        #self.colormaps
 
     def get_image(self, key):
         result = None

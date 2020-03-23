@@ -14,7 +14,7 @@ class TestCIS(unittest.TestCase):
 
     def test_create_hdf5(self):
         myCIS = cinemagic.cis.cis(self.result_fullpath)
-        myCIS.set_size(1024, 768)
+        myCIS.set_dims(1024, 768)
 
         ptable = pandas.read_csv('testing/data/sphere.cdb/data.csv', dtype=str, keep_default_na=False)
         myCIS.set_parameter_table(ptable)
