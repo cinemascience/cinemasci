@@ -3,6 +3,7 @@ import cinemagic
 import pandas
 import os
 import numpy
+import shutil
 
 class TestCIS(unittest.TestCase):
 
@@ -10,22 +11,29 @@ class TestCIS(unittest.TestCase):
         super(TestCIS, self).__init__(*args, **kwargs)
 
         self.result_dir  = 'testing'
-        self.result_file = 'composable.cis'
-        self.result_fullpath = os.path.join(self.result_dir, self.result_file)
+        self.result_hdf5 = 'hdf5.cis'
+        self.result_hdf5_fullpath = os.path.join(self.result_dir, self.result_hdf5)
+
+        self.result_file = 'file.cis'
+        self.result_file_fullpath = os.path.join(self.result_dir, self.result_file)
+
         self.gold_dir    = 'testing/gold'
-        self.gold_file   = 'composable.cis'
-        self.gold_fullpath = os.path.join(self.gold_dir, self.gold_file)
+        self.gold_hdf5   = 'hdf5.cis'
+        self.gold_hdf5_fullpath = os.path.join(self.gold_dir, self.gold_hdf5)
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
     def tearDown(self):
-        if os.path.exists(self.result_fullpath):
-            os.remove(self.result_fullpath)
-        self.assertFalse( os.path.exists(self.result_fullpath) )
+        if os.path.exists(self.result_hdf5_fullpath):
+            os.remove(self.result_hdf5_fullpath)
+        self.assertFalse( os.path.exists(self.result_hdf5_fullpath) )
 
-    def test_create_hdf5(self):
-        myCIS = cinemagic.cis.cis(self.result_fullpath)
+        if os.path.exists(self.result_file_fullpath):
+            shutil.rmtree(self.result_file_fullpath)
+        self.assertFalse( os.path.exists(self.result_file_fullpath) )
+
+    def __create_test_cis(self, myCIS):
         myCIS.set_dims(1024, 768)
         myCIS.set_origin("UL")
 
@@ -47,10 +55,24 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
+    def test_create_hdf5(self):
+        myCIS = cinemagic.cis.cis(self.result_hdf5_fullpath)
+        self.__create_test_cis(myCIS)
+
         # write hdf5 format
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
-        self.check_hdf5()
+        self.__check_hdf5()
+
+    def test_create_file(self):
+        myCIS = cinemagic.cis.cis(self.result_file_fullpath)
+        self.__create_test_cis(myCIS)
+
+        # write file format
+        file_writer = cinemagic.cis.write.file.file_writer()
+        file_writer.write(myCIS)
+
+        self.__check_file()
 
     def add_test_image(self, cis, imName):
         channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
@@ -81,13 +103,16 @@ class TestCIS(unittest.TestCase):
                 channel = layer.add_channel(c)
                 channel.create_test_data()
 
-    def check_hdf5(self):
-        self.assertTrue( os.path.exists(self.result_fullpath) )
+    def __check_file(self):
+        self.assertTrue( os.path.exists(self.result_file_fullpath) )
+
+    def __check_hdf5(self):
+        self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
     def test_read_hdf5(self):
-        self.assertTrue( os.path.exists(self.gold_fullpath) )
+        self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
-        myCIS = cinemagic.cis.cis(self.gold_fullpath)
+        myCIS = cinemagic.cis.cis(self.gold_hdf5_fullpath)
 
         hdf5_reader = cinemagic.cis.read.hdf5.Reader()
         hdf5_reader.read(myCIS)
