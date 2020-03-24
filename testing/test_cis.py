@@ -94,7 +94,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( myCIS.classname == "COMPOSABLE_IMAGE_SET" )
         self.assertTrue( myCIS.flags     == "CONSTANT_CHANNELS" )
         self.assertTrue( myCIS.version   == "1.0" )
-        myCIS.debug_print()
+        # myCIS.debug_print()
 
 
 if __name__ == '__main__':
