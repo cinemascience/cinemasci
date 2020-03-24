@@ -18,7 +18,7 @@ class TestCIS(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def tearDown(self):
+    def dontTearDown(self):
         if os.path.exists(self.result_fullpath):
             os.remove(self.result_fullpath)
         self.assertFalse( os.path.exists(self.result_fullpath) )
@@ -45,11 +45,9 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
-        # write to different storage formats 
+        # write hdf5 format
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
-
-        # print(myCIS.get_image_names())
         self.check_hdf5()
 
     def add_test_image(self, cis, imName):
@@ -61,22 +59,22 @@ class TestCIS(unittest.TestCase):
         layerData = {
             'l000' : {
                 'offset' : [0, 10],
-                'size'   : [10, 20]
+                'dims'   : [10, 20]
             },
             'l001': {
                 'offset' : [100, 110],
-                'size'   : [30, 40]
+                'dims'   : [30, 40]
             },
             'l002': {
                 'offset' : [200, 210],
-                'size'   : [50, 60]
+                'dims'   : [50, 60]
             }
         }
 
         for l in layerData:
             layer = image.add_layer(l)
-            layer.set_offset( layerData[l]['offset'][0], layerData[l]['offset'][0] )
-            layer.set_size( layerData[l]['size'][0], layerData[l]['size'][0] )
+            layer.set_offset( layerData[l]['offset'][0], layerData[l]['offset'][1] )
+            layer.set_dims( layerData[l]['dims'][0], layerData[l]['dims'][1] )
             for c in channels:
                 channel = layer.add_channel(c)
                 channel.create_test_data()
@@ -92,6 +90,11 @@ class TestCIS(unittest.TestCase):
         hdf5_reader = cinemagic.cis.read.hdf5.Reader()
         hdf5_reader.read(myCIS)
 
+        # check values read in 
+        self.assertTrue( myCIS.classname == "COMPOSABLE_IMAGE_SET" )
+        self.assertTrue( myCIS.flags     == "CONSTANT_CHANNELS" )
+        self.assertTrue( myCIS.version   == "1.0" )
+        myCIS.debug_print()
 
 
 if __name__ == '__main__':

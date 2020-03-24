@@ -1,8 +1,6 @@
 from . import image
-from . import write
 from . import read
-
-import h5py
+from . import write
 
 class cis:
 
@@ -19,6 +17,15 @@ class cis:
         self.images         = {}
         #self.origin
         #self.colormaps
+
+    def debug_print(self):
+        print("printing cis")
+        print("  fname:     {}".format(self.fname))
+        print("  classname: {}".format(self.classname))
+        print("  dims:      {}".format(self.dims))
+        print("  flags:     {}".format(self.flags))
+        print("  version:   {}".format(self.version))
+        print("\n")
 
     def get_image(self, key):
         result = None
@@ -44,6 +51,8 @@ class cis:
         # check for duplicates
         self.images[name] = image.image(name)
 
+        return self.images[name]
+
     def get_image(self,name):
         image = None
 
@@ -54,14 +63,3 @@ class cis:
 
     def set_dims(self, w, h):
         self.dims = [w, h]
-
-    def read_hdf5(self, fname):
-        self.fname = fname
-        with h5py.File(fname, "r") as f:
-            self.classname  = f.attrs["class"]
-            self.dims       = f.attrs["dims"]
-            self.version    = f.attrs["version"]
-            self.flags      = f.attrs["flags"]
-            for i in f["image"]:
-                im = self.add_image(i)
-                im.read_hdf5(f["image"][i])

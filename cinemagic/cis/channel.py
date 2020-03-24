@@ -6,14 +6,14 @@ class channel:
         self.name = name
         self.type = "float" 
         self.data = None
-        self.size = [0,0]
+        self.dims = [0,0]
 
     def set_type(self, type):
         self.type = type
 
-    def set_size(self, w, h):
-        self.size = [w, h]
+    def set_dims(self, w, h):
+        self.dims = [w, h]
         self.create_test_data()
 
     def create_test_data(self):
-        self.data = numpy.random.random_sample(self.size)
+        self.data = numpy.random.random_sample(self.dims)

@@ -5,7 +5,7 @@ class hdf5_writer:
     def write(self, cis):
         with h5py.File(cis.fname, "w") as f:
             f.attrs["class"]    = cis.classname
-            f.attrs["dims"]     = cis.dims
+            f.attrs["dims"]     = "{},{}".format(cis.dims[0], cis.dims[1])
             f.attrs["version"]  = cis.version
             f.attrs["flags"]    = cis.flags
 
@@ -49,13 +49,13 @@ class hdf5_writer:
             curLayer = image.layers[l]
             layer = layerpath.create_group(curLayer.name)
             layer.attrs["offset"] = str(curLayer.offset[0]) + "," + str(curLayer.offset[1])
-            layer.attrs["size"]   = str(curLayer.size[0]) + "," + str(curLayer.size[1])
+            layer.attrs["dims"]   = str(curLayer.dims[0]) + "," + str(curLayer.dims[1])
             channelpath = layer.create_group("channel")
             self.write_channels(curLayer, channelpath)
 
     def write_channels(self, layer, channelpath):
         for c in layer.channels:
             curChannel = layer.channels[c]
-            channelpath.create_dataset(curChannel.name, shape=curChannel.size, data=curChannel.data)
+            channelpath.create_dataset(curChannel.name, shape=curChannel.dims, data=curChannel.data)
 
 
