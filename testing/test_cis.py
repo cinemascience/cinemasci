@@ -4,6 +4,7 @@ import pandas
 import os
 import numpy
 import shutil
+import filecmp
 
 class TestCIS(unittest.TestCase):
 
@@ -18,8 +19,11 @@ class TestCIS(unittest.TestCase):
         self.result_file_fullpath = os.path.join(self.result_dir, self.result_file)
 
         self.gold_dir    = 'testing/gold'
-        self.gold_hdf5   = 'hdf5.cis'
+        self.gold_hdf5   = self.result_hdf5 
         self.gold_hdf5_fullpath = os.path.join(self.gold_dir, self.gold_hdf5)
+
+        self.gold_file   = self.result_file
+        self.gold_file_fullpath = os.path.join(self.gold_dir, self.gold_file)
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -62,7 +66,7 @@ class TestCIS(unittest.TestCase):
         # write hdf5 format
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
-        self.__check_hdf5()
+        self.__check_hdf5_database()
 
     def test_create_file(self):
         myCIS = cinemagic.cis.cis(self.result_file_fullpath)
@@ -72,7 +76,7 @@ class TestCIS(unittest.TestCase):
         file_writer = cinemagic.cis.write.file.file_writer()
         file_writer.write(myCIS)
 
-        self.__check_file()
+        self.__check_file_database()
 
     def add_test_image(self, cis, imName):
         channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
@@ -103,10 +107,16 @@ class TestCIS(unittest.TestCase):
                 channel = layer.add_channel(c)
                 channel.create_test_data()
 
-    def __check_file(self):
+    def __check_file_database(self):
+        # is the directory there
         self.assertTrue( os.path.exists(self.result_file_fullpath) )
 
-    def __check_hdf5(self):
+        # is the assets file the same
+        gold = os.path.join(self.gold_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file)
+        result = os.path.join(self.result_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file) 
+        self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
+
+    def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
     def test_read_hdf5(self):
