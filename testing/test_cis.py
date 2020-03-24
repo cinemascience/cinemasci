@@ -59,7 +59,7 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
-    def test_create_hdf5(self):
+    def test_create_hdf5_database(self):
         myCIS = cinemagic.cis.cis(self.result_hdf5_fullpath)
         self.__create_test_cis(myCIS)
 
@@ -68,7 +68,7 @@ class TestCIS(unittest.TestCase):
         hdf5_writer.write(myCIS)
         self.__check_hdf5_database()
 
-    def test_create_file(self):
+    def test_create_file_database(self):
         myCIS = cinemagic.cis.cis(self.result_file_fullpath)
         self.__create_test_cis(myCIS)
 
@@ -119,7 +119,7 @@ class TestCIS(unittest.TestCase):
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
-    def test_read_hdf5(self):
+    def test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
         myCIS = cinemagic.cis.cis(self.gold_hdf5_fullpath)
