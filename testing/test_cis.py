@@ -11,6 +11,17 @@ class TestCIS(unittest.TestCase):
         self.result_dir  = 'testing'
         self.result_file = 'composable.cis'
         self.result_fullpath = os.path.join(self.result_dir, self.result_file)
+        self.gold_dir    = 'testing/gold'
+        self.gold_file   = 'composable.cis'
+        self.gold_fullpath = os.path.join(self.gold_dir, self.gold_file)
+
+    def setUp(self):
+        print("Running test: {}".format(self._testMethodName))
+
+    def tearDown(self):
+        if os.path.exists(self.result_fullpath):
+            os.remove(self.result_fullpath)
+        self.assertFalse( os.path.exists(self.result_fullpath) )
 
     def test_create_hdf5(self):
         myCIS = cinemagic.cis.cis(self.result_fullpath)
@@ -71,9 +82,16 @@ class TestCIS(unittest.TestCase):
                 channel.create_test_data()
 
     def check_hdf5(self):
-        assert os.path.exists(self.result_fullpath)
-        os.remove(self.result_fullpath)
-        assert not os.path.exists(self.result_fullpath)
+        self.assertTrue( os.path.exists(self.result_fullpath) )
+
+    def test_read_hdf5(self):
+        self.assertTrue( os.path.exists(self.gold_fullpath) )
+
+        myCIS = cinemagic.cis.cis(self.gold_fullpath)
+
+        hdf5_reader = cinemagic.cis.read.hdf5.Reader()
+        hdf5_reader.read(myCIS)
+
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 from . import image
 from . import write
+from . import read
 
 import h5py
 
