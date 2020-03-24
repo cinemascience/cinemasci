@@ -18,7 +18,7 @@ class TestCIS(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def dontTearDown(self):
+    def tearDown(self):
         if os.path.exists(self.result_fullpath):
             os.remove(self.result_fullpath)
         self.assertFalse( os.path.exists(self.result_fullpath) )
