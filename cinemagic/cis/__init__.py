@@ -4,6 +4,8 @@ from . import write
 
 class cis:
 
+    Origins = ['UL', 'UR', 'LL', 'LR']
+
     def __init__(self, filename):
         """ The constructor. """
         self.fname          = filename
@@ -11,11 +13,11 @@ class cis:
         self.dims           = [0,0]
         self.flags          = "CONSTANT_CHANNELS"
         self.version        = "1.0"
+        self.origin         = "UL"
         self.parameterlist  = []
         self.parametertable = None
         self.variables      = {}
         self.images         = {}
-        #self.origin
         #self.colormaps
 
     def debug_print(self):
@@ -25,6 +27,7 @@ class cis:
         print("  dims:      {}".format(self.dims))
         print("  flags:     {}".format(self.flags))
         print("  version:   {}".format(self.version))
+        print("  origin:    {}".format(self.origin))
         print("\n")
 
     def get_image(self, key):
@@ -35,6 +38,19 @@ class cis:
 
     def get_image_names(self):
         return list(self.images.keys())
+
+    def get_origin(self):
+        return self.origin
+
+    def set_origin(self, origin):
+        result = False
+        if origin in self.Origins:
+            self.origin = origin
+            result = True;
+        else:
+            print("ERROR: {} is not a valid Origin value".format(origin))
+
+        return result 
 
     def set_parameter_table(self, table):
         self.parametertable = table.copy(deep=True)

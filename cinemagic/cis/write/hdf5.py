@@ -8,6 +8,7 @@ class hdf5_writer:
             f.attrs["dims"]     = "{},{}".format(cis.dims[0], cis.dims[1])
             f.attrs["version"]  = cis.version
             f.attrs["flags"]    = cis.flags
+            f.attrs["origin"]   = cis.origin
 
             vlist = f.create_group("variables")
             for v in cis.variables:

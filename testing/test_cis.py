@@ -2,6 +2,7 @@ import unittest
 import cinemagic
 import pandas
 import os
+import numpy
 
 class TestCIS(unittest.TestCase):
 
@@ -26,6 +27,7 @@ class TestCIS(unittest.TestCase):
     def test_create_hdf5(self):
         myCIS = cinemagic.cis.cis(self.result_fullpath)
         myCIS.set_dims(1024, 768)
+        myCIS.set_origin("UL")
 
         ptable = pandas.read_csv('testing/data/sphere.cdb/data.csv', dtype=str, keep_default_na=False)
         myCIS.set_parameter_table(ptable)
@@ -92,8 +94,10 @@ class TestCIS(unittest.TestCase):
 
         # check values read in 
         self.assertTrue( myCIS.classname == "COMPOSABLE_IMAGE_SET" )
+        self.assertTrue( numpy.array_equal( myCIS.dims, [1024, 768] ) )
         self.assertTrue( myCIS.flags     == "CONSTANT_CHANNELS" )
         self.assertTrue( myCIS.version   == "1.0" )
+        self.assertTrue( myCIS.origin    == "UL" )
         # myCIS.debug_print()
 
 
