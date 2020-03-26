@@ -1,6 +1,10 @@
 import os
 import numpy
 
+# TODO: parametertable
+#       variables
+#       colormaps
+
 class file_writer:
     Attribute_file = "attributes.json"
 
