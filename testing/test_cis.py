@@ -119,6 +119,8 @@ class TestCIS(unittest.TestCase):
         result = os.path.join(self.result_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file) 
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
+        # TODO check the rest of the data
+
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
