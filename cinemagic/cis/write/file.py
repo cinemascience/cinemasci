@@ -1,4 +1,5 @@
 import os
+import numpy
 
 class file_writer:
     Attribute_file = "attributes.json"
@@ -92,6 +93,16 @@ class file_writer:
             f.write("  dims   : [{}, {}],\n".format(layer.dims[0], layer.dims[1]))
             f.write("}\n")
 
+    def __write_channel_metadata(self, path, channel):
+        with open(os.path.join( path, self.Attribute_file), "w") as f:
+            f.write("{\n")
+            f.write("  type : {}\n".format(channel.type))
+            f.write("}\n")
+
+    def __write_channel_data(self, path, channel):
+        path = os.path.join(path, "data")
+        numpy.savez_compressed(path, data=channel.data) 
+
     def __write_image(self, path, image):
         self.__create_image_dir(path, image)
         path = self.__create_toplevel_layer_dir(path, image)
@@ -99,12 +110,16 @@ class file_writer:
         for l in image.get_layers():
             self.__write_layer(path, image.get_layer(l))
 
-        
     def __write_layer(self, path, layer):
         path = self.__create_layer_dir(path, layer)
         self.__write_layer_metadata(path, layer) 
         path = self.__create_toplevel_channel_dir(path)
 
         for c in layer.get_channels():
-            self.__create_channel_dir(path, layer.get_channel(c))
+            self.__write_channel(path, layer.get_channel(c))
+
+    def __write_channel(self, path, channel):
+            path = self.__create_channel_dir(path, channel)
+            self.__write_channel_metadata(path, channel)
+            self.__write_channel_data(path, channel)
 
