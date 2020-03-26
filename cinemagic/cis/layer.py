@@ -20,3 +20,12 @@ class layer:
 
         return self.channels[name]
 
+    def get_channels(self):
+        for c in self.channels:
+            yield c
+
+    def get_channel(self, name):
+        result = False
+        if name in self.channels:
+            result = self.channels[name]
+        return result

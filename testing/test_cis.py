@@ -11,7 +11,7 @@ class TestCIS(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
 
-        self.result_dir  = 'testing'
+        self.result_dir  = 'testing/scratch'
         self.result_hdf5 = 'hdf5.cis'
         self.result_hdf5_fullpath = os.path.join(self.result_dir, self.result_hdf5)
 
@@ -66,6 +66,8 @@ class TestCIS(unittest.TestCase):
         # write hdf5 format
         hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
+
+        # check
         self.__check_hdf5_database()
 
     def test_create_file_database(self):
@@ -76,6 +78,7 @@ class TestCIS(unittest.TestCase):
         file_writer = cinemagic.cis.write.file.file_writer()
         file_writer.write(myCIS)
 
+        # check 
         self.__check_file_database()
 
     def add_test_image(self, cis, imName):

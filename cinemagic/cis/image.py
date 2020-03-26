@@ -10,3 +10,14 @@ class image:
         self.layers[name] = layer.layer(name)
 
         return self.layers[name]
+
+    def get_layers(self):
+        for l in self.layers:
+            yield l
+
+    def get_layer(self, name):
+        result = False
+        if name in self.layers:
+            result = self.layers[name]
+
+        return result

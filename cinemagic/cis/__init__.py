@@ -31,10 +31,14 @@ class cis:
         print("\n")
 
     def get_image(self, key):
-        result = None
+        result = False
         if key in self.images:
             result = self.images[key]
         return result
+
+    def get_images(self):
+        for i in self.images:
+            yield i
 
     def get_image_names(self):
         return list(self.images.keys())
