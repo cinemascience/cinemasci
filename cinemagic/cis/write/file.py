@@ -6,6 +6,7 @@ import numpy
 #       colormaps
 
 class file_writer:
+    """ A disk file CIS writer. """
     Attribute_file = "attributes.json"
 
     def write(self, cis):

@@ -3,6 +3,9 @@ from . import read
 from . import write
 
 class cis:
+    """Composible Image Set Class
+    The data structure to hold properties of a Composible Image Set.
+    """
 
     Origins = ['UL', 'UR', 'LL', 'LR']
 
@@ -21,6 +24,7 @@ class cis:
         #self.colormaps
 
     def debug_print(self):
+        """ Debug print statement for CIS properties. """
         print("printing cis")
         print("  fname:     {}".format(self.fname))
         print("  classname: {}".format(self.classname))
@@ -31,22 +35,31 @@ class cis:
         print("\n")
 
     def get_image(self, key):
+        """ Returns an image given its key. """
         result = False
         if key in self.images:
             result = self.images[key]
         return result
 
     def get_images(self):
+        """ Returns all images. """
         for i in self.images:
             yield i
 
     def get_image_names(self):
+        """ Returns list of image names. """
         return list(self.images.keys())
 
     def get_origin(self):
+        """ Returns the corner at which the image originates. 
+        This is defined by the strings in the Origins list:
+        Upper Left, Upper Right, Lower Left or Lower Right. 
+        """
+
         return self.origin
 
     def set_origin(self, origin):
+        """ Set origin to one of UL, UR, LL or LR. """
         result = False
         if origin in self.Origins:
             self.origin = origin
@@ -57,23 +70,28 @@ class cis:
         return result 
 
     def set_parameter_table(self, table):
+        """ Set parameter table using a deep copy. """
         self.parametertable = table.copy(deep=True)
 
     def add_parameter(self, name, type):
+        """ Add a parameter to the list of parameters for the CIS. """
         # check for duplicates
         self.parameterlist.append([name, type])
 
     def add_variable(self, name, type, min, max):
+        """ Add a variable to the set of variables. """
         # check for duplicates
         self.variables[name] = [type, min, max]
 
     def add_image(self, name):
+        """ Add an image to the set of images in the CIS. """
         # check for duplicates
         self.images[name] = image.image(name)
 
         return self.images[name]
 
     def get_image(self,name):
+        """ Return an image. """
         image = None
 
         if name in self.images:
@@ -82,4 +100,5 @@ class cis:
         return image
 
     def set_dims(self, w, h):
+        """ Set the dimensions of the CIS given a width and height. """  
         self.dims = [w, h]

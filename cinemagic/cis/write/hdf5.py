@@ -1,7 +1,7 @@
 import h5py
 
 class hdf5_writer:
-
+    """ A HDF5 CIS writer. """
     def write(self, cis):
         with h5py.File(cis.fname, "w") as f:
             f.attrs["class"]    = cis.classname

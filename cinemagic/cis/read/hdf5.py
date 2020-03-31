@@ -2,7 +2,7 @@ import h5py
 import numpy
 
 class Reader:
-
+    """ A HDF5 CIS Reader. """
     def __init__(self):
         return
 

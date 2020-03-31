@@ -2,19 +2,32 @@ import os.path
 import sqlite3
 import pandas
 
+##Cinema Database Class
+#
+#Class that *loads*, verifies and manages access to a Cinema Database.
+#
+#Two important definitions are:
+#- parameter path: A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
+#   - Example: `/phi/theta/variable`
+#- extract path: A specific instance of a *parameter path*, giving values for each parameter.
+#    - Example: `/0/90/temperature`
+
 class cdb:
     """Cinema Database Class
 
     Class that loads, verifies and manages access to a Cinema Database.
 
     Two important definitions are:
-    - parameter path A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
-	- Example: `/phi/theta/variable`
-    - extract path A specific instance of a *parameter path*, giving values for each parameter.
+    - parameter path: A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
+    	- Example: `/phi/theta/variable`
+    - extract path: A specific instance of a *parameter path*, giving values for each parameter.
         - Example: `/0/90/temperature`
     """
 
     def __init__(self, path):
+        """Cinema Database class constructor
+        """
+
         self.tablename = "CINEMA"
         self.path      = path
         self.datapath  = os.path.join(self.path, "data.csv")
@@ -97,6 +110,8 @@ class cdb:
         return path, query
 
     def get_extracts(self, parameters):
+        """Return the extracts for a set of parameters
+        """
         (extract_path, query) = self.__get_extract_paths(parameters)
 
         cur = self.con.cursor()
@@ -114,6 +129,8 @@ class cdb:
         return extracts 
 
     def check_database(self):
+        """Check if database exists
+        """
         return os.path.exists(self.path) and os.path.exists(self.datapath)
 
 #   def __get_extract_path(self, parameters):

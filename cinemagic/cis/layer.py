@@ -1,6 +1,12 @@
 from . import channel
 
 class layer:
+    """Layer Class
+    A layer is a collection of values that comprise an element of an image. 
+    A layer is an integer size (wxh) that is equal to or lesser than the size of the image. 
+    Therefore the offset from the image origin must be given in integer form to describe its placement.
+    A layer contains one or more channels. 
+    """
 
     def __init__(self, name):
         self.name     = name

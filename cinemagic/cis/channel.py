@@ -1,6 +1,14 @@
 import numpy
 
 class channel:
+    """Channel Class
+
+    A channel is a set of values, the size of the layer that contains it (wxh) 
+    and it relative to the *layer* it is a part of. 
+    It can be of any type, the default if of type float. 
+    A channel can contain **depth** or **lighting** information.
+    A channel may reference a variable or colormap to use for rasterization.  
+    """
 
     def __init__(self, name):
         self.name = name
