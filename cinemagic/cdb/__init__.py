@@ -2,16 +2,6 @@ import os.path
 import sqlite3
 import pandas
 
-##Cinema Database Class
-#
-#Class that *loads*, verifies and manages access to a Cinema Database.
-#
-#Two important definitions are:
-#- parameter path: A slash-separated string that defines an ordered set of parameters that designate a set of extracts.
-#   - Example: `/phi/theta/variable`
-#- extract path: A specific instance of a *parameter path*, giving values for each parameter.
-#    - Example: `/0/90/temperature`
-
 class cdb:
     """Cinema Database Class
 
