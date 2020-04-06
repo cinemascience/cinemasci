@@ -140,6 +140,15 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( myCIS.origin    == "UL" )
         # myCIS.debug_print()
 
+#    def test_read_colormap(self):
+#        pathToColormap = 'blue-orange-div.xml'
+#        b_o_div = colormap(pathToXML)
+
+        # check values read in
+#       self.assertTrue( b_o_div.pathToXML == 'blue-orange-div.xml')
+#       self.assertTrue( b_o_div.name == 'Divergent 1')
+#       self.assertTrue( len(b_o_div.points) == 47 )
+
 
 if __name__ == '__main__':
     unittest.main()
