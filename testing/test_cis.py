@@ -140,7 +140,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( myCIS.origin    == "UL" )
         # myCIS.debug_print()
 
-    def test_read_colormap(self):
+    def test_read_colormap_file(self):
         pathToColormap = 'testing/blue-orange-div.xml'
         b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
 
@@ -149,6 +149,15 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
 
+
+    def test_read_colormap_url(self):
+        pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
+        b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
+        
+        # check values read in
+        self.assertTrue( b_o_div.pathToXML == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
+        self.assertTrue( b_o_div.name == 'Divergent 1')
+        self.assertTrue( len(b_o_div.points) == 47 )
 
 if __name__ == '__main__':
     unittest.main()
