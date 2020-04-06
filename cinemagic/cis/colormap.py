@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
-from urllib.request import urlopen
-import requests
+#from urllib.request import urlopen
+#import requests
 
 class colormap:
     """Colormap Class
@@ -28,6 +28,7 @@ class colormap:
         #self.startAlpha = 1
         #self.endAlpha = 1
         #self.flipped = False
+        
         tree = ET.parse(pathToXML)
         root = tree.getroot()
         for cmap in root.findall('ColorMap'):
