@@ -1,6 +1,8 @@
 from . import image
 from . import read
 from . import write
+from . import colormap
+
 
 class cis:
     """Composible Image Set Class
