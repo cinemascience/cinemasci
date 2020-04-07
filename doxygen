@@ -147,7 +147,7 @@ WARN_LOGFILE           =
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = /Users/dbanesh/Documents/cinemagic_Git/cinemagic
+INPUT                  = .
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.py
 RECURSIVE              = YES

@@ -17,6 +17,10 @@ matrix:
   include:
     - os: linux
       dist: xenial
+      addons:
+        apt:
+          packages:
+            - doxygen
 
 # Install dependencies here      
 install:
@@ -26,3 +30,4 @@ install:
 script:
         - pip install .
         - python -m unittest discover testing
+        - doxygen ./doxygen
