@@ -124,6 +124,10 @@ class TestCIS(unittest.TestCase):
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
+    def test_read_file_database(self):
+        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
+        return
+
     def test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
