@@ -30,7 +30,7 @@ class TestCIS(unittest.TestCase):
         print("Running test: {}".format(self._testMethodName))
 
     def tearDown(self):
-        if False:
+        if True:
             if os.path.exists(self.result_hdf5_fullpath):
                 os.remove(self.result_hdf5_fullpath)
             self.assertFalse( os.path.exists(self.result_hdf5_fullpath) )
