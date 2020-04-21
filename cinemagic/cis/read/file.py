@@ -1,13 +1,34 @@
 import numpy
+import os
+import json
 
-class Reader:
+class reader:
     """ A file-based CIS Reader. """
     def __init__(self):
+        self.attributes = {}
         return
 
     def read(self, cis):
+
+        self.__read_attributes(cis)
+
         return
     
+    def __read_attributes(self, cis):
+        attrfile = os.path.join( cis.fname, "attributes.json")
+        if os.path.isfile(attrfile):
+            with open(attrfile) as afile:
+                self.attributes = json.load(afile)
+        else:
+            print("ERROR loading attributes file: {}".format( attrfile ))
+            exit(1)
+
+        cis.classname = self.attributes["classname"]
+        cis.dims      = self.attributes["dims"]
+        cis.version   = self.attributes["version"]
+        cis.flags     = self.attributes["flags"]
+        cis.origin    = self.attributes["origin"]
+
     def read_image(self, image, data):
         for l in data["layer"]:
             self.read_layer(layer, data["layer"][l])

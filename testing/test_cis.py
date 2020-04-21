@@ -5,6 +5,7 @@ import os
 import numpy
 import shutil
 import filecmp
+import PIL
 
 class TestCIS(unittest.TestCase):
 
@@ -162,6 +163,18 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( b_o_div.pathToXML == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
         self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
+
+    def test_create_image(self):
+        path = "testing/gold/file.cis"
+        cis = cinemagic.cis.cis(path)
+        reader = cinemagic.cis.read.file.reader()
+        reader.read(cis)
+        cis.debug_print()
+
+        render = cinemagic.cis.render.render()
+        im = render.render(cis)
+        im.save("testing/scratch/test.png")
+
 
 if __name__ == '__main__':
     unittest.main()

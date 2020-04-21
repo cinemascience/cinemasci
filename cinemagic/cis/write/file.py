@@ -84,11 +84,11 @@ class file_writer:
     def __write_class_metadata(self, cis):
         with open(os.path.join( cis.fname, self.Attribute_file), "w") as f:
             f.write("{\n")
-            f.write("  classname : \"{}\",\n".format(cis.classname))
-            f.write("  dims      : [{}, {}],\n".format(cis.dims[0], cis.dims[1]))
-            f.write("  version   : \"{}\",\n".format(cis.version))
-            f.write("  flags     : \"{}\",\n".format(cis.flags))
-            f.write("  origin    : \"{}\"\n".format(cis.origin))
+            f.write("  \"classname\" : \"{}\",\n".format(cis.classname))
+            f.write("  \"dims\"      : [{}, {}],\n".format(cis.dims[0], cis.dims[1]))
+            f.write("  \"version\"   : \"{}\",\n".format(cis.version))
+            f.write("  \"flags\"     : \"{}\",\n".format(cis.flags))
+            f.write("  \"origin\"    : \"{}\"\n".format(cis.origin))
             f.write("}\n")
 
     def __write_layer_metadata(self, path, layer):

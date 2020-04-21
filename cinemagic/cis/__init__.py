@@ -2,6 +2,7 @@ from . import image
 from . import read
 from . import write
 from . import colormap
+from . import render
 
 
 class cis:
