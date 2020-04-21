@@ -30,13 +30,14 @@ class TestCIS(unittest.TestCase):
         print("Running test: {}".format(self._testMethodName))
 
     def tearDown(self):
-        if os.path.exists(self.result_hdf5_fullpath):
-            os.remove(self.result_hdf5_fullpath)
-        self.assertFalse( os.path.exists(self.result_hdf5_fullpath) )
+        if False:
+            if os.path.exists(self.result_hdf5_fullpath):
+                os.remove(self.result_hdf5_fullpath)
+            self.assertFalse( os.path.exists(self.result_hdf5_fullpath) )
 
-        if os.path.exists(self.result_file_fullpath):
-            shutil.rmtree(self.result_file_fullpath)
-        self.assertFalse( os.path.exists(self.result_file_fullpath) )
+            if os.path.exists(self.result_file_fullpath):
+                shutil.rmtree(self.result_file_fullpath)
+            self.assertFalse( os.path.exists(self.result_file_fullpath) )
 
     def __create_test_cis(self, myCIS):
         myCIS.set_dims(1024, 768)
@@ -155,7 +156,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( len(b_o_div.points) == 47 )
 
 
-    def test_read_colormap_url(self):
+    def __test_read_colormap_url(self):
         pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
         b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
         
@@ -169,11 +170,15 @@ class TestCIS(unittest.TestCase):
         cis = cinemagic.cis.cis(path)
         reader = cinemagic.cis.read.file.reader()
         reader.read(cis)
-        cis.debug_print()
+        # cis.debug_print()
 
         render = cinemagic.cis.render.render()
         im = render.render(cis)
-        im.save("testing/scratch/test.png")
+        result = "testing/scratch/test.png"
+        im.save(result)
+
+        gold = "testing/gold/render_image.png"
+        self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
 
 if __name__ == '__main__':
