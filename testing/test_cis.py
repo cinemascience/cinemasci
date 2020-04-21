@@ -92,15 +92,15 @@ class TestCIS(unittest.TestCase):
         layerData = {
             'l000' : {
                 'offset' : [0, 10],
-                'dims'   : [10, 20]
+                'dims'   : [100, 200]
             },
             'l001': {
                 'offset' : [100, 110],
-                'dims'   : [30, 40]
+                'dims'   : [250, 300]
             },
             'l002': {
                 'offset' : [200, 210],
-                'dims'   : [50, 60]
+                'dims'   : [350, 400]
             }
         }
 
@@ -173,7 +173,7 @@ class TestCIS(unittest.TestCase):
         # cis.debug_print()
 
         render = cinemagic.cis.render.render()
-        im = render.render(cis)
+        im = render.render(cis, "0000", "l000")
         result = "testing/scratch/test.png"
         im.save(result)
 
