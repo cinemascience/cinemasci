@@ -40,7 +40,6 @@ class reader:
             self.__read_layer(newimage, layername)
 
     def __read_layer(self, image, lname):
-        # print("        layer {}".format(lname))
         newlayer = image.add_layer(lname)
 
         # read attributes
