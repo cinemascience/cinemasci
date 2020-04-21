@@ -94,14 +94,14 @@ class file_writer:
     def __write_layer_metadata(self, path, layer):
         with open(os.path.join( path, self.Attribute_file), "w") as f:
             f.write("{\n")
-            f.write("  offset : [{}, {}],\n".format(layer.offset[0], layer.offset[1]))
-            f.write("  dims   : [{}, {}],\n".format(layer.dims[0], layer.dims[1]))
+            f.write("  \"offset\" : [{}, {}],\n".format(layer.offset[0], layer.offset[1]))
+            f.write("  \"dims\"   : [{}, {}]\n".format(layer.dims[0], layer.dims[1]))
             f.write("}\n")
 
     def __write_channel_metadata(self, path, channel):
         with open(os.path.join( path, self.Attribute_file), "w") as f:
             f.write("{\n")
-            f.write("  type : {}\n".format(channel.type))
+            f.write("  \"type\" : \"{}\"\n".format(channel.type))
             f.write("}\n")
 
     def __write_channel_data(self, path, channel):
@@ -124,7 +124,7 @@ class file_writer:
             self.__write_channel(path, layer.get_channel(c))
 
     def __write_channel(self, path, channel):
-            path = self.__create_channel_dir(path, channel)
-            self.__write_channel_metadata(path, channel)
-            self.__write_channel_data(path, channel)
+        path = self.__create_channel_dir(path, channel)
+        self.__write_channel_metadata(path, channel)
+        self.__write_channel_data(path, channel)
 
