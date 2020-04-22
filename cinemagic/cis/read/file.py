@@ -143,4 +143,9 @@ class reader(cisfile):
         attributes = self._read_attributes(self._get_channel_attribute_file( iname, layer.name, cname ))
         # set attributes
         newchannel.type = attributes["type"]
+        # read data
+        datafile = self._get_channel_data_file(iname, layer.name, cname)
+        if os.path.isfile(datafile):
+            zdata = numpy.load(datafile)
+            newchannel.data = zdata['data']
 
