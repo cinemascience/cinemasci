@@ -6,18 +6,19 @@ import numpy
 import shutil
 import filecmp
 import PIL
+import sys
 
 class TestCIS(unittest.TestCase):
+    Result_dir  = 'testing/scratch'
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
 
-        self.result_dir  = 'testing/scratch'
         self.result_hdf5 = 'hdf5.cis'
-        self.result_hdf5_fullpath = os.path.join(self.result_dir, self.result_hdf5)
+        self.result_hdf5_fullpath = os.path.join(TestCIS.Result_dir, self.result_hdf5)
 
         self.result_file = 'file.cis'
-        self.result_file_fullpath = os.path.join(self.result_dir, self.result_file)
+        self.result_file_fullpath = os.path.join(TestCIS.Result_dir, self.result_file)
 
         self.gold_dir    = 'testing/gold'
         self.gold_hdf5   = self.result_hdf5 
@@ -29,15 +30,10 @@ class TestCIS(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         if True:
-            if os.path.exists(self.result_hdf5_fullpath):
-                os.remove(self.result_hdf5_fullpath)
-            self.assertFalse( os.path.exists(self.result_hdf5_fullpath) )
-
-            if os.path.exists(self.result_file_fullpath):
-                shutil.rmtree(self.result_file_fullpath)
-            self.assertFalse( os.path.exists(self.result_file_fullpath) )
+            shutil.rmtree(TestCIS.Result_dir)
 
     def __create_test_cis(self, myCIS):
         myCIS.set_dims(1024, 768)
@@ -166,15 +162,19 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def test_create_image(self):
-        path = "testing/gold/file.cis"
-        check = cinemagic.cis.read.file.cisfile()
-        self.assertTrue( check.verify(path) )
-        check.dump(path)
+        cispath = "testing/gold/file.cis"
+        cis = cinemagic.cis.cis(cispath)
 
-        cis = cinemagic.cis.cis(path)
-        reader = cinemagic.cis.read.file.reader()
-        reader.read(cis)
-        # cis.debug_print()
+        check = cinemagic.cis.read.file.cisfile(cis)
+        self.assertTrue( check.verify() )
+        scratch_dump = "testing/scratch/file.cis.dump"
+        gold_dump    = "testing/gold/file.cis.dump"
+        with open(scratch_dump, "w") as dumpfile:
+            check.dump(dumpfile)
+        self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" ) 
+
+        reader = cinemagic.cis.read.file.reader(cis)
+        reader.read()
 
         render = cinemagic.cis.render.render()
         im = render.render(cis, "0000", "l000")
