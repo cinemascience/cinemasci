@@ -167,6 +167,10 @@ class TestCIS(unittest.TestCase):
 
     def test_create_image(self):
         path = "testing/gold/file.cis"
+        check = cinemagic.cis.read.file.cisfile()
+        self.assertTrue( check.verify(path) )
+        check.dump(path)
+
         cis = cinemagic.cis.cis(path)
         reader = cinemagic.cis.read.file.reader()
         reader.read(cis)
