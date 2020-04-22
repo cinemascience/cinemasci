@@ -21,7 +21,6 @@ class channel:
 
     def set_dims(self, w, h):
         self.dims = [w, h]
-        self.create_test_data()
 
     def create_test_data(self):
         self.data = numpy.random.random_sample(self.dims)
