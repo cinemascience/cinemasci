@@ -78,6 +78,18 @@ class cisfile():
     def _get_channel_data_file(self, iname, lname, cname):
         return os.path.join( self.cis.fname, "image", iname, "layer", lname, "channel", cname, cisfile.dataname ) 
 
+    def _read_attributes(self, attrfile):
+        attributes = {}
+        if os.path.isfile(attrfile):
+            with open(attrfile) as afile:
+                attributes = json.load(afile)
+        else:
+            print("ERROR loading attributes file: {}".format( attrfile ))
+            exit(1)
+
+        return attributes
+
+
 
 class reader(cisfile):
     """ A file-based CIS Reader. """
@@ -87,8 +99,7 @@ class reader(cisfile):
 
     def read(self):
         # read attributes
-        attrfile = self._get_attribute_file()
-        attributes = self.__read_attributes(attrfile) 
+        attributes = self._read_attributes(self._get_attribute_file()) 
 
         # required attributes
         self.cis.classname = attributes["classname"]
@@ -106,7 +117,6 @@ class reader(cisfile):
         return
     
     def __read_image(self, iname):
-        # print("    image {}".format(iname))
         newimage = self.cis.add_image(iname)
 
         for layer in self.get_layers( iname ):
@@ -116,8 +126,7 @@ class reader(cisfile):
         newlayer = image.add_layer(lname)
 
         # read attributes
-        attrfile = self._get_layer_attribute_file( image.name, lname )
-        attributes = self.__read_attributes(attrfile) 
+        attributes = self._read_attributes(self._get_layer_attribute_file( image.name, lname ))
         # set attributes
         if "offset" in attributes:
             newlayer.offset = attributes["offset"]
@@ -128,24 +137,10 @@ class reader(cisfile):
             self.__read_channel(image.name, newlayer, channel)
 
     def __read_channel(self, iname, layer, cname):
-        # print("            channel {}".format(cname))
         newchannel = layer.add_channel(cname)
 
         # read attributes
-        attrfile = self._get_channel_attribute_file( iname, layer.name, cname )
-        attributes = self.__read_attributes(attrfile) 
+        attributes = self._read_attributes(self._get_channel_attribute_file( iname, layer.name, cname ))
         # set attributes
         newchannel.type = attributes["type"]
-
-    def __read_attributes(self, attrfile):
-        # print("reading attributes file {}".format(attrfile))
-        attributes = {}
-        if os.path.isfile(attrfile):
-            with open(attrfile) as afile:
-                attributes = json.load(afile)
-        else:
-            print("ERROR loading attributes file: {}".format( attrfile ))
-            exit(1)
-
-        return attributes
 
