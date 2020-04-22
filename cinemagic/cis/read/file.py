@@ -5,79 +5,89 @@ import glob
 
 class cisfile():
     attrname = "attributes.json"
+    dataname = "data.npz"
 
-    def __init__(self):
+    def __init__(self, cis):
+        self.cis = cis
         return
 
-    def dump(self, fname):
-        print(self._get_image_basedir(fname))
-        print(self._get_layer_basedir(fname, "0000"))
-        print(self._get_channel_basedir(fname, "0000", "l000"))
-        for i in self.get_images(fname):
-            print("image: {}".format(i))
-            iname = os.path.basename(i)
-            for l in self.get_layers(fname, iname):
-                print("    layer: {}".format(l))
-                lname = os.path.basename(l)
-                for c in self.get_channels(fname, iname, lname):
-                    print("        channel: {}".format(c))
+    def dump(self, dumpfile):
+        dumpfile.write("{}/\n".format(self.cis.fname))
+        if os.path.isfile(self._get_attribute_file()):
+            dumpfile.write("  {}\n".format(cisfile.attrname))
+        dumpfile.write("  image/\n")
+        for i in self.get_images():
+            dumpfile.write("    {}/\n".format(i))
+            dumpfile.write("      layer/\n")
+            for l in self.get_layers(i):
+                dumpfile.write("        {}/\n".format(l))
+                if os.path.isfile(self._get_layer_attribute_file(i, l)):
+                    dumpfile.write("          {}\n".format(cisfile.attrname))
+                dumpfile.write("          channel/\n")
+                for c in self.get_channels(i, l):
+                    dumpfile.write("            {}/\n".format(c))
+                    if os.path.isfile(self._get_channel_attribute_file(i, l, c)):
+                        dumpfile.write("              {}\n".format(cisfile.attrname))
+                    if os.path.isfile(self._get_channel_data_file(i, l, c)):
+                        dumpfile.write("              {}\n".format(cisfile.dataname))
 
-    def get_images(self, fname):
-        images = glob.glob(os.path.join(self._get_image_basedir(fname), "*"))
+    def get_images(self):
+        images = glob.glob(os.path.join(self._get_image_basedir(), "*"))
         for i in sorted(images):
             yield os.path.basename(i)
 
-    def get_layers(self, fname, iname):
-        layers = glob.glob(os.path.join(self._get_layer_basedir(fname, iname), "*"))
+    def get_layers(self, iname):
+        layers = glob.glob(os.path.join(self._get_layer_basedir(iname), "*"))
         for l in sorted(layers):
             yield os.path.basename(l)
 
-    def get_channels(self, fname, iname, lname):
-        channels = glob.glob(os.path.join(self._get_channel_basedir(fname, iname, lname), "*"))
+    def get_channels(self, iname, lname):
+        channels = glob.glob(os.path.join(self._get_channel_basedir(iname, lname), "*"))
         for c in sorted(channels):
             yield os.path.basename(c)
 
-    def verify(self, fname):
+    def verify(self):
         result = True
 
-        if not os.path.isdir( fname ) or not os.path.isdir( self._get_image_basedir(fname) ):
+        if not os.path.isdir( self.cis.fname ) or not os.path.isdir( self._get_image_basedir() ):
             result = False
 
         return result
 
-    def _get_image_basedir(self, fname):
-        return os.path.join( fname, "image" )
+    def _get_image_basedir(self):
+        return os.path.join( self.cis.fname, "image" )
 
-    def _get_layer_basedir(self, fname, iname):
-        return os.path.join( fname, "image", iname, "layer" )
+    def _get_layer_basedir(self, iname):
+        return os.path.join( self.cis.fname, "image", iname, "layer" )
 
-    def _get_channel_basedir(self, fname, iname, lname):
-        return os.path.join( fname, "image", iname, "layer", lname, "channel" )
+    def _get_channel_basedir(self, iname, lname):
+        return os.path.join( self.cis.fname, "image", iname, "layer", lname, "channel" )
 
-    def _get_layer_dir(self, fname):
-        return os.path.join( fname, "image", iname, "layer" )
+    def _get_layer_dir(self):
+        return os.path.join( self.cis.fname, "image", iname, "layer" )
 
-    def _get_attribute_file(self, fname):
-        return os.path.join( fname, cisfile.attrname ) 
+    def _get_attribute_file(self):
+        return os.path.join( self.cis.fname, cisfile.attrname ) 
 
-    def _get_layer_attribute_file(self, fname, iname, lname):
-        return os.path.join( fname, "image", iname, "layer", lname, cisfile.attrname ) 
+    def _get_layer_attribute_file(self, iname, lname):
+        return os.path.join( self.cis.fname, "image", iname, "layer", lname, cisfile.attrname ) 
 
-    def _get_channel_attribute_file(self, fname, iname, lname, cname):
-        return os.path.join( fname, "image", iname, "layer", lname, "channel", cname, cisfile.attrname ) 
+    def _get_channel_attribute_file(self, iname, lname, cname):
+        return os.path.join( self.cis.fname, "image", iname, "layer", lname, "channel", cname, cisfile.attrname ) 
+
+    def _get_channel_data_file(self, iname, lname, cname):
+        return os.path.join( self.cis.fname, "image", iname, "layer", lname, "channel", cname, cisfile.dataname ) 
 
 
 class reader(cisfile):
     """ A file-based CIS Reader. """
-    def __init__(self):
-        self.cis = None
+    def __init__(self, cis):
+        self.cis = cis
         return
 
-    def read(self, cis):
-        self.cis = cis
-
+    def read(self):
         # read attributes
-        attrfile = self._get_attribute_file(self.cis.fname)
+        attrfile = self._get_attribute_file()
         attributes = self.__read_attributes(attrfile) 
 
         # required attributes
@@ -90,7 +100,7 @@ class reader(cisfile):
         if "origin" in attributes:
             self.cis.origin    = attributes["origin"]
 
-        for image in self.get_images( self.cis.fname ):
+        for image in self.get_images():
             self.__read_image(image)
 
         return
@@ -99,14 +109,14 @@ class reader(cisfile):
         # print("    image {}".format(iname))
         newimage = self.cis.add_image(iname)
 
-        for layer in self.get_layers( self.cis.fname, iname ):
+        for layer in self.get_layers( iname ):
             self.__read_layer(newimage, layer)
 
     def __read_layer(self, image, lname):
         newlayer = image.add_layer(lname)
 
         # read attributes
-        attrfile = self._get_layer_attribute_file( self.cis.fname, image.name, lname )
+        attrfile = self._get_layer_attribute_file( image.name, lname )
         attributes = self.__read_attributes(attrfile) 
         # set attributes
         if "offset" in attributes:
@@ -114,7 +124,7 @@ class reader(cisfile):
         if "dims" in attributes:
             newlayer.dims   = attributes["dims"]
 
-        for channel in self.get_channels( self.cis.fname, image.name, lname ):
+        for channel in self.get_channels( image.name, lname ):
             self.__read_channel(image.name, newlayer, channel)
 
     def __read_channel(self, iname, layer, cname):
@@ -122,7 +132,7 @@ class reader(cisfile):
         newchannel = layer.add_channel(cname)
 
         # read attributes
-        attrfile = self._get_channel_attribute_file( self.cis.fname, iname, layer.name, cname )
+        attrfile = self._get_channel_attribute_file( iname, layer.name, cname )
         attributes = self.__read_attributes(attrfile) 
         # set attributes
         newchannel.type = attributes["type"]
