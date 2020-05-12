@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
+import os
 
 class colormap:
     """Colormap Class
@@ -14,17 +15,16 @@ class colormap:
     def __init__(self, pathToXML):
         """Colormap constructor"""
         self.pathToXML = pathToXML
-        self.name = ""
+        self.name = os.path.splitext(os.path.basename(pathToXML))[0]
+
         self.points = []
-        
         urlCheck = pathToXML[0:4]
         if (urlCheck == 'http'):
             pathToXML = urlopen(pathToXML)
-        
         tree = ET.parse(pathToXML)
         root = tree.getroot()
-        for cmap in root.findall('ColorMap'):
-            self.name = cmap.get('name')
+#        for cmap in root.findall('ColorMap'):
+#            self.name = cmap.get('name')
 
         for point in root.iter('Point'):
             value = point.get('x')

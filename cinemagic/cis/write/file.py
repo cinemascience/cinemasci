@@ -1,5 +1,7 @@
 import os
 import numpy
+import xml.etree.ElementTree as ET
+
 
 # TODO: parametertable
 #       variables
@@ -16,7 +18,11 @@ class file_writer:
         path = self.__create_toplevel_image_dir(cis)
         for i in cis.get_images():
             self.__write_image(path, cis.get_image(i))
-            
+
+        path = self.__create_toplevel_colormap_dir(cis)
+        for i in cis.get_colormaps():
+            self.__write_colormap(path, cis.get_colormap(i))
+
     def __create_toplevel_channel_dir(self, path):
         path = os.path.join( path, "channel" )
         try:
@@ -65,6 +71,15 @@ class file_writer:
 
     def __create_toplevel_image_dir(self, cis):
         path = os.path.join( cis.fname, "image" )
+        try:
+            os.mkdir(path)
+        except OSError:
+            print("Creation of {} failed".format(path))
+
+        return path
+
+    def __create_toplevel_colormap_dir(self, cis):
+        path = os.path.join( cis.fname, "colormaps" )
         try:
             os.mkdir(path)
         except OSError:
@@ -127,4 +142,27 @@ class file_writer:
         path = self.__create_channel_dir(path, channel)
         self.__write_channel_metadata(path, channel)
         self.__write_channel_data(path, channel)
+
+    def __write_colormap(self, path, colormap):
+        path = os.path.join(path, colormap.name)
+        data = ET.Element('ColorMaps')
+        items = ET.SubElement(data, 'Colormap')
+        items.set('name', colormap.name)
+        for p in colormap.points:
+            item = ET.SubElement(items, 'Point')
+            #data will be saved alphabetically, not in this order
+            item.set('x', str(p[0]))
+            item.set('o', str(p[1]))
+            item.set('r', str(p[2]))
+            item.set('g', str(p[3]))
+            item.set('b', str(p[4]))
+
+        xmlData = ET.tostring(data, encoding="unicode")
+        cmpFile = open(path+'xml', "w")
+        cmpFile.write(xmlData)
+        cmpFile.close()
+        #xmlData = ET.tostring(data)
+        #cmpFile = open(path+'.xml', "wb")
+        #cmpFile.write(xmlData)
+        #cmpFile.close()
 

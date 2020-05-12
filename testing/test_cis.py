@@ -16,14 +16,14 @@ class TestCIS(unittest.TestCase):
 
         self.result_hdf5 = 'hdf5.cis'
         self.result_hdf5_fullpath = os.path.join(TestCIS.Result_dir, self.result_hdf5)
-
+        
         self.result_file = 'file.cis'
         self.result_file_fullpath = os.path.join(TestCIS.Result_dir, self.result_file)
-
+        
         self.gold_dir    = 'testing/gold'
         self.gold_hdf5   = self.result_hdf5 
         self.gold_hdf5_fullpath = os.path.join(self.gold_dir, self.gold_hdf5)
-
+        
         self.gold_file   = self.result_file
         self.gold_file_fullpath = os.path.join(self.gold_dir, self.gold_file)
 
@@ -57,6 +57,10 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
+        colormaps = ['testing/gold/file.cis/colormaps/blue-orange-div.xml']
+        for c in colormaps:
+            self.add_test_colormap(myCIS, c)
+
     def test_create_hdf5_database(self):
         myCIS = cinemagic.cis.cis(self.result_hdf5_fullpath)
         self.__create_test_cis(myCIS)
@@ -78,6 +82,11 @@ class TestCIS(unittest.TestCase):
 
         # check 
         self.__check_file_database()
+
+    def add_test_colormap(self, cis, path):
+        #integrate back into code if not needed
+        name = os.path.splitext(os.path.basename(path))[0]
+        cis.add_colormap(name, path)
 
     def add_test_image(self, cis, imName):
         channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
@@ -118,6 +127,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
+        # how do I check the colormap writing?
 
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
@@ -143,14 +153,14 @@ class TestCIS(unittest.TestCase):
         # myCIS.debug_print()
 
     def test_read_colormap_file(self):
-        pathToColormap = 'testing/blue-orange-div.xml'
+        pathToColormap = 'testing/gold/file.cis/colormaps/blue-orange-div.xml'
         b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
 
         # check values read in
-        self.assertTrue( b_o_div.pathToXML == 'testing/blue-orange-div.xml')
-        self.assertTrue( b_o_div.name == 'Divergent 1')
+        self.assertTrue( b_o_div.pathToXML == 'testing/gold/file.cis/colormaps/blue-orange-div.xml')
+        self.assertTrue( b_o_div.name == 'blue-orange-div')
+        #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
-
 
     def __test_read_colormap_url(self):
         pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
@@ -158,7 +168,8 @@ class TestCIS(unittest.TestCase):
         
         # check values read in
         self.assertTrue( b_o_div.pathToXML == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
-        self.assertTrue( b_o_div.name == 'Divergent 1')
+        self.assertTrue( b_o_div.name == 'blue-orange-div')
+        #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def test_create_image(self):
@@ -171,7 +182,7 @@ class TestCIS(unittest.TestCase):
         gold_dump    = "testing/gold/file.cis.dump"
         with open(scratch_dump, "w") as dumpfile:
             check.dump(dumpfile)
-        self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" ) 
+        self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
 
         reader = cinemagic.cis.read.file.reader(cis)
         reader.read()
@@ -183,6 +194,8 @@ class TestCIS(unittest.TestCase):
 
         gold = "testing/gold/render_image.png"
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
+
+        #additional testing for colormaps?
 
 
 if __name__ == '__main__':

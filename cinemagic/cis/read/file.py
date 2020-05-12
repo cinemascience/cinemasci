@@ -15,6 +15,10 @@ class cisfile():
         dumpfile.write("{}/\n".format(self.cis.fname))
         if os.path.isfile(self._get_attribute_file()):
             dumpfile.write("  {}\n".format(cisfile.attrname))
+        dumpfile.write("  colormaps/\n")
+        for c in self.get_colormaps():
+            basename = os.path.basename(c)
+            dumpfile.write("    {}\n".format(basename))
         dumpfile.write("  image/\n")
         for i in self.get_images():
             dumpfile.write("    {}/\n".format(i))
@@ -30,6 +34,11 @@ class cisfile():
                         dumpfile.write("              {}\n".format(cisfile.attrname))
                     if os.path.isfile(self._get_channel_data_file(i, l, c)):
                         dumpfile.write("              {}\n".format(cisfile.dataname))
+
+    def get_colormaps(self):
+        colormaps = glob.glob(os.path.join(self._get_colormap_basedir(), "*"))
+        for c in sorted(colormaps):
+            yield c
 
     def get_images(self):
         images = glob.glob(os.path.join(self._get_image_basedir(), "*"))
@@ -53,6 +62,9 @@ class cisfile():
             result = False
 
         return result
+
+    def _get_colormap_basedir(self):
+        return os.path.join(self.cis.fname, "colormaps" )
 
     def _get_image_basedir(self):
         return os.path.join( self.cis.fname, "image" )
@@ -111,11 +123,29 @@ class reader(cisfile):
         if "origin" in attributes:
             self.cis.origin    = attributes["origin"]
 
+        for colormapPath in self.get_colormaps():
+            self.__read_colormap(colormapPath)
+
         for image in self.get_images():
             self.__read_image(image)
 
         return
     
+    def __read_colormap(self, cPath):
+        filename, file_extension = os.path.splitext(cPath)
+        # if xml file
+        if (file_extension == ".xml"):
+            name = os.path.splitext(os.path.basename(cPath))[0]
+            newcolormap = self.cis.add_colormap(name, cPath)
+        # if json file
+        if (file_extension == ".json"):
+            name = os.path.splitext(os.path.basename(cPath))[0]
+            if os.path.isfile(cPath):
+                with open(cPath) as jFile:
+                    data = json.load(jFile)
+            newcolormap = self.cis.add_colormap(name, data['url'])
+
+
     def __read_image(self, iname):
         newimage = self.cis.add_image(iname)
 

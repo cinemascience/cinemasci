@@ -24,7 +24,7 @@ class cis:
         self.parametertable = None
         self.variables      = {}
         self.images         = {}
-        #self.colormaps
+        self.colormaps      = {}
 
     def debug_print(self):
         """ Debug print statement for CIS properties. """
@@ -101,6 +101,30 @@ class cis:
             image = self.images[name]
 
         return image
+
+    def get_colormap(self,name):
+        """ Return a colormap. """
+        colormap = None
+        
+        if name in self.colormaps:
+            colormap = self.colormaps[name]
+
+        return colormap
+
+    def add_colormap(self, name, path):
+        """ Add a colormap to the set of colormaps. """
+        #if colormap not in dict
+        if (name not in self.colormaps):
+            self.colormaps[name] = colormap.colormap(path)
+
+    def remove_colormap(self, name):
+        """ Remove a colormap from the set of colormaps. """
+        self.colormaps.pop(name)
+
+    def get_colormaps(self):
+        """ Return all colormaps. """      
+        for i in self.colormaps:
+            yield i
 
     def set_dims(self, w, h):
         """ Set the dimensions of the CIS given a width and height. """  
