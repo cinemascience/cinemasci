@@ -34,3 +34,20 @@ class colormap:
             blue  = point.get('b')
             self.points.append((float(value), float(alpha),
                                 float(red), float(green), float(blue)))
+
+    def get_points(self):
+        """Return a list of tuples that define the colormap points
+        """
+        points = []
+
+        returns points
+
+    def add_point(self, point):
+
+        return
+
+    def remove_point(self, point):
+
+        return
+
+
