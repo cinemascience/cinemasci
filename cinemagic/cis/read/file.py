@@ -132,14 +132,11 @@ class reader(cisfile):
         return
     
     def __read_colormap(self, cPath):
-        filename, file_extension = os.path.splitext(cPath)
-        # if xml file
+        file_extension = os.path.splitext(cPath)[1]
+        name = os.path.splitext(os.path.basename(cPath))[0]
         if (file_extension == ".xml"):
-            name = os.path.splitext(os.path.basename(cPath))[0]
             newcolormap = self.cis.add_colormap(name, cPath)
-        # if json file
         if (file_extension == ".json"):
-            name = os.path.splitext(os.path.basename(cPath))[0]
             if os.path.isfile(cPath):
                 with open(cPath) as jFile:
                     data = json.load(jFile)

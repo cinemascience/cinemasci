@@ -1,7 +1,7 @@
 import os
 import numpy
 import xml.etree.ElementTree as ET
-
+import json
 
 # TODO: parametertable
 #       variables
@@ -144,23 +144,39 @@ class file_writer:
         self.__write_channel_data(path, channel)
 
     def __write_colormap(self, path, colormap):
-        path = os.path.join(path, colormap.name)
-        data = ET.Element('ColorMaps')
-        items = ET.SubElement(data, 'Colormap')
-        items.set('name', colormap.name)
-        for p in colormap.points:
-            item = ET.SubElement(items, 'Point')
-            #data will be saved alphabetically, not in this order
-            item.set('x', str(p[0]))
-            item.set('o', str(p[1]))
-            item.set('r', str(p[2]))
-            item.set('g', str(p[3]))
-            item.set('b', str(p[4]))
+        if (colormap.typeXML):
+            if (colormap.edited):
+                data = ET.Element('ColorMaps')
+                items = ET.SubElement(data, 'Colormap')
+                items.set('name', colormap.name)
+                for p in colormap.points:
+                    item = ET.SubElement(items, 'Point')
+                    #data will be saved alphabetically, not in this order
+                    item.set('x', str(p[0]))
+                    item.set('o', str(p[1]))
+                    item.set('r', str(p[2]))
+                    item.set('g', str(p[3]))
+                    item.set('b', str(p[4]))
 
-        xmlData = ET.tostring(data, encoding="unicode")
-        cmpFile = open(path+'xml', "w")
-        cmpFile.write(xmlData)
-        cmpFile.close()
+                xmlData = ET.tostring(data, encoding="unicode")
+            else: #colormap is not edited
+                xmlData = ET.tostring(colormap.root, encoding="unicode")
+
+            path = os.path.join(path, colormap.name)
+            cmpFile = open(path+'.xml', "w")
+            cmpFile.write(xmlData)
+            cmpFile.close()
+
+        else: #file type is json
+            if (colormap.edited):
+                return
+            else: #colormap is not edited
+                path = os.path.join(path, colormap.name)
+                json_dict = {"url" : colormap.pathToFile}
+                with open(path+'.json', 'w') as json_file:
+                    json.dump(json_dict, json_file)
+
+
         #xmlData = ET.tostring(data)
         #cmpFile = open(path+'.xml', "wb")
         #cmpFile.write(xmlData)

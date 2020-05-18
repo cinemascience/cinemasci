@@ -12,21 +12,27 @@ class colormap:
     What is the dimension of a colormap?
     """
 
-    def __init__(self, pathToXML):
+    def __init__(self, pathToFile):
         """Colormap constructor"""
-        self.pathToXML = pathToXML
-        self.name = os.path.splitext(os.path.basename(pathToXML))[0]
-
+        self.pathToFile = pathToFile
+        self.name = os.path.splitext(os.path.basename(pathToFile))[0]
         self.points = []
-        urlCheck = pathToXML[0:4]
+        self.typeXML = True
+        self.edited = False
+
+        #todo: check if file exists
+        urlCheck = pathToFile[0:4]
         if (urlCheck == 'http'):
-            pathToXML = urlopen(pathToXML)
-        tree = ET.parse(pathToXML)
-        root = tree.getroot()
-#        for cmap in root.findall('ColorMap'):
+            self.typeXML = False
+            pathToFile = urlopen(pathToFile)
+        tree = ET.parse(pathToFile)
+
+        self.root = tree.getroot()
+
+#        for cmap in self.root.findall('ColorMap'):
 #            self.name = cmap.get('name')
 
-        for point in root.iter('Point'):
+        for point in self.root.iter('Point'):
             value = point.get('x')
             alpha = point.get('o')
             red   = point.get('r')
@@ -38,16 +44,22 @@ class colormap:
     def get_points(self):
         """Return a list of tuples that define the colormap points
         """
-        points = []
-
-        returns points
+        return self.points
 
     def add_point(self, point):
-
+        """ Add a point, a tuple of (x,o,r,g,b) to points. """
+        self.edited = True
+        self.points.append(point)
+        self.points.sort()
+        #to do, if x value of point already exists, replace or return error?
         return
 
     def remove_point(self, point):
-
+        """ Remove a point, a tuple of (x,o,r,g,b) from points. """
+        self.edited = True
+        if point in points:
+            self.points.remove(point)
+        # if point not in points, indicate that with an error?
         return
 
 

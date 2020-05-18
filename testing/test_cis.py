@@ -7,6 +7,7 @@ import shutil
 import filecmp
 import PIL
 import sys
+import json
 
 class TestCIS(unittest.TestCase):
     Result_dir  = 'testing/scratch'
@@ -26,6 +27,10 @@ class TestCIS(unittest.TestCase):
         
         self.gold_file   = self.result_file
         self.gold_file_fullpath = os.path.join(self.gold_dir, self.gold_file)
+
+        self.xmlColormap = 'colormaps/blue-orange-div.xml'
+        self.jsonColormap = 'colormaps/blue-1.json'
+
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -57,7 +62,8 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
-        colormaps = ['testing/gold/file.cis/colormaps/blue-orange-div.xml']
+        colormaps = ['testing/gold/file.cis/'+self.xmlColormap,
+                     'testing/gold/file.cis/'+self.jsonColormap]
         for c in colormaps:
             self.add_test_colormap(myCIS, c)
 
@@ -80,13 +86,21 @@ class TestCIS(unittest.TestCase):
         file_writer = cinemagic.cis.write.file.file_writer()
         file_writer.write(myCIS)
 
-        # check 
+        # check
         self.__check_file_database()
 
     def add_test_colormap(self, cis, path):
-        #integrate back into code if not needed
+        file_extension = os.path.splitext(path)[1]
         name = os.path.splitext(os.path.basename(path))[0]
-        cis.add_colormap(name, path)
+        if (file_extension == ".xml"):
+            newcolormap = cis.add_colormap(name, path)
+        if (file_extension == ".json"):
+            if os.path.isfile(path):
+                with open(path) as jFile:
+                    data = json.load(jFile)
+            newcolormap = cis.add_colormap(name, data['url'])
+#        name = os.path.splitext(os.path.basename(path))[0]
+#        cis.add_colormap(name, path)
 
     def add_test_image(self, cis, imName):
         channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
@@ -123,11 +137,22 @@ class TestCIS(unittest.TestCase):
 
         # is the assets file the same
         gold = os.path.join(self.gold_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file)
-        result = os.path.join(self.result_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file) 
+        result = os.path.join(self.result_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file)
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
-        # how do I check the colormap writing?
+
+        # check if colormap there
+        result_xml = os.path.join(TestCIS.Result_dir, self.result_file, self.xmlColormap)
+        result_json = os.path.join(TestCIS.Result_dir, self.result_file, self.jsonColormap)
+        self.assertTrue(os.path.exists(result_xml))
+        self.assertTrue(os.path.exists(result_json))
+
+        # are the colormaps the same - filecmp does not have option to disregard white space
+        #gold_xml = os.path.join(self.gold_dir, self.result_file, self.xmlColormap)
+        gold_json = os.path.join(self.gold_dir, self.result_file, self.jsonColormap)
+        #self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
+        self.assertTrue( filecmp.cmp (result_json, gold_json, shallow=False))
 
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
@@ -144,7 +169,7 @@ class TestCIS(unittest.TestCase):
         hdf5_reader = cinemagic.cis.read.hdf5.Reader()
         hdf5_reader.read(myCIS)
 
-        # check values read in 
+        # check values read in
         self.assertTrue( myCIS.classname == "COMPOSABLE_IMAGE_SET" )
         self.assertTrue( numpy.array_equal( myCIS.dims, [1024, 768] ) )
         self.assertTrue( myCIS.flags     == "CONSTANT_CHANNELS" )
@@ -157,7 +182,7 @@ class TestCIS(unittest.TestCase):
         b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
 
         # check values read in
-        self.assertTrue( b_o_div.pathToXML == 'testing/gold/file.cis/colormaps/blue-orange-div.xml')
+        self.assertTrue( b_o_div.pathToFile == 'testing/gold/file.cis/colormaps/blue-orange-div.xml')
         self.assertTrue( b_o_div.name == 'blue-orange-div')
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
@@ -167,7 +192,7 @@ class TestCIS(unittest.TestCase):
         b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
         
         # check values read in
-        self.assertTrue( b_o_div.pathToXML == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
+        self.assertTrue( b_o_div.pathToFile == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
         self.assertTrue( b_o_div.name == 'blue-orange-div')
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
@@ -194,9 +219,6 @@ class TestCIS(unittest.TestCase):
 
         gold = "testing/gold/render_image.png"
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
-
-        #additional testing for colormaps?
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -122,7 +122,7 @@ class cis:
         self.colormaps.pop(name)
 
     def get_colormaps(self):
-        """ Return all colormaps. """      
+        """ Return all colormaps. """
         for i in self.colormaps:
             yield i
 
