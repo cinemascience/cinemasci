@@ -213,7 +213,7 @@ class TestCIS(unittest.TestCase):
         reader.read()
 
         render = cinemagic.cis.render.render()
-        im = render.render(cis, "0000", "l000")
+        im = render.render(cis, "0000", ["l000", "l001", "l002"])
         result = "testing/scratch/test.png"
         im.save(result)
 
