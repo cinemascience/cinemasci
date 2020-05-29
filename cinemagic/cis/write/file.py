@@ -169,7 +169,19 @@ class file_writer:
 
         else: #file type is json
             if (colormap.edited):
-                return
+                data = ET.Element('ColorMaps')
+                items = ET.SubElement(data, 'Colormap')
+                items.set('name', colormap.name)
+                for p in colormap.points:
+                    item = ET.SubElement(items, 'Point')
+                    #data will be saved alphabetically, not in this order
+                    item.set('x', str(p[0]))
+                    item.set('o', str(p[1]))
+                    item.set('r', str(p[2]))
+                    item.set('g', str(p[3]))
+                    item.set('b', str(p[4]))
+
+                xmlData = ET.tostring(data, encoding="unicode")
             else: #colormap is not edited
                 path = os.path.join(path, colormap.name)
                 json_dict = {"url" : colormap.pathToFile}

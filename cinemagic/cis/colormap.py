@@ -28,6 +28,7 @@ class colormap:
         tree = ET.parse(pathToFile)
 
         self.root = tree.getroot()
+        self.__indent(self.root)
 
 #        for cmap in self.root.findall('ColorMap'):
 #            self.name = cmap.get('name')
@@ -40,6 +41,22 @@ class colormap:
             blue  = point.get('b')
             self.points.append((float(value), float(alpha),
                                 float(red), float(green), float(blue)))
+
+    def __indent(self, elem, level=0):
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.__indent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
 
     def get_points(self):
         """Return a list of tuples that define the colormap points

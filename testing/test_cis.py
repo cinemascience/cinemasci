@@ -149,9 +149,9 @@ class TestCIS(unittest.TestCase):
         self.assertTrue(os.path.exists(result_json))
 
         # are the colormaps the same - filecmp does not have option to disregard white space
-        #gold_xml = os.path.join(self.gold_dir, self.result_file, self.xmlColormap)
+        gold_xml = os.path.join(self.gold_dir, self.result_file, self.xmlColormap)
         gold_json = os.path.join(self.gold_dir, self.result_file, self.jsonColormap)
-        #self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
+        self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
         self.assertTrue( filecmp.cmp (result_json, gold_json, shallow=False))
 
     def __check_hdf5_database(self):
