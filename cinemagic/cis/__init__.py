@@ -93,6 +93,20 @@ class cis:
 
         return self.images[name]
 
+    def get_variables(self):
+        """ Return all variables. """
+        for i in self.variables:
+            yield i
+
+    def get_variable(self, name):
+        """ Return a variable. """
+
+        variable = None
+        if name in self.variables:
+            variable = self.variables[name]
+
+        return variable
+
     def get_image(self,name):
         """ Return an image. """
         image = None

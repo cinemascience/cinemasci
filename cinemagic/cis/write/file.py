@@ -23,6 +23,11 @@ class file_writer:
         for i in cis.get_colormaps():
             self.__write_colormap(path, cis.get_colormap(i))
 
+        path = self.__create_toplevel_variable_dir(cis)
+        for i in cis.get_variables():
+            vdata = cis.get_variable(i)
+            self.__write_variable(path, i, vdata)
+
     def __create_toplevel_channel_dir(self, path):
         path = os.path.join( path, "channel" )
         try:
@@ -87,6 +92,15 @@ class file_writer:
 
         return path
 
+    def __create_toplevel_variable_dir(self, cis):
+        path = os.path.join( cis.fname, "variables" )
+        try:
+            os.mkdir(path)
+        except OSError:
+            print("Creation of {} failed".format(path))
+
+        return path
+
     def __create_toplevel_dir(self, cis):
         path = cis.fname
         try:
@@ -142,6 +156,15 @@ class file_writer:
         path = self.__create_channel_dir(path, channel)
         self.__write_channel_metadata(path, channel)
         self.__write_channel_data(path, channel)
+
+    def __write_variable(self, path, variable, vdata):
+        vpath = os.path.join(path, variable + ".json") 
+        with open(vpath, 'w') as f:
+            f.write("{\n")
+            f.write("    \"type\" : \"{}\",\n".format(vdata[0]))
+            f.write("    \"min\"  : \"{}\",\n".format(vdata[1]))
+            f.write("    \"max\"  : \"{}\",\n".format(vdata[2]))
+            f.write("}\n")
 
     def __write_colormap(self, path, colormap):
         if (colormap.typeXML):
