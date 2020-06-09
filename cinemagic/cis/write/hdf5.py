@@ -14,9 +14,9 @@ class hdf5_writer:
             for v in cis.variables:
                 var = vlist.create_group(v)
                 values = cis.variables[v]
-                var.attrs["type"] = values[0] 
-                var.attrs["min"]  = values[1]
-                var.attrs["max"]  = values[2]
+                var.attrs["type"] = values['type'] 
+                var.attrs["min"]  = values['min']
+                var.attrs["max"]  = values['max']
 
             self.write_cis_parameter_table(cis, f)
 

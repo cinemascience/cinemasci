@@ -37,7 +37,7 @@ class TestCIS(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        if True:
+        if False:
             shutil.rmtree(TestCIS.Result_dir)
 
     def __create_test_cis(self, myCIS):
@@ -213,7 +213,7 @@ class TestCIS(unittest.TestCase):
         reader.read()
 
         render = cinemagic.cis.render.render()
-        im = render.render(cis, "0000", ["l000", "l001", "l002"])
+        im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
         result = "testing/scratch/test.png"
         im.save(result)
 

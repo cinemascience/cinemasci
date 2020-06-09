@@ -84,7 +84,7 @@ class cis:
     def add_variable(self, name, type, min, max):
         """ Add a variable to the set of variables. """
         # check for duplicates
-        self.variables[name] = [type, min, max]
+        self.variables[name] = {'type':type, 'min':min, 'max':max}
 
     def add_image(self, name):
         """ Add an image to the set of images in the CIS. """

@@ -4,8 +4,6 @@ import xml.etree.ElementTree as ET
 import json
 
 # TODO: parametertable
-#       variables
-#       colormaps
 
 class file_writer:
     """ A disk file CIS writer. """
@@ -161,9 +159,9 @@ class file_writer:
         vpath = os.path.join(path, variable + ".json") 
         with open(vpath, 'w') as f:
             f.write("{\n")
-            f.write("    \"type\" : \"{}\",\n".format(vdata[0]))
-            f.write("    \"min\"  : \"{}\",\n".format(vdata[1]))
-            f.write("    \"max\"  : \"{}\",\n".format(vdata[2]))
+            f.write("    \"type\" : \"{}\",\n".format(vdata['type']))
+            f.write("    \"min\"  : \"{}\",\n".format(vdata['min']))
+            f.write("    \"max\"  : \"{}\",\n".format(vdata['max']))
             f.write("}\n")
 
     def __write_colormap(self, path, colormap):
