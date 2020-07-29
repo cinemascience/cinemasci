@@ -168,12 +168,10 @@ class cdb:
         if not self.parameter_exists(p):
             self.parameternames.append(p)
             if not self.DBinitialized:
-                print("initializing column {}".format(p))
                 self.con.cursor().execute("CREATE TABLE {} ({} TEXT)".format(self.tablename, p))
                 self.DBinitialized = True
 
             else:
-                print("adding column {}".format(p))
                 self.con.cursor().execute("ALTER TABLE {} ADD {} TEXT".format(self.tablename, p))
 
 
@@ -202,9 +200,7 @@ class cdb:
             self.add_parameter(p)
 
         command = self.generate_insert_command(parameters)
-        print(command)
         self.con.cursor().execute(command)
-        print(pandas.read_sql_query("SELECT * FROM {}".format(self.tablename), self.con))
 
 
 # ------------------------------------------------------------------------------

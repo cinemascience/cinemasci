@@ -1,13 +1,13 @@
 import setuptools
 
 setuptools.setup(
-    name="cinemagic",
+    name="cinesci",
     version="1.0",
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
     description="Tools for the Cinema scientific toolset.",
     url="https://github.com/cinemascience",
-    packages=["cinemagic"],
+    packages=["cinesci"],
     install_requires=[
     ],
     classifiers=[

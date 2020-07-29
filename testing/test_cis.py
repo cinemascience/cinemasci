@@ -1,5 +1,5 @@
 import unittest
-import cinemagic
+import cinesci
 import pandas
 import os
 import numpy
@@ -68,22 +68,22 @@ class TestCIS(unittest.TestCase):
             self.add_test_colormap(myCIS, c)
 
     def test_create_hdf5_database(self):
-        myCIS = cinemagic.cis.cis(self.result_hdf5_fullpath)
+        myCIS = cinesci.cis.cis(self.result_hdf5_fullpath)
         self.__create_test_cis(myCIS)
 
         # write hdf5 format
-        hdf5_writer = cinemagic.cis.write.hdf5.hdf5_writer()
+        hdf5_writer = cinesci.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
 
         # check
         self.__check_hdf5_database()
 
     def test_create_file_database(self):
-        myCIS = cinemagic.cis.cis(self.result_file_fullpath)
+        myCIS = cinesci.cis.cis(self.result_file_fullpath)
         self.__create_test_cis(myCIS)
 
         # write file format
-        file_writer = cinemagic.cis.write.file.file_writer()
+        file_writer = cinesci.cis.write.file.file_writer()
         file_writer.write(myCIS)
 
         # check
@@ -136,8 +136,8 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( os.path.exists(self.result_file_fullpath) )
 
         # is the assets file the same
-        gold = os.path.join(self.gold_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file)
-        result = os.path.join(self.result_file_fullpath, cinemagic.cis.write.file.file_writer.Attribute_file)
+        gold = os.path.join(self.gold_file_fullpath, cinesci.cis.write.file.file_writer.Attribute_file)
+        result = os.path.join(self.result_file_fullpath, cinesci.cis.write.file.file_writer.Attribute_file)
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
@@ -164,9 +164,9 @@ class TestCIS(unittest.TestCase):
     def test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
-        myCIS = cinemagic.cis.cis(self.gold_hdf5_fullpath)
+        myCIS = cinesci.cis.cis(self.gold_hdf5_fullpath)
 
-        hdf5_reader = cinemagic.cis.read.hdf5.Reader()
+        hdf5_reader = cinesci.cis.read.hdf5.Reader()
         hdf5_reader.read(myCIS)
 
         # check values read in
@@ -179,7 +179,7 @@ class TestCIS(unittest.TestCase):
 
     def test_read_colormap_file(self):
         pathToColormap = 'testing/gold/file.cis/colormaps/blue-orange-div.xml'
-        b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
+        b_o_div = cinesci.cis.colormap.colormap(pathToColormap)
 
         # check values read in
         self.assertTrue( b_o_div.pathToFile == 'testing/gold/file.cis/colormaps/blue-orange-div.xml')
@@ -189,7 +189,7 @@ class TestCIS(unittest.TestCase):
 
     def __test_read_colormap_url(self):
         pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
-        b_o_div = cinemagic.cis.colormap.colormap(pathToColormap)
+        b_o_div = cinesci.cis.colormap.colormap(pathToColormap)
         
         # check values read in
         self.assertTrue( b_o_div.pathToFile == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
@@ -199,9 +199,9 @@ class TestCIS(unittest.TestCase):
 
     def test_create_image(self):
         cispath = "testing/gold/file.cis"
-        cis = cinemagic.cis.cis(cispath)
+        cis = cinesci.cis.cis(cispath)
 
-        check = cinemagic.cis.read.file.cisfile(cis)
+        check = cinesci.cis.read.file.cisfile(cis)
         self.assertTrue( check.verify() )
         scratch_dump = "testing/scratch/file.cis.dump"
         gold_dump    = "testing/gold/file.cis.dump"
@@ -209,10 +209,10 @@ class TestCIS(unittest.TestCase):
             check.dump(dumpfile)
         self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
 
-        reader = cinemagic.cis.read.file.reader(cis)
+        reader = cinesci.cis.read.file.reader(cis)
         reader.read()
 
-        render = cinemagic.cis.render.render()
+        render = cinesci.cis.render.render()
         im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
         result = "testing/scratch/test.png"
         im.save(result)
