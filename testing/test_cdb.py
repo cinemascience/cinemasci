@@ -1,24 +1,24 @@
 import unittest
 import cinemagic
 
-class TestCIS(unittest.TestCase):
+class TestCDB(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
-        super(TestCIS, self).__init__(*args, **kwargs)
+        super(TestCDB, self).__init__(*args, **kwargs)
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def test_create_cdb(self):
+    def test_load_cdb(self):
         # test failing to load a cdb that doesn't exist
         cdb_path = "testing/data/not_there.cdb"
         cdb = cinemagic.cdb.cdb(cdb_path)
-        self.assertFalse(cdb.read())
+        self.assertFalse(cdb.read_data_from_file())
 
         # testing a single extract database
         cdb_path = "testing/data/sphere.cdb"
         cdb = cinemagic.cdb.cdb(cdb_path)
-        self.assertTrue(cdb.read())
+        self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
         # testing queries
@@ -40,7 +40,7 @@ class TestCIS(unittest.TestCase):
     def test_null_nan_values(self):
         cdb_path = "testing/data/test_values.cdb"
         cdb = cinemagic.cdb.cdb(cdb_path)
-        self.assertTrue(cdb.read())
+        self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["path"])
 
         # testing queries
@@ -63,7 +63,7 @@ class TestCIS(unittest.TestCase):
         # testing a single extract database
         cdb_path = "testing/data/multiple_artifacts.cdb"
         cdb = cinemagic.cdb.cdb(cdb_path)
-        self.assertTrue(cdb.read())
+        self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
         cdb.set_extract_parameter_names(["FILE2"])
 
@@ -82,3 +82,17 @@ class TestCIS(unittest.TestCase):
         # test a negative query (doesn't exist)
         extract = cdb.get_extracts({"phi": "96", "theta": "0"})
         self.assertEqual(extract, [])
+
+    def test_write(self):
+        cdb_path = "testing/scratch/new.cdb"
+        cdb = cinemagic.cdb.cdb(cdb_path)
+        cdb.initialize()
+
+        entry = {'time': '0.0', 'phi': '0.0', 'theta': '0.0', 'FILE': '0000.png'}
+        cdb.add_entry(entry)
+        entry = {'time': '1.0', 'phi': '10.0', 'theta': '0.0', 'FILE01': '0001.png'}
+        cdb.add_entry(entry)
+        entry = {'time': '1.0', 'FILE': '0002.png'}
+        cdb.add_entry(entry)
+
+        cdb.finalize()
