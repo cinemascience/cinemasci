@@ -1,10 +1,14 @@
 import unittest
+import filecmp
 import cinesci
+import os.path
 
 class TestCDB(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(TestCDB, self).__init__(*args, **kwargs)
+        self.gold_dir    = "testing/gold"
+        self.scratch_dir = "testing/scratch"
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -84,7 +88,9 @@ class TestCDB(unittest.TestCase):
         self.assertEqual(extract, [])
 
     def test_write(self):
-        cdb_path = "testing/scratch/new.cdb"
+        dbname = "test_write.cdb"
+        datafile = "data.csv"
+        cdb_path = os.path.join(self.scratch_dir, dbname) 
         cdb = cinesci.cdb.cdb(cdb_path)
         cdb.initialize()
 
@@ -96,3 +102,5 @@ class TestCDB(unittest.TestCase):
         cdb.add_entry(entry)
 
         cdb.finalize()
+        self.assertTrue(filecmp.cmp(os.path.join(self.gold_dir, dbname, datafile), 
+                os.path.join(cdb_path, datafile)), "data.csv files are not the same")
