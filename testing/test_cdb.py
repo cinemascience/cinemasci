@@ -1,6 +1,6 @@
 import unittest
 import filecmp
-import cinesci
+import cinemas
 import os.path
 
 class TestCDB(unittest.TestCase):
@@ -19,12 +19,12 @@ class TestCDB(unittest.TestCase):
 
         # test failing to load a cdb that doesn't exist
         cdb_path = "testing/data/not_there.cdb"
-        cdb = cinesci.cdb.cdb(cdb_path)
+        cdb = cinemas.cdb.cdb(cdb_path)
         self.assertFalse(cdb.read_data_from_file())
 
         # testing a single extract database
         cdb_path = "testing/data/sphere.cdb"
-        cdb = cinesci.cdb.cdb(cdb_path)
+        cdb = cinemas.cdb.cdb(cdb_path)
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
@@ -48,7 +48,7 @@ class TestCDB(unittest.TestCase):
         """Load a database and test a database with NULL and NaN values
         """
         cdb_path = "testing/data/test_values.cdb"
-        cdb = cinesci.cdb.cdb(cdb_path)
+        cdb = cinemas.cdb.cdb(cdb_path)
         self.assertTrue(cdb.read_data_from_file())
 
         cdb.set_extract_parameter_names(["path"])
@@ -75,7 +75,7 @@ class TestCDB(unittest.TestCase):
 
         # testing a single extract database
         cdb_path = "testing/data/multiple_artifacts.cdb"
-        cdb = cinesci.cdb.cdb(cdb_path)
+        cdb = cinemas.cdb.cdb(cdb_path)
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
         cdb.set_extract_parameter_names(["FILE2"])
@@ -103,7 +103,7 @@ class TestCDB(unittest.TestCase):
         dbname = "test_write.cdb"
         datafile = "data.csv"
         cdb_path = os.path.join(self.scratch_dir, dbname) 
-        cdb = cinesci.cdb.cdb(cdb_path)
+        cdb = cinemas.cdb.cdb(cdb_path)
         cdb.initialize()
 
         cdb.add_entry({'time': '0.0', 'phi': '0.0', 'theta': '0.0', 'FILE': '0000.png'})
