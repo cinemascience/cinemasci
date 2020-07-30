@@ -10,23 +10,23 @@ import sys
 import json
 
 class TestCIS(unittest.TestCase):
-    Result_dir  = 'testing/scratch'
+    gold_dir     = 'testing/gold/cis'
+    scratch_dir  = 'testing/scratch/cis'
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
 
         self.result_hdf5 = 'hdf5.cis'
-        self.result_hdf5_fullpath = os.path.join(TestCIS.Result_dir, self.result_hdf5)
+        self.result_hdf5_fullpath = os.path.join(TestCIS.scratch_dir, self.result_hdf5)
         
         self.result_file = 'file.cis'
-        self.result_file_fullpath = os.path.join(TestCIS.Result_dir, self.result_file)
+        self.result_file_fullpath = os.path.join(TestCIS.scratch_dir, self.result_file)
         
-        self.gold_dir    = 'testing/gold'
         self.gold_hdf5   = self.result_hdf5 
-        self.gold_hdf5_fullpath = os.path.join(self.gold_dir, self.gold_hdf5)
+        self.gold_hdf5_fullpath = os.path.join(TestCIS.gold_dir, self.gold_hdf5)
         
         self.gold_file   = self.result_file
-        self.gold_file_fullpath = os.path.join(self.gold_dir, self.gold_file)
+        self.gold_file_fullpath = os.path.join(TestCIS.gold_dir, self.gold_file)
 
         self.xmlColormap = 'colormaps/blue-orange-div.xml'
         self.jsonColormap = 'colormaps/blue-1.json'
@@ -38,7 +38,7 @@ class TestCIS(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         if False:
-            shutil.rmtree(TestCIS.Result_dir)
+            shutil.rmtree(TestCIS.scratch_dir)
 
     def __create_test_cis(self, myCIS):
         myCIS.set_dims(1024, 768)
@@ -62,8 +62,8 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
-        colormaps = ['testing/gold/file.cis/'+self.xmlColormap,
-                     'testing/gold/file.cis/'+self.jsonColormap]
+        colormaps = [os.path.join(TestCIS.gold_dir, 'file.cis', self.xmlColormap),
+                     os.path.join(TestCIS.gold_dir, 'file.cis', self.jsonColormap)]
         for c in colormaps:
             self.add_test_colormap(myCIS, c)
 
@@ -143,14 +143,14 @@ class TestCIS(unittest.TestCase):
         # TODO check the rest of the data
 
         # check if colormap there
-        result_xml = os.path.join(TestCIS.Result_dir, self.result_file, self.xmlColormap)
-        result_json = os.path.join(TestCIS.Result_dir, self.result_file, self.jsonColormap)
+        result_xml = os.path.join(TestCIS.scratch_dir, self.result_file, self.xmlColormap)
+        result_json = os.path.join(TestCIS.scratch_dir, self.result_file, self.jsonColormap)
         self.assertTrue(os.path.exists(result_xml))
         self.assertTrue(os.path.exists(result_json))
 
         # are the colormaps the same - filecmp does not have option to disregard white space
-        gold_xml = os.path.join(self.gold_dir, self.result_file, self.xmlColormap)
-        gold_json = os.path.join(self.gold_dir, self.result_file, self.jsonColormap)
+        gold_xml = os.path.join(TestCIS.gold_dir, self.result_file, self.xmlColormap)
+        gold_json = os.path.join(TestCIS.gold_dir, self.result_file, self.jsonColormap)
         self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
         self.assertTrue( filecmp.cmp (result_json, gold_json, shallow=False))
 
@@ -178,11 +178,11 @@ class TestCIS(unittest.TestCase):
         # myCIS.debug_print()
 
     def test_read_colormap_file(self):
-        pathToColormap = 'testing/gold/file.cis/colormaps/blue-orange-div.xml'
+        pathToColormap = os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml')
         b_o_div = cinesci.cis.colormap.colormap(pathToColormap)
 
         # check values read in
-        self.assertTrue( b_o_div.pathToFile == 'testing/gold/file.cis/colormaps/blue-orange-div.xml')
+        self.assertTrue( b_o_div.pathToFile == os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
         self.assertTrue( b_o_div.name == 'blue-orange-div')
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
@@ -198,13 +198,14 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def test_create_image(self):
-        cispath = "testing/gold/file.cis"
+        cispath = os.path.join(TestCIS.gold_dir, "file.cis")
         cis = cinesci.cis.cis(cispath)
 
         check = cinesci.cis.read.file.cisfile(cis)
         self.assertTrue( check.verify() )
-        scratch_dump = "testing/scratch/file.cis.dump"
-        gold_dump    = "testing/gold/file.cis.dump"
+        fname = "file.cis.dump"
+        scratch_dump = os.path.join(TestCIS.scratch_dir, fname) 
+        gold_dump    = os.path.join(TestCIS.gold_dir,    fname) 
         with open(scratch_dump, "w") as dumpfile:
             check.dump(dumpfile)
         self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
@@ -212,12 +213,13 @@ class TestCIS(unittest.TestCase):
         reader = cinesci.cis.read.file.reader(cis)
         reader.read()
 
+        iname = "render_image.png"
         render = cinesci.cis.render.render()
         im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
-        result = "testing/scratch/test.png"
+        result = os.path.join(TestCIS.scratch_dir, iname) 
         im.save(result)
 
-        gold = "testing/gold/render_image.png"
+        gold = os.path.join(TestCIS.gold_dir, iname) 
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
 if __name__ == '__main__':

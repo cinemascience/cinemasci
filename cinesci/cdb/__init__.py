@@ -162,7 +162,7 @@ class cdb:
 
         return result
 
-    def add_parameter(self, p):
+    def __add_parameter(self, p):
         """Add a paramter name to the database
         """
         if not self.parameter_exists(p):
@@ -175,7 +175,7 @@ class cdb:
                 self.con.cursor().execute("ALTER TABLE {} ADD {} TEXT".format(self.tablename, p))
 
 
-    def generate_insert_command(self, parameters):
+    def __generate_insert_command(self, parameters):
         command = """INSERT INTO {} (""".format(self.tablename)
 
         for p in parameters:
@@ -197,9 +197,9 @@ class cdb:
         """
 
         for p in parameters:
-            self.add_parameter(p)
+            self.__add_parameter(p)
 
-        command = self.generate_insert_command(parameters)
+        command = self.__generate_insert_command(parameters)
         self.con.cursor().execute(command)
 
 

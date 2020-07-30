@@ -7,13 +7,16 @@ class TestCDB(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(TestCDB, self).__init__(*args, **kwargs)
-        self.gold_dir    = "testing/gold"
-        self.scratch_dir = "testing/scratch"
+        self.gold_dir    = "testing/gold/cdb"
+        self.scratch_dir = "testing/scratch/cdb"
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
     def test_load_cdb(self):
+        """Load a database from disk and check it
+        """
+
         # test failing to load a cdb that doesn't exist
         cdb_path = "testing/data/not_there.cdb"
         cdb = cinesci.cdb.cdb(cdb_path)
@@ -42,9 +45,12 @@ class TestCDB(unittest.TestCase):
         self.assertEqual(extract, [])
 
     def test_null_nan_values(self):
+        """Load a database and test a database with NULL and NaN values
+        """
         cdb_path = "testing/data/test_values.cdb"
         cdb = cinesci.cdb.cdb(cdb_path)
         self.assertTrue(cdb.read_data_from_file())
+
         cdb.set_extract_parameter_names(["path"])
 
         # testing queries
@@ -64,6 +70,9 @@ class TestCDB(unittest.TestCase):
         self.assertEqual(extract, ["testing/data/test_values.cdb/0001/0000"])
 
     def test_multiple_artifacts(self):
+        """Load and test a database with multiple artifacts per parameter list
+        """
+
         # testing a single extract database
         cdb_path = "testing/data/multiple_artifacts.cdb"
         cdb = cinesci.cdb.cdb(cdb_path)
@@ -87,7 +96,10 @@ class TestCDB(unittest.TestCase):
         extract = cdb.get_extracts({"phi": "96", "theta": "0"})
         self.assertEqual(extract, [])
 
-    def test_write(self):
+    def test_write_api(self):
+        """Create a database from scratch, and test its output against a know result
+        """
+
         dbname = "test_write.cdb"
         datafile = "data.csv"
         cdb_path = os.path.join(self.scratch_dir, dbname) 
