@@ -16,13 +16,19 @@ class cdb:
         - Example: `/0/90/temperature`
     """
 
+    Version = "0.5"
+    DataFile = "data.csv"
+    MetaDataDir = ".cinema"
+    MetaDataFile = "cinema.json"
+    CinemaSpecVersion = "1.2"
+
     def __init__(self, path):
         """Cinema Database class constructor
         """
 
         self.tablename = "CINEMA"
         self.path      = path
-        self.datapath  = os.path.join(self.path, "data.csv")
+        self.datapath  = os.path.join(self.path, cdb.DataFile) 
         self.extracts  = {} 
         self.parameternames = []
         self.extractnames   = []
@@ -222,3 +228,22 @@ class cdb:
         """
         db_df = pandas.read_sql_query("SELECT * FROM {}".format(self.tablename), self.con)
         db_df.to_csv(self.datapath, index=False)
+
+        self.__write_cinema_metadata()
+
+    def __write_cinema_metadata(self):
+        mddir = os.path.join(self.path, cdb.MetaDataDir)
+
+        if not os.path.isdir( mddir ):
+            os.mkdir( mddir )
+
+        with open( os.path.join(mddir, cdb.MetaDataFile), "w" ) as cfile:
+            cfile.write("{\n")
+            cfile.write("  \"cinema\": {\n" )
+            cfile.write("    \"specversion\": \"{}\"\n".format(cdb.CinemaSpecVersion))
+            cfile.write("  },\n" )
+            cfile.write("  \"cinemas\": {\n" )
+            cfile.write("    \"version\": \"{}\"\n".format(cdb.Version))
+            cfile.write("  }\n" )
+            cfile.write("}\n")
+
