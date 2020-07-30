@@ -106,10 +106,17 @@ class TestCDB(unittest.TestCase):
         cdb = cinemas.cdb.cdb(cdb_path)
         cdb.initialize()
 
-        cdb.add_entry({'time': '0.0', 'phi': '0.0', 'theta': '0.0', 'FILE': '0000.png'})
-        cdb.add_entry({'time': '1.0', 'phi': '10.0', 'theta': '0.0', 'FILE01': '0001.png'})
-        cdb.add_entry({'time': '1.0', 'FILE': '0002.png'})
+        id = cdb.add_entry({'time': '0.0', 'phi': '0.0', 'theta': '0.0', 'FILE': '0000.png'})
+        id = cdb.add_entry({'time': '1.0', 'phi': '10.0', 'theta': '0.0', 'FILE01': '0001.png'})
+        id = cdb.add_entry({'time': '1.0', 'FILE': '0002.png'})
 
+        cdb.finalize()
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, dbname, datafile), 
+                os.path.join(cdb_path, datafile)), "data.csv files are not the same")
+
+        # delete and compare results to gold
+        dbname = "test_delete.cdb"
+        cdb.delete_entry(id)
         cdb.finalize()
         self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, dbname, datafile), 
                 os.path.join(cdb_path, datafile)), "data.csv files are not the same")

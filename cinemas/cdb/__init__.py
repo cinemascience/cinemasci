@@ -86,7 +86,6 @@ class cdb:
         query = "SELECT {} from {} WHERE ".format(
                     ", ".join(self.extractnames), self.tablename)
         res = ""
-        # print("query: {}".format(query))
         
         path = "/"
         first = True
@@ -105,7 +104,6 @@ class cdb:
             query = query + "{} = \'{}\' ".format(key, value)
             path = path + value  
 
-        # print("extract path: {}".format(path))
         return path, query
 
     def get_extracts(self, parameters):
@@ -200,7 +198,10 @@ class cdb:
             self.__add_parameter(p)
 
         command = self.__generate_insert_command(parameters)
-        self.con.cursor().execute(command)
+        cursor = self.con.cursor()
+        cursor.execute(command)
+
+        return cursor.lastrowid
 
 
 # ------------------------------------------------------------------------------
@@ -209,7 +210,8 @@ class cdb:
     def delete_entry(self, ID):
         """Delete an entry into the database
         """
-        print("Deleting an entry")
+        self.con.cursor().execute("DELETE FROM {} where rowid={}".format(
+                self.tablename, str(ID)))
 
 # ------------------------------------------------------------------------------
 #
