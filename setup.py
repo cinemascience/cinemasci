@@ -1,17 +1,17 @@
 import setuptools
 
 setuptools.setup(
-    name="cinemas",
+    name="cinemasci",
     version="1.0",
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
     description="Tools for the Cinema scientific toolset.",
     url="https://github.com/cinemascience",
-    packages=["cinemas", 
-                "cinemas.cdb", 
-                "cinemas.cis",
-                  "cinemas.cis.read",
-                  "cinemas.cis.write"
+    packages=["cinemasci", 
+                "cinemasci.cdb", 
+                "cinemasci.cis",
+                  "cinemasci.cis.read",
+                  "cinemasci.cis.write"
             ],
     install_requires=[
     ],

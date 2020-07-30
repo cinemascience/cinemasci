@@ -1,5 +1,5 @@
 import unittest
-import cinemas
+import cinemasci
 import pandas
 import os
 import numpy
@@ -68,22 +68,22 @@ class TestCIS(unittest.TestCase):
             self.add_test_colormap(myCIS, c)
 
     def test_create_hdf5_database(self):
-        myCIS = cinemas.cis.cis(self.result_hdf5_fullpath)
+        myCIS = cinemasci.cis.cis(self.result_hdf5_fullpath)
         self.__create_test_cis(myCIS)
 
         # write hdf5 format
-        hdf5_writer = cinemas.cis.write.hdf5.hdf5_writer()
+        hdf5_writer = cinemasci.cis.write.hdf5.hdf5_writer()
         hdf5_writer.write(myCIS)
 
         # check
         self.__check_hdf5_database()
 
     def test_create_file_database(self):
-        myCIS = cinemas.cis.cis(self.result_file_fullpath)
+        myCIS = cinemasci.cis.cis(self.result_file_fullpath)
         self.__create_test_cis(myCIS)
 
         # write file format
-        file_writer = cinemas.cis.write.file.file_writer()
+        file_writer = cinemasci.cis.write.file.file_writer()
         file_writer.write(myCIS)
 
         # check
@@ -136,8 +136,8 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( os.path.exists(self.result_file_fullpath) )
 
         # is the assets file the same
-        gold = os.path.join(self.gold_file_fullpath, cinemas.cis.write.file.file_writer.Attribute_file)
-        result = os.path.join(self.result_file_fullpath, cinemas.cis.write.file.file_writer.Attribute_file)
+        gold = os.path.join(self.gold_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
+        result = os.path.join(self.result_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
@@ -164,9 +164,9 @@ class TestCIS(unittest.TestCase):
     def test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
-        myCIS = cinemas.cis.cis(self.gold_hdf5_fullpath)
+        myCIS = cinemasci.cis.cis(self.gold_hdf5_fullpath)
 
-        hdf5_reader = cinemas.cis.read.hdf5.Reader()
+        hdf5_reader = cinemasci.cis.read.hdf5.Reader()
         hdf5_reader.read(myCIS)
 
         # check values read in
@@ -179,7 +179,7 @@ class TestCIS(unittest.TestCase):
 
     def test_read_colormap_file(self):
         pathToColormap = os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml')
-        b_o_div = cinemas.cis.colormap.colormap(pathToColormap)
+        b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
 
         # check values read in
         self.assertTrue( b_o_div.pathToFile == os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
@@ -189,7 +189,7 @@ class TestCIS(unittest.TestCase):
 
     def __test_read_colormap_url(self):
         pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
-        b_o_div = cinemas.cis.colormap.colormap(pathToColormap)
+        b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
         
         # check values read in
         self.assertTrue( b_o_div.pathToFile == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
@@ -199,9 +199,9 @@ class TestCIS(unittest.TestCase):
 
     def test_create_image(self):
         cispath = os.path.join(TestCIS.gold_dir, "file.cis")
-        cis = cinemas.cis.cis(cispath)
+        cis = cinemasci.cis.cis(cispath)
 
-        check = cinemas.cis.read.file.cisfile(cis)
+        check = cinemasci.cis.read.file.cisfile(cis)
         self.assertTrue( check.verify() )
         fname = "file.cis.dump"
         scratch_dump = os.path.join(TestCIS.scratch_dir, fname) 
@@ -210,11 +210,11 @@ class TestCIS(unittest.TestCase):
             check.dump(dumpfile)
         self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
 
-        reader = cinemas.cis.read.file.reader(cis)
+        reader = cinemasci.cis.read.file.reader(cis)
         reader.read()
 
         iname = "render_image.png"
-        render = cinemas.cis.render.render()
+        render = cinemasci.cis.render.render()
         im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
         result = os.path.join(TestCIS.scratch_dir, iname) 
         im.save(result)

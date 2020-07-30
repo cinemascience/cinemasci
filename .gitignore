@@ -4,4 +4,4 @@ idea
 testing/scratch
 html/
 build/
-cinemas.egg-info/
+*.egg-info/

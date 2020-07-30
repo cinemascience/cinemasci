@@ -242,7 +242,7 @@ class cdb:
             cfile.write("  \"cinema\": {\n" )
             cfile.write("    \"specversion\": \"{}\"\n".format(cdb.CinemaSpecVersion))
             cfile.write("  },\n" )
-            cfile.write("  \"cinemas\": {\n" )
+            cfile.write("  \"cinemasci\": {\n" )
             cfile.write("    \"version\": \"{}\"\n".format(cdb.Version))
             cfile.write("  }\n" )
             cfile.write("}\n")
