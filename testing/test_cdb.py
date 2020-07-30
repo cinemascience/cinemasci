@@ -4,11 +4,11 @@ import cinemas
 import os.path
 
 class TestCDB(unittest.TestCase):
+    gold_dir    = "testing/gold/cdb"
+    scratch_dir = "testing/scratch/cdb"
 
     def __init__(self, *args, **kwargs):
         super(TestCDB, self).__init__(*args, **kwargs)
-        self.gold_dir    = "testing/gold/cdb"
-        self.scratch_dir = "testing/scratch/cdb"
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -102,7 +102,7 @@ class TestCDB(unittest.TestCase):
 
         dbname = "test_write.cdb"
         datafile = "data.csv"
-        cdb_path = os.path.join(self.scratch_dir, dbname) 
+        cdb_path = os.path.join(TestCDB.scratch_dir, dbname) 
         cdb = cinemas.cdb.cdb(cdb_path)
         cdb.initialize()
 
@@ -111,5 +111,5 @@ class TestCDB(unittest.TestCase):
         cdb.add_entry({'time': '1.0', 'FILE': '0002.png'})
 
         cdb.finalize()
-        self.assertTrue(filecmp.cmp(os.path.join(self.gold_dir, dbname, datafile), 
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, dbname, datafile), 
                 os.path.join(cdb_path, datafile)), "data.csv files are not the same")
