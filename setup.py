@@ -7,7 +7,12 @@ setuptools.setup(
     author_email="dhr@lanl.gov",
     description="Tools for the Cinema scientific toolset.",
     url="https://github.com/cinemascience",
-    packages=["cinemas"],
+    packages=["cinemas", 
+                "cinemas.cdb", 
+                "cinemas.cis",
+                  "cinemas.cis.read",
+                  "cinemas.cis.write"
+            ],
     install_requires=[
     ],
     classifiers=[
