@@ -24,7 +24,7 @@ matrix:
 
 # Install dependencies here      
 install:
-        - pip install h5py pandas pillow
+        - pip install sqlite3 xml h5py pandas pillow
 
 # The build step
 script:
