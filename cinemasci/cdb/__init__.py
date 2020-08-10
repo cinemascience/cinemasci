@@ -71,6 +71,18 @@ class cdb:
             self.parameternames.remove(n)
             self.extractnames.append(n)
 
+    def __get_ordered_columns(self):
+        """Get an ordered list of column names. This means:
+        1. parameter names, then
+        2. 'FILE' if it exists, then
+        3. all other names that start with 'FILE'
+        """
+        # move the extract name FILE to the first position, if it exists
+        if 'FILE' in self.extractnames:
+            self.extractnames.remove('FILE')
+            self.extractnames.insert(0, 'FILE')
+        return self.parameternames + self.extractnames
+
     def __get_extract_paths(self, parameters):
         """Get an extract path for a set of parameters
         
@@ -169,8 +181,19 @@ class cdb:
     def __add_parameter(self, p):
         """Add a paramter name to the database
         """
-        if not self.parameter_exists(p):
-            self.parameternames.append(p)
+        updated = False
+        if p.startswith("FILE"):
+            # this is an extract name
+            if not self.extract_parameter_exists(p):
+                self.extractnames.append(p)
+                updated = True
+
+        else:
+            if not self.parameter_exists(p):
+                self.parameternames.append(p)
+                updated = True
+
+        if updated:
             if not self.DBinitialized:
                 self.con.cursor().execute("CREATE TABLE {} ({} TEXT)".format(self.tablename, p))
                 self.DBinitialized = True
@@ -227,7 +250,8 @@ class cdb:
            the overall parameter list
         """
         db_df = pandas.read_sql_query("SELECT * FROM {}".format(self.tablename), self.con)
-        db_df.to_csv(self.datapath, index=False)
+        ordered = self.__get_ordered_columns()
+        db_df[ordered].to_csv(self.datapath, index=False)
 
         self.__write_cinema_metadata()
 

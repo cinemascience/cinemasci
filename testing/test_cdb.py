@@ -2,6 +2,7 @@ import unittest
 import filecmp
 import cinemasci
 import os.path
+import shutil
 
 class TestCDB(unittest.TestCase):
     gold_dir    = "testing/gold/cdb"
@@ -88,9 +89,11 @@ class TestCDB(unittest.TestCase):
 
         # test the same query with parameters in different order
         extract = cdb.get_extracts({"theta": "0", "phi": "36"})
-        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
+        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", 
+                                        "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
         extract = cdb.get_extracts({"phi": "36", "theta": "0"})
-        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
+        self.assertEqual(extract, ["testing/data/multiple_artifacts.cdb/image/36/0.png", 
+                                        "testing/data/multiple_artifacts.cdb/image_02/36/0.png"])
 
         # test a negative query (doesn't exist)
         extract = cdb.get_extracts({"phi": "96", "theta": "0"})
@@ -100,23 +103,35 @@ class TestCDB(unittest.TestCase):
         """Create a database from scratch, and test its output against a know result
         """
 
-        dbname = "test_write.cdb"
+        dbname = "test_write_test.cdb"
         datafile = "data.csv"
         cdb_path = os.path.join(TestCDB.scratch_dir, dbname) 
         cdb = cinemasci.cdb.cdb(cdb_path)
         cdb.initialize()
 
+        # insert entries in an order that tests the cdb's ability to order columns 
+        # as described in the spec
+        id = cdb.add_entry({'FILE02': '0002.png', 'time': '1.0', 'phi': '10.0', 'theta': '0.0'})
         id = cdb.add_entry({'time': '0.0', 'phi': '0.0', 'theta': '0.0', 'FILE': '0000.png'})
         id = cdb.add_entry({'time': '1.0', 'phi': '10.0', 'theta': '0.0', 'FILE01': '0001.png'})
-        id = cdb.add_entry({'time': '1.0', 'FILE': '0002.png'})
+        id = cdb.add_entry({'time': '1.0', 'FILE': '0003.png'})
 
         cdb.finalize()
-        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, dbname, datafile), 
-                os.path.join(cdb_path, datafile)), "data.csv files are not the same")
+        # move the output to a specific name
+        target_name = "test_write_api.cdb"
+        target_path = os.path.join(TestCDB.scratch_dir, target_name)
+        shutil.copytree(cdb_path, target_path)
+        # test the result
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, datafile), 
+                os.path.join(TestCDB.scratch_dir, target_name, datafile)), "data.csv files are not the same")
 
         # delete and compare results to gold
-        dbname = "test_delete.cdb"
         cdb.delete_entry(id)
         cdb.finalize()
-        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, dbname, datafile), 
-                os.path.join(cdb_path, datafile)), "data.csv files are not the same")
+
+        target_name = "test_delete_api.cdb"
+        target_path = os.path.join(TestCDB.scratch_dir, target_name)
+        shutil.copytree(cdb_path, target_path)
+        # test the result
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, datafile), 
+                os.path.join(TestCDB.scratch_dir, target_name, datafile)), "data.csv files are not the same")

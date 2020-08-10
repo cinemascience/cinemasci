@@ -10,14 +10,18 @@ setuptools.setup(
     packages=["cinemasci", 
                 "cinemasci.cdb", 
                 "cinemasci.cis",
-                  "cinemasci.cis.read",
-                  "cinemasci.cis.write"
+                "cinemasci.cis.read",
+                "cinemasci.cis.write"
             ],
     install_requires=[
+        "sqlite3",
+        "pandas"
+        "h5py",
+        "xml"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: BSD",
+        "License :: OSI Approved :: BSD",
         "Operating System :: OS Independent",
     ],
 )
