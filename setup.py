@@ -14,8 +14,7 @@ setuptools.setup(
                 "cinemasci.cis.write"
             ],
     install_requires=[
-        "sqlite3",
-        "pandas"
+        "pandas",
         "h5py",
         "xml"
     ],
