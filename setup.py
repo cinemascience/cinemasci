@@ -15,6 +15,7 @@ setuptools.setup(
             ],
     install_requires=[
         "pandas",
+        "pillow",
         "h5py"
     ],
     classifiers=[
