@@ -15,8 +15,7 @@ setuptools.setup(
             ],
     install_requires=[
         "pandas",
-        "h5py",
-        "xml"
+        "h5py"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
