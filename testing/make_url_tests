@@ -4,6 +4,6 @@ mkdir testing/scratch
 mkdir testing/scratch/url
 
 cp -rf cinemasci testing/scratch/url
-cp -rf data testing/scratch/url/cinemasci/cview
+cp -rf testing/data testing/scratch/url/cinemasci/cview
 cp testing/test-url.html testing/scratch/url
 
