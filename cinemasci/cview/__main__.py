@@ -20,12 +20,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="run a Cinema Viewer")
     parser.add_argument("database", help="database to view") 
-    # parser.add_argument("--viewer", default=None, help="viewer type") 
+    parser.add_argument("--viewer", default=None, help="viewer type") 
     args = parser.parse_args()
 
-    #if args.viewer is None:
-        #args.viewer = "explorer"
+    if args.viewer is None:
+        args.viewer = "explorer"
 
-    # currently only viewer type explorer is supported
-    main( "explorer", args.database) 
+    main( args.viewer, args.database) 
 
