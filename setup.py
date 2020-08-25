@@ -11,7 +11,8 @@ setuptools.setup(
                 "cinemasci.cdb", 
                 "cinemasci.cis",
                 "cinemasci.cis.read",
-                "cinemasci.cis.write"
+                "cinemasci.cis.write",
+                "cinemasci.cview"
             ],
     install_requires=[
         "pandas",
