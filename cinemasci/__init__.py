@@ -2,7 +2,7 @@ from . import cis
 from . import cdb
 from . import cview
 
-Version = "1.0"
+Version = "0.1"
 
 #
 # new factory function
