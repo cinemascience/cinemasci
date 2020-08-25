@@ -6,7 +6,7 @@ def main( database, port, cview_type ):
 
     localhost = "http://127.0.0.1"
 
-    viewer = "cinemasci/cview/{}/cinema_{}.html".format(cview_type, cview_type)
+    viewer = "cinemasci/cview/cinema_{}.html".format(cview_type, cview_type)
     database = database 
 
     Handler   = http.server.SimpleHTTPRequestHandler
