@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    <script src="cinema/view/1.1/js/databases.js"></script>
 <div class="container">
 <header>
     <h1>Cinema:View</h1>
@@ -115,29 +116,32 @@
 
 			// Initialize Dropdown list from JSON
 			var actual_JSON;
-			loadJSON(function(response) 
-			{
-			    // Parse JSON string into object
-			    actual_JSON = JSON.parse(response);
 
-			    var dbs = [];
-			    for (i = 0; i < actual_JSON.length; i++) 
-			    {
-				  	dbs.push( actual_JSON[i].database_name );
-				}
+            databaseListType = db_get_database_list_type( databaseList )
+            if (databaseListType == "json") {
+                loadJSON(function(response) 
+                {
+                    // Parse JSON string into object
+                    actual_JSON = JSON.parse(response);
 
-				var sel = document.getElementById('dbList');
-				for(var i=0; i <actual_JSON.length; i++) {
-				    var opt = document.createElement('option');
-				    opt.innerHTML = dbs[i];
-				    opt.value = i;
-				    sel.appendChild(opt);
-				}
+                    var dbs = [];
+                    for (i = 0; i < actual_JSON.length; i++) 
+                    {
+                        dbs.push( actual_JSON[i].database_name );
+                    }
 
-				// Fill in DB
-				optionSelected();
-			});
+                    var sel = document.getElementById('dbList');
+                    for(var i=0; i <actual_JSON.length; i++) {
+                        var opt = document.createElement('option');
+                        opt.innerHTML = dbs[i];
+                        opt.value = i;
+                        sel.appendChild(opt);
+                    }
 
+                    // Fill in DB
+                    optionSelected();
+                });
+            }
 
 
 			function optionSelected()
