@@ -134,6 +134,6 @@ This would result in multiple extracts matching each path. For example:
 Once it is properly installed **LINK-TBD**, the `cview` package can be used to view Cinema databases, using the following command:
 
 ```
-python3.x -m cinemasci.cview explorer /path/to/database.cdb
+python3.x -m cinemasci.cview --data /path/to/database.cdb --viewer explorer --port 0000
 ```
 
