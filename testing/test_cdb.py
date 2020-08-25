@@ -20,12 +20,12 @@ class TestCDB(unittest.TestCase):
 
         # test failing to load a cdb that doesn't exist
         cdb_path = "testing/data/not_there.cdb"
-        cdb = cinemasci.cdb.cdb(cdb_path)
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
         self.assertFalse(cdb.read_data_from_file())
 
         # testing a single extract database
         cdb_path = "testing/data/sphere.cdb"
-        cdb = cinemasci.cdb.cdb(cdb_path)
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
@@ -49,7 +49,7 @@ class TestCDB(unittest.TestCase):
         """Load a database and test a database with NULL and NaN values
         """
         cdb_path = "testing/data/test_values.cdb"
-        cdb = cinemasci.cdb.cdb(cdb_path)
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
         self.assertTrue(cdb.read_data_from_file())
 
         cdb.set_extract_parameter_names(["path"])
@@ -76,7 +76,7 @@ class TestCDB(unittest.TestCase):
 
         # testing a single extract database
         cdb_path = "testing/data/multiple_artifacts.cdb"
-        cdb = cinemasci.cdb.cdb(cdb_path)
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
         cdb.set_extract_parameter_names(["FILE2"])
@@ -100,13 +100,12 @@ class TestCDB(unittest.TestCase):
         self.assertEqual(extract, [])
 
     def test_write_api(self):
-        """Create a database from scratch, and test its output against a know result
+        """Create a database from scratch, and test its output against a known result
         """
 
         dbname = "test_write_test.cdb"
-        datafile = "data.csv"
         cdb_path = os.path.join(TestCDB.scratch_dir, dbname) 
-        cdb = cinemasci.cdb.cdb(cdb_path)
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
         cdb.initialize()
 
         # insert entries in an order that tests the cdb's ability to order columns 
@@ -116,14 +115,16 @@ class TestCDB(unittest.TestCase):
         id = cdb.add_entry({'time': '1.0', 'phi': '10.0', 'theta': '0.0', 'FILE01': '0001.png'})
         id = cdb.add_entry({'time': '1.0', 'FILE': '0003.png'})
 
+        # write out the cdb
         cdb.finalize()
+
         # move the output to a specific name
         target_name = "test_write_api.cdb"
         target_path = os.path.join(TestCDB.scratch_dir, target_name)
         shutil.copytree(cdb_path, target_path)
         # test the result
-        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, datafile), 
-                os.path.join(TestCDB.scratch_dir, target_name, datafile)), "data.csv files are not the same")
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, cdb.get_data_filename()), 
+                os.path.join(TestCDB.scratch_dir, target_name, cdb.get_data_filename())), "data.csv files are not the same")
 
         # delete and compare results to gold
         cdb.delete_entry(id)
@@ -133,5 +134,5 @@ class TestCDB(unittest.TestCase):
         target_path = os.path.join(TestCDB.scratch_dir, target_name)
         shutil.copytree(cdb_path, target_path)
         # test the result
-        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, datafile), 
-                os.path.join(TestCDB.scratch_dir, target_name, datafile)), "data.csv files are not the same")
+        self.assertTrue(filecmp.cmp(os.path.join(TestCDB.gold_dir, target_name, cdb.get_data_filename()), 
+                os.path.join(TestCDB.scratch_dir, target_name, cdb.get_data_filename())), "data.csv files are not the same")

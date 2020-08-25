@@ -71,6 +71,9 @@ class cdb:
             self.parameternames.remove(n)
             self.extractnames.append(n)
 
+    def get_data_filename(self):
+        return self.DataFile
+
     def __get_ordered_columns(self):
         """Get an ordered list of column names. This means:
         1. parameter names, then
@@ -251,6 +254,7 @@ class cdb:
         """
         db_df = pandas.read_sql_query("SELECT * FROM {}".format(self.tablename), self.con)
         ordered = self.__get_ordered_columns()
+        # write out the csv file
         db_df[ordered].to_csv(self.datapath, index=False)
 
         self.__write_cinema_metadata()

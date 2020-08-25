@@ -9,7 +9,7 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 Tools for reading, writing and manipulating a cinema database
 
-- Current [docs](cdb.md)
+- Current [docs](cinemasci.md)
 
 ### cis
 
