@@ -9,10 +9,12 @@ Version = "1.0"
 #
 # creates new objects for a consistent high level interface
 #
-def new( type, args ):
+def new( vtype, args ):
     result = None
-    if type == "cdb":
+    if vtype == "cdb":
         if "path" in args:
             result = cdb.cdb(args["path"])
+    else:
+        print("ERROR: unsupported viewer type: {}".format(vtype))
 
     return result
