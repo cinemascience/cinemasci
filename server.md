@@ -2,7 +2,7 @@
 
 ## Requirements
 
-1. The Cinema Simple Web Server can serve up a viewer type and one or more cinema databases using python's `-m <module>` capability.
+1. The Cinema Simple Web Server can serve a viewer type and one or more cinema databases using python's `-m <module>` capability.
 1. The server can be started from the command line in any directory
 1. The server can serve Cinema databases that are accessible (through file permissions) to the user, accessed by a relative path 
 1. The server can serve databases that are accessible (through file permissions) to the user, accessed by an absolute path
