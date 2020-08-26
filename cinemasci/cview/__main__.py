@@ -56,24 +56,24 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.log("NORMAL   : {}".format(self.path))
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-def main( database, port, cview_type ):
-
-    localhost = "http://127.0.0.1"
-
-    my_handler = CinemaRequestHandler 
-    with socketserver.TCPServer(("", port), my_handler) as httpd:
-        print("{}:{}/{}?databases={}".format(localhost, port, cview_type, database))
-        httpd.serve_forever()
-
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="run a Cinema Viewer")
-    parser.add_argument("--data", default=None, help="database to view") 
+    parser.add_argument("--data", required=True, default=None, help="database to view") 
+    parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use") 
     parser.add_argument("--port", type=int, default=8000, help="port to use") 
-    parser.add_argument("--viewer", default='explorer', help="viewer type to use") 
-    parser.add_argument("--new", default='explorer', help="viewer type to use") 
+    parser.add_argument("--assetname", default=None, help="asset name to use") 
     args = parser.parse_args()
 
-    # currently only viewer type explorer is supported
-    main( args.data, args.port, args.viewer) 
+    # run
+    localhost = "http://127.0.0.1"
+
+    my_handler = CinemaRequestHandler 
+    with socketserver.TCPServer(("", args.port), my_handler) as httpd:
+        if not args.assetname is None:
+            print("{}:{}/{}?databases={}".format(localhost, args.port, args.viewer, args.data))
+        else:
+            print("{}:{}/{}?databases={}&assetname={}".format(localhost, args.port, args.viewer, args.data, args.assetname))
+        httpd.serve_forever()
+
