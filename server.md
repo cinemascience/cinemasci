@@ -27,13 +27,23 @@ optional arguments:
                         asset name to use
 ```
 
-### Example 
+### Examples
 
-1. Type the following in a shell, and a URL will be printed before the server starts. The shell then runs the server, as shown here:
+When the module is invoked with python, it will print out a URL, then start the server. The user can then paste the URL into a browser. The following examples have been tested in Firefox, Chrome and Safari:
+
 
 ```
+    (cinema explorer, with a single relative database)
     python -m cinemasci.cview --viewer explorer --data data/sphere.cdb --port 8200
     http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb
+
+    (cinema view, with a single relative database)
+    python -m cinemasci.cview --viewer view --data data/sphere.cdb --port 8200
+    http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb
+
+    (cinema view, with two relative databases)
+    python -m cinemasci.cview --viewer view --data data/sedov1.cdb,data/sedov2.cdb --port 8200
+    http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb
 ```
 
 1. Paste the URL printed into a shell into your favorite browser.
