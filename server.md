@@ -38,7 +38,7 @@ When the module is invoked with python, it will print out a URL, then start the 
     http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb
 ```
 <p align="center">
-![explorer](doc/img/explorer.png)
+<img src="doc/img/explorer.png"></img>
 </p>
 
 ```
@@ -47,7 +47,7 @@ When the module is invoked with python, it will print out a URL, then start the 
     http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb
 ```
 <p align="center">
-![view_single](doc/img/view_single.png)
+<img src="doc/img/view_single.png"></img>
 </p>
 
 ```
@@ -56,6 +56,6 @@ When the module is invoked with python, it will print out a URL, then start the 
     http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb
 ```
 <p align="center">
-![view_multiple](doc/img/view_multiple.png)
+<img src="doc/img/view_multiple.png"></img>
 </p>
 
