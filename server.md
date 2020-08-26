@@ -36,16 +36,26 @@ When the module is invoked with python, it will print out a URL, then start the 
     (cinema explorer, with a single relative database)
     python -m cinemasci.cview --viewer explorer --data data/sphere.cdb --port 8200
     http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb
+```
+<p align="center">
+![explorer](doc/img/explorer.png)
+</p>
 
+```
     (cinema view, with a single relative database)
     python -m cinemasci.cview --viewer view --data data/sphere.cdb --port 8200
     http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb
+```
+<p align="center">
+![view_single](doc/img/view_single.png)
+</p>
 
+```
     (cinema view, with two relative databases)
     python -m cinemasci.cview --viewer view --data data/sedov1.cdb,data/sedov2.cdb --port 8200
     http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb
 ```
-
-1. Paste the URL printed into a shell into your favorite browser.
-
+<p align="center">
+![view_multiple](doc/img/view_multiple.png)
+</p>
 
