@@ -3,6 +3,7 @@ import http.server
 import socketserver
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+from os import path
 from os.path import relpath
 from os import getcwd
 from os import access
@@ -39,9 +40,27 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
         # set attributes from a query in the GET URL
         if "databases" in query_components:
             TheDatabase = query_components["databases"][0]
-            if not TheDatabase.startswith("/"):
-                TheDatabase = "/" + TheDatabase
+            # if not TheDatabase.startswith("/"):
+                # TheDatabase = "/" + TheDatabase
             self.log("SET DB   : {}".format(TheDatabase))
+
+        if "viewer" in query_components: 
+            # handle a request for a viewer 
+            viewer = query_components["viewer"][0]
+            if viewer == "explorer": 
+                # handle a request for the Cinema:Explorer viewer
+                self.log("EXPLORER")
+                self.path = CinemaInstallPath + "/cinema_explorer.html" 
+                return http.server.SimpleHTTPRequestHandler.do_GET(self)
+
+            elif viewer == "view": 
+                # handle a request for the Cinema:View viewer
+                self.log("VIEW")
+                self.path = CinemaInstallPath + "/cinema_view.html" 
+                return http.server.SimpleHTTPRequestHandler.do_GET(self)
+
+            else:
+                self.log("VIEWER: -{}-".format(viewer))
 
         if self.path.startswith(TheDatabase):
             # handle requests to the database
@@ -59,18 +78,6 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             else:
                 print("ERROR: cannot access file: {}".format(self.path))
 
-        elif self.path == "/explorer":
-            # handle a request for the Cinema:Explorer viewer
-            self.log("EXPLORER")
-            self.path = CinemaInstallPath + "/cinema_explorer.html" 
-            return http.server.SimpleHTTPRequestHandler.do_GET(self)
-
-        elif self.path == "/view":
-            # handle a request for the Cinema:View viewer
-            self.log("VIEW")
-            self.path = CinemaInstallPath + "/cinema_view.html" 
-            return http.server.SimpleHTTPRequestHandler.do_GET(self)
-
         elif self.path.startswith("/cinema"):
             # handle a requests for sub components of the viewers 
             # NOTE: fragile - requires 'cinema' path be unique
@@ -85,6 +92,9 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.log("NORMAL   : {}".format(self.path))
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
+#
+# main
+#
 if __name__ == "__main__":
     import argparse
 
@@ -98,11 +108,14 @@ if __name__ == "__main__":
     # run
     localhost = "http://127.0.0.1"
 
+    # mypath = path.abspath(__file__)
+    # print(path.dirname(mypath))
+
     my_handler = CinemaRequestHandler 
     with socketserver.TCPServer(("", args.port), my_handler) as httpd:
+        urlstring = "{}:{}/?viewer={}&databases={}".format(localhost, args.port, args.viewer, args.data)
         if not args.assetname is None:
-            print("{}:{}/{}?databases={}".format(localhost, args.port, args.viewer, args.data))
-        else:
-            print("{}:{}/{}?databases={}&assetname={}".format(localhost, args.port, args.viewer, args.data, args.assetname))
+            urlstring = urlstring + "&assetname{}".format(args.assetname)
+        print(urlstring)
         httpd.serve_forever()
 
