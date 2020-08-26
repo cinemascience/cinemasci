@@ -99,10 +99,10 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="run a Cinema Viewer")
-    parser.add_argument("--data", required=True, default=None, help="database to view") 
-    parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use") 
-    parser.add_argument("--port", type=int, default=8000, help="port to use") 
-    parser.add_argument("--assetname", default=None, help="asset name to use") 
+    parser.add_argument("--data", required=True, default=None, help="database to view (required)") 
+    parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use (required)") 
+    parser.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
+    parser.add_argument("--assetname", default=None, help="asset name to use (optional)") 
     args = parser.parse_args()
 
     # run
