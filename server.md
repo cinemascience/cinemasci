@@ -31,7 +31,19 @@ optional arguments:
 
 ### Examples
 
-When the module is invoked with python, it will print out a URL, then start the server. The user can then paste the URL into a browser. The following examples have been tested in Firefox, Chrome and Safari:
+When the module is invoked with python, it will print out a URL, then start the server. The user can then paste the URL into a browser. The following examples have been tested in Firefox, Chrome and Safari.
+
+To perform the tests:
+
+```
+   >./testing/make_url_tests
+   >cd testing/scratch/url
+   >open test-url.html (or other command, per OS)
+   >python -m cinemasci.cview --viewer explorer --data data/sphere.cdb --port 8200
+    http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb
+
+    (now, click the links in the browser that shows the test-url.html page)
+```
 
 
 ```
