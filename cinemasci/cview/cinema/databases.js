@@ -44,15 +44,18 @@ function db_get_file_extension(filename)
 //
 function db_create_view_database_list( dbstring ) {
     dbs = dbstring.split(",")
-    json_string = `[`
+    cdbname = db_get_file_name(dbs[0])
+    json_string = `[{ "database_name": "${cdbname}", "datasets": [ `
+
     dbs.forEach(function (item) {
         cdbname = db_get_file_name(item)
-        json_string += `{ "database_name": "${cdbname}", "datasets": [ { "name" : "${cdbname}", "location" : "${item}" }]},`
+        json_string += `{ "name" : "${cdbname}", "location" : "${item}" },`
     })
+
     // remove the last comma
     json_string = json_string.substring(0, json_string.length - 1);
     // close the string
-    json_string += "]"
+    json_string += "]}]"
     return JSON.parse( json_string )
 }
 
