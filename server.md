@@ -29,7 +29,7 @@ optional arguments:
 
 ### Example 
 
-1. Type the following in a shell:
+1. Type the following in a shell, and a URL will be printed before the server starts. The shell then runs the server, as shown here:
 
 ```
     python -m cinemasci.cview --viewer explorer --data data/sphere.cdb --port 8200
