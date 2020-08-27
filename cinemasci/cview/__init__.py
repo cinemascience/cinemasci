@@ -27,6 +27,7 @@ def get_relative_install_path( initpath ):
 
     result = path.join(CinemaInstallPath, initpath.strip("/"))
     result = relpath(result, getcwd())
+    print("REL IN PATH: {}".format(result))
     return result
 
 #
@@ -107,6 +108,7 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
 def run_cinema_server( viewer, data, port, assetname=None):
     localhost = "http://127.0.0.1"
 
+    set_install_path()
     my_handler = CinemaRequestHandler 
     with socketserver.TCPServer(("", port), my_handler) as httpd:
         urlstring = "{}:{}/?viewer={}&databases={}".format(localhost, port, viewer, data)
