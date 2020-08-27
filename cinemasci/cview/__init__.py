@@ -8,13 +8,26 @@ from os.path import relpath
 from os import getcwd
 from os import access
 from os import R_OK
+import pathlib
 
 #
-# global datbase - can't seem to add an instance variable to the
+# global variables - can't seem to add an instance variable to the
 # subclass of SimpleHTTPRequestHandler
 #
 TheDatabase = "CINEMAJUNK" 
-CinemaInstallPath = "cinemasci/cview"
+CinemaInstallPath = "CINEMAJUNK"
+
+def set_install_path():
+    global CinemaInstallPath
+
+    CinemaInstallPath = str(pathlib.Path(__file__).parent.absolute())
+
+def get_relative_install_path( initpath ):
+    global CinemaInstallPath 
+
+    result = path.join(CinemaInstallPath, initpath.strip("/"))
+    result = relpath(result, getcwd())
+    return result
 
 #
 # CinemaReqestHandler
@@ -29,7 +42,6 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         global TheDatabase
-        global CinemaInstallPath
 
         self.log("PATH ORIG: {}".format(self.path))
         query_components = parse_qs(urlparse(self.path).query)
@@ -50,13 +62,13 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             if viewer == "explorer": 
                 # handle a request for the Cinema:Explorer viewer
                 self.log("EXPLORER")
-                self.path = CinemaInstallPath + "/cinema_explorer.html" 
+                self.path = get_relative_install_path("/cinema_explorer.html")
                 return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
             elif viewer == "view": 
                 # handle a request for the Cinema:View viewer
                 self.log("VIEW")
-                self.path = CinemaInstallPath + "/cinema_view.html" 
+                self.path = get_relative_install_path("/cinema_view.html")
                 return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
             else:
@@ -83,7 +95,7 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             # NOTE: fragile - requires 'cinema' path be unique
 
             self.log("CINEMA   : {}".format(self.path))
-            self.path = CinemaInstallPath + self.path
+            self.path = get_relative_install_path(self.path)
             self.log("        {}".format(self.path))
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
