@@ -1,9 +1,19 @@
 #!/bin/bash
 
-mkdir testing/scratch
-mkdir testing/scratch/url
+WKDIR=testing/scratch/url
 
-cp -rf cinemasci testing/scratch/url
-cp -rf testing/data testing/scratch/url
-cp testing/test-url.html testing/scratch/url
+echo "Creating temporary work area at $WKDIR" 
+echo ""
+echo "To use:"
+echo "  cd $WKDIR"
+echo "  open test-url.html"
+echo "  python -m cinemasci.cview --port 8200 --viewer view --data data/sphere.cdb"
+echo ""
+
+mkdir testing/scratch > /dev/null 2>&1
+mkdir  $WKDIR > /dev/null 2>&1
+
+cp -rf cinemasci $WKDIR
+cp -rf testing/data $WKDIR 
+cp testing/test-url.html $WKDIR 
 
