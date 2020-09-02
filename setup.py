@@ -19,7 +19,8 @@ setuptools.setup(
         "pandas",
         "pillow",
         "h5py",
-        "ipython notebook"
+        "jupyterlab",
+        "ipywidgets"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
