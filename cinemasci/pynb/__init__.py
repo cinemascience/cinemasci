@@ -1,6 +1,7 @@
 import csv
 import ipywidgets
 import os
+from IPython.display import display
 
 class CinemaViewer():
 
