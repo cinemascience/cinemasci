@@ -1,6 +1,7 @@
 from . import cis
 from . import cdb
 from . import cview
+from . import pynb
 
 Version = "0.1"
 
