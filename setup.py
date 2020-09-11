@@ -15,6 +15,7 @@ setuptools.setup(
                 "cinemasci.cview"
             ],
     install_requires=[
+        "numpy",
         "pandas",
         "pillow",
         "h5py"
