@@ -188,11 +188,11 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def __test_read_colormap_url(self):
-        pathToColormap = 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml'
+        pathToColormap = 'https://raw.githubusercontent.com/cinemascience/cinemasci/master/testing/gold/cis/file.cis/colormaps/blue-orange-div.xml'
         b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
         
         # check values read in
-        self.assertTrue( b_o_div.pathToFile == 'https://sciviscolor.org/wp-content/uploads/sites/14/2017/09/blue-orange-div.xml')
+        self.assertTrue( b_o_div.pathToFile == pathToColormap )
         self.assertTrue( b_o_div.name == 'blue-orange-div')
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
