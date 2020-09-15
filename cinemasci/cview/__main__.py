@@ -1,4 +1,3 @@
-import cinemasci
 import http.server
 import socketserver
 from urllib.parse import urlparse
@@ -8,6 +7,8 @@ from os.path import relpath
 from os import getcwd
 from os import access
 from os import R_OK
+
+from . import run_cinema_server
 
 if __name__ == "__main__":
     import argparse
@@ -19,4 +20,4 @@ if __name__ == "__main__":
     parser.add_argument("--assetname", default=None, help="asset name to use (optional)") 
     args = parser.parse_args()
 
-    cinemasci.cview.run_cinema_server(args.viewer, args.data, args.port, args.assetname)
+    run_cinema_server(args.viewer, args.data, args.port, args.assetname)

@@ -1,5 +1,5 @@
 import unittest
-import cinemasci
+import cinemasci.cis
 import pandas
 import os
 import numpy
