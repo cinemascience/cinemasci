@@ -12,12 +12,15 @@ setuptools.setup(
                 "cinemasci.cis",
                 "cinemasci.cis.read",
                 "cinemasci.cis.write",
-                "cinemasci.cview"
+                "cinemasci.cview",
+                "cinemasci.pynb"
             ],
     install_requires=[
         "pandas",
         "pillow",
-        "h5py"
+        "h5py",
+        "jupyterlab",
+        "ipywidgets"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
