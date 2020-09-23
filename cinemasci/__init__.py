@@ -1,7 +1,4 @@
-from . import cis
-from . import cdb
-from . import cview
-from . import pynb
+__all__ = ["cis", "cdb", "cview", "pynb"]
 
 Version = "0.1"
 
@@ -14,6 +11,7 @@ def new( vtype, args ):
     result = None
     if vtype == "cdb":
         if "path" in args:
+            from . import cdb
             result = cdb.cdb(args["path"])
     else:
         print("ERROR: unsupported viewer type: {}".format(vtype))

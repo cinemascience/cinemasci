@@ -1,4 +1,3 @@
-import cinemasci
 import http.server
 import socketserver
 from urllib.parse import urlparse
