@@ -14,6 +14,15 @@ class TestCDB(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
+    def test_db_create_options(self):
+        """Test creating a database when the directory exists
+        """
+        cdb_path = os.path.join(TestCDB.scratch_dir, "test_create_directory") 
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
+        self.assertTrue(cdb.initialize())
+        self.assertFalse(cdb.initialize())
+        self.assertTrue(cdb.initialize(dirExistCheck=False))
+
     def test_load_cdb(self):
         """Load a database from disk and check it
         """
