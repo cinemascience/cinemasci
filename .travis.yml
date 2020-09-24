@@ -29,4 +29,3 @@ install:
 script:
         - pip install .
         - python -m unittest discover testing
-        - doxygen ./doxygen

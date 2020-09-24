@@ -1,5 +1,5 @@
 import unittest
-import cinemasci
+import cinemasci.pynb
 
 class TestPYNB(unittest.TestCase):
 
