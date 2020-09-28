@@ -8,12 +8,12 @@ class TestPYNB(unittest.TestCase):
 
     def test_hello(self):
         viewer = cinemasci.pynb.CinemaViewer()
-#        viewer.setLayoutToHorizontal()
-        
+
     def test_UIFunctions(self):
         cdb_path = "testing/data/sphere.cdb"
         viewer = cinemasci.pynb.CinemaViewer()
         viewer.load(cdb_path)
+        viewer.setLayoutToHorizontal()
         
         #check getUINames
         names = viewer.getUINames()
