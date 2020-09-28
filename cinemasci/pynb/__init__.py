@@ -31,13 +31,16 @@ class CinemaViewer():
         self.parameterKey2filepathMap = dict() # the key-value map that maps parameter combinations to filepaths
 
     def setLayoutToVertical(self):
-        self.layout = CinemaViewer.LayoutVertical 
-
+        self.layout = CinemaViewer.LayoutVertical
+        self.updateImages('',True)
+        
     def setLayoutToHorizontal(self):
-        self.layout = CinemaViewer.LayoutHorizontal 
-
-    def setHeight(self, height):
-        self.height = height
+        self.layout = CinemaViewer.LayoutHorizontal
+        self.updateImages('',True)
+        
+#    def setHeight(self, height):
+#        self.height = height
+#        self.updateImages('')
 
     def displayControls(self):
         with self.parameterValuesOutput:
