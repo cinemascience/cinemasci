@@ -5,7 +5,7 @@ WKDIR=testing/scratch/url
 echo "Creating temporary work area at $WKDIR" 
 echo ""
 echo "To use:"
-echo "  cd $WKDIR"
+echo "  pushd $WKDIR"
 echo "  open test-url.html"
 echo "  python -m cinemasci.server --port 8200 --viewer view --data data/sphere.cdb"
 echo ""
