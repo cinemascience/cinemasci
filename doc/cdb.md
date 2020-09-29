@@ -1,17 +1,4 @@
-# Python modules for Cinema Database
-
-## Creating new Cinema objects
-
-All Cinema objects are created with the high level `new()` command, which takes a `typename` and `dict of args` as arguments:
-
-```
-import cinemasci
-
-args = {"path": "path/to/database.cdb"}
-my_database = cinemasci.new("cdb", args)
-```
-
-## Cinema Database Object (cdb)
+# Cinema Database Python module (CDB)
 
 The Cinema Database Object reads and writes Cinema specification-compliant databases. See the [current specification](https://github.com/cinemascience/cinema/blob/master/specs/dietrich/01/cinema_specD_v012.pdf) for details.
 

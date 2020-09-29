@@ -17,6 +17,16 @@ A set of python tools for reading, writing and viewing Cinema databases
 - [server](doc/server.md): A simple server to help view databases, using the `viewers` submodule.
 - [viewers](https://github.com/cinemascience/cinema_viewers): Viewers (submodule)
 
+## Creating new Cinema objects
+
+All Cinema objects are created with the high level `new()` command, which takes a `typename` and `dict of args` as arguments:
+
+```
+import cinemasci
+
+args = {"path": "path/to/database.cdb"}
+my_database = cinemasci.new("cdb", args)
+
 ## Unit testing
 
 All code shall be committed with unit testing, using python's `unittest` module. All tests shall be run on code commit, with the following command, which will automatically run all files in the testing directory:
