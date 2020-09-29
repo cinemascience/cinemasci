@@ -22,7 +22,7 @@ def set_install_path():
     CinemaInstallPath = str(pathlib.Path(__file__).parent.absolute())
     # edit the path to get the correct installation path
     CinemaInstallPath = CinemaInstallPath.strip("/server")
-    CinemaInstallPath = "/" + CinemaInstallPath + "/cview"
+    CinemaInstallPath = "/" + CinemaInstallPath + "/viewers"
     print("CinemaInstallPath: {}".format(CinemaInstallPath))
 
 def get_relative_install_path( initpath ):
@@ -66,13 +66,13 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             if viewer == "explorer": 
                 # handle a request for the Cinema:Explorer viewer
                 self.log("EXPLORER")
-                self.path = get_relative_install_path("../cview/cinema_explorer.html")
+                self.path = get_relative_install_path("../viewers/cinema_explorer.html")
                 return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
             elif viewer == "view": 
                 # handle a request for the Cinema:View viewer
                 self.log("VIEW")
-                self.path = get_relative_install_path("../cview/cinema_view.html")
+                self.path = get_relative_install_path("../viewers/cinema_view.html")
                 return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
             else:
