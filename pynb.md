@@ -1,4 +1,4 @@
-# Jupyter Notebook modules for Cinema
+# Cinema Jupyter Notebook module
 
 This is a basic Jupyter Notebook Viewer for the Cinema framework to view one or more Cinema databases. These modules allow users to load and view fully populated Cinema image databases of most common format images within the Jupyter Notebook interface. 
 

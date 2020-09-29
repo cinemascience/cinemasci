@@ -1,4 +1,4 @@
-# Cinema simple web server design, v1.0
+# Cinema simple web server
 
 This is a basic server requested by Kitware, Inc. for inclusion in the next release of ParaView. The module will enable users to view Cinema databases with pvpython, using python's module execution option.
 
