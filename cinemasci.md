@@ -3,7 +3,7 @@
 This includes instructions for the following packages and objects:
 
 - Cinema Database object
-- CVIEW package (viewing a cinema database)
+- `viewers` package (viewing a cinema database)
 
 ## Creating new Cinema objects
 
