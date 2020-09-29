@@ -11,15 +11,11 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 ## tools
 
-### cdb
-
-Tools for reading, writing and manipulating a cinema database
-
-- Current [docs](cinemasci.md)
-
-### cis
-
-Tools for reading, writing and manipulating *composable image sets*
+- [cdb](cinemasci.md): Tools for reading, writing and manipulating a cinema database
+- [cis](cinemasci.md): Tools for reading, writing and manipulating *composable image sets*
+- [pynb](pynb.md):
+- [server](server.md):
+- [viewers](https://github.com/cinemascience/cinema_viewers): Viewers (submodule)
 
 ## Unit testing
 
