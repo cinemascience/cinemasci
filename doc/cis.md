@@ -1,3 +1,3 @@
-# Cinema Image Sets 
+# Cinema Image Sets (CIS)
 
 Documentation for **Cinema Image Sets**
