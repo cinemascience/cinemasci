@@ -11,8 +11,8 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 ## tools
 
-- [cdb](cinemasci.md): Tools for reading, writing and manipulating a cinema database.
-- [cis](cinemasci.md): Tools for reading, writing and manipulating *composable image sets*.
+- [cdb](cdb.md): Tools for reading, writing and manipulating a cinema database.
+- [cis](cis.md): Tools for reading, writing and manipulating *composable image sets*.
 - [pynb](pynb.md): A Jupyter notebook viewer for simple databases.
 - [server](server.md): A simple server to help view databases, using the `viewers` submodule.
 - [viewers](https://github.com/cinemascience/cinema_viewers): Viewers (submodule)
