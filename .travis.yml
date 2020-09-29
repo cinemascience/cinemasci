@@ -10,7 +10,7 @@ notifications:
 # Get the repository
 git:
   # Depth of commits to grab. Less is faster
-  depth: 2
+  depth: 1
 
 # Matrix of operating systems and dependencies
 matrix:
