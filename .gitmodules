@@ -1,0 +1,3 @@
+[submodule "cinemasci/viewers"]
+	path = cinemasci/viewers
+	url = https://github.com/cinemascience/cinema_viewers.git

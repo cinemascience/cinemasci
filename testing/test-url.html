@@ -3,7 +3,7 @@
 <h3>Starting the Cinema Server</h3>
 
 <pre><code>
-        python -m cinemasci.cview --viewer explorer --data data/sphere.cdb --port 8200
+        python -m cinemasci.server --viewer explorer --data data/sphere.cdb --port 8200
 </code></pre>
 
 <h3>Tests</h3>
@@ -23,6 +23,13 @@
     <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=../../data/sphere.cdb">
             http://127.0.0.1:8200/?viewer=explorer&databases=../../data/sphere.cdb</a></td>
 </tr>
+<tr>
+    <td>Testing ParaView database</td>
+    <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=data/test_paraview.cdb">
+            http://127.0.0.1:8200/?viewer=explorer&databases=data/test_paraview.cdb</a></td>
+</tr>
+</table>
+<table>
 <tr>
     <td><strong>View</strong></td>
     <td></td>
@@ -46,5 +53,10 @@
     <td>Multiple databases, some relative paths</td>
     <td><a href="http://127.0.0.1:8200/?viewer=view&databases=../../data/sedov1.cdb,data/sedov2.cdb">
             http://127.0.0.1:8200/?viewer=view&databases=../../data/sedov1.cdb,data/sedov2.cdb</a></td>
+</tr>
+<tr>
+    <td>Testing ParaView database</td>
+    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=data/test_paraview.cdb&assetname=FILE_png">
+            http://127.0.0.1:8200/?viewer=view&databases=data/test_paraview.cdb&assetname=FILE_png</a></td>
 </tr>
 </table>

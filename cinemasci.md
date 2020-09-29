@@ -129,11 +129,11 @@ This would result in multiple extracts matching each path. For example:
 
 
 
-## CVIEW package
+## SERVER package
 
-Once it is properly installed **LINK-TBD**, the `cview` package can be used to view Cinema databases, using the following command:
+Once it is properly installed **LINK-TBD**, the `server` package can be used to view Cinema databases, using the following command:
 
 ```
-python3.x -m cinemasci.cview --data /path/to/database.cdb --viewer explorer --port 0000
+python3.x -m cinemasci.server --data /path/to/database.cdb --viewer explorer --port 0000
 ```
 
