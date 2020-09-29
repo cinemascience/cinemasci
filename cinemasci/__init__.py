@@ -1,4 +1,4 @@
-__all__ = ["cis", "cdb", "cview", "pynb"]
+__all__ = ["cis", "cdb", "viewers", "pynb"]
 
 Version = "0.1"
 

@@ -12,7 +12,7 @@ setuptools.setup(
                 "cinemasci.cis",
                 "cinemasci.cis.read",
                 "cinemasci.cis.write",
-                "cinemasci.cview",
+                "cinemasci.viewers",
                 "cinemasci.pynb",
                 "cinemasci.server"
             ],
