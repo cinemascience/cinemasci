@@ -26,6 +26,7 @@ import cinemasci
 
 args = {"path": "path/to/database.cdb"}
 my_database = cinemasci.new("cdb", args)
+```
 
 ## Unit testing
 
