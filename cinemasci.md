@@ -1,9 +1,4 @@
-# Python modules for Cinema
-
-This includes instructions for the following packages and objects:
-
-- Cinema Database object
-- `viewers` package (viewing a cinema database)
+# Python modules for Cinema Database
 
 ## Creating new Cinema objects
 
@@ -126,14 +121,3 @@ This would result in multiple extracts matching each path. For example:
   /0        000.png,001.png
   /90       002.png,003.png
 ```
-
-
-
-## SERVER package
-
-Once it is properly installed **LINK-TBD**, the `server` package can be used to view Cinema databases, using the following command:
-
-```
-python3.x -m cinemasci.server --data /path/to/database.cdb --viewer explorer --port 0000
-```
-
