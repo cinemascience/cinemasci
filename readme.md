@@ -9,7 +9,7 @@ A set of python tools for reading, writing and viewing Cinema databases
     pip install cinemasci
 ```
 
-## tools
+## `cinemasci` submodules
 
 - [cdb](cdb.md): Tools for reading, writing and manipulating a cinema database.
 - [cis](cis.md): Tools for reading, writing and manipulating *composable image sets*.
