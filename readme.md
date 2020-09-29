@@ -3,6 +3,12 @@
 
 A set of python tools for reading, writing and viewing Cinema databases
 
+## installation
+
+```
+    pip install cinemasci
+```
+
 ## tools
 
 ### cdb
