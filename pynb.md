@@ -43,6 +43,11 @@ viewer.setLayoutToHorizontal()
 viewer.setLayoutToVertical()
 ```
 
+<p align="center">
+<img src="doc/img/jnb.png"></img>
+</p>
+
+
 #### UI manipulation
 
 Manipulate UI-based controls. UI-based variables are those that deal purely with setting of the user interface, such as 'image size' and not with parameter of the Cinema database.
