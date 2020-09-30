@@ -5,9 +5,13 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 ## installation
 
+The latest release of this module is available on `pypi.org`, and you can install it in the normal way, with `pip`:
+
 ```
     pip install cinemasci
 ```
+
+You can also install it locally from source using the `setup.py` file.
 
 ## `cinemasci` submodules
 
@@ -19,13 +23,12 @@ A set of python tools for reading, writing and viewing Cinema databases
 
 ## Creating new Cinema objects
 
-All Cinema objects are created with the high level `new()` command, which takes a `typename` and `dict of args` as arguments:
+High level Cinema objects can be created with the high level `new()` command, which takes a `typename` and `dict of args` as arguments:
 
 ```
 import cinemasci
 
-args = {"path": "path/to/database.cdb"}
-my_database = cinemasci.new("cdb", args)
+my_database = cinemasci.new("cdb", {"path": "path/to/database.cdb"})
 ```
 
 ## Unit testing
