@@ -3,6 +3,19 @@
 
 A set of python tools for reading, writing and viewing Cinema databases
 
+## cloning this repository
+
+```
+    git clone --recurse-dubmotlues https://github.com/cinemascience/cinemasci.git
+
+    or 
+
+    git clone https://github.com/cinemascience/cinemasci.git
+    cd cinemasci
+    git submodule init
+    git submodule update
+```
+
 ## installation
 
 The latest release of this module is available on `pypi.org`, and you can install it in the normal way, with `pip`:
