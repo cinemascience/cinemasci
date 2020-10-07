@@ -6,7 +6,7 @@ A set of python tools for reading, writing and viewing Cinema databases
 ## cloning this repository
 
 ```
-    git clone --recurse-dubmotlues https://github.com/cinemascience/cinemasci.git
+    git clone --recurse-submodules https://github.com/cinemascience/cinemasci.git
 
     or 
 
