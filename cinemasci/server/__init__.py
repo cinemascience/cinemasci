@@ -69,9 +69,10 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
             TheDatabase = query_components["databases"][0]
             self.log("SET DB   : {}".format(TheDatabase))
 
-            if not path.isdir(TheDatabase):
-                self.path = ServerInstallPath + "/error_no-database.html"
-                return http.server.SimpleHTTPRequestHandler.do_GET(self)
+            for p in TheDatabase.split(","):
+                if not path.isdir(p):
+                    self.path = ServerInstallPath + "/error_no-database.html"
+                    return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
         if "viewer" in query_components: 
             # handle a request for a viewer 
