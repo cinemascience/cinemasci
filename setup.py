@@ -7,6 +7,7 @@ setuptools.setup(
     author_email="dhr@lanl.gov",
     description="Tools for the Cinema scientific toolset.",
     url="https://github.com/cinemascience",
+    include_package_data=True,
     packages=["cinemasci", 
                 "cinemasci.cdb", 
                 "cinemasci.cis",

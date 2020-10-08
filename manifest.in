@@ -1,0 +1,3 @@
+include cinemasci/viewers/cinema_*.html
+include cinemasci/server/*.html
+graft cinemasci/viewers/cinema
