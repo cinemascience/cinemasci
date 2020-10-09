@@ -49,7 +49,7 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
         return path 
 
     def log(self, message):
-        if True:
+        if False:
             print(message)
 
     def do_GET(self):
