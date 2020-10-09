@@ -49,7 +49,7 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
         return path 
 
     def log(self, message):
-        if False:
+        if True:
             print(message)
 
     def do_GET(self):
@@ -57,14 +57,15 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
         global CinemaInstallPath
         global ServerInstallPath
 
+        self.log(" ")
         self.log("PATH ORIG: {}".format(self.path))
         query_components = parse_qs(urlparse(self.path).query)
         self.log("QUERY    : {}".format(query_components))
         self.path = self.path.split("?")[0]
         self.log("PATH     : {}".format(self.path))
-        self.log("DBPATH   : {}".format(TheDatabase))
+        # self.log("DBPATH   : {}".format(TheDatabase))
 
-        # set attributes from a query in the GET URL
+        # check that the databases are there 
         if "databases" in query_components:
             TheDatabase = query_components["databases"][0]
             self.log("SET DB   : {}".format(TheDatabase))
@@ -96,29 +97,9 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
                 return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
             else:
-                self.log("VIEWER: -{}-".format(viewer))
+                self.log("VIEWER: {}".format(viewer))
 
-        if self.path.startswith("/" + TheDatabase):
-            # handle requests to the database
-
-            # remap absolute paths
-            if False:
-                self.log("DATABASE QUERY : {}".format(self.path))
-                if TheDatabase.startswith("/"):
-                    self.log("DB QUERY : {}".format(self.path))
-                    self.path = relpath(self.path, getcwd())
-                    self.log("CWD      : {}".format(getcwd()))
-                    self.log("REL DB   : {}".format(self.path))
-
-            self.path = self.path.strip("/")
-
-            if access(self.path, R_OK):
-                self.log("ACCESSING: {}".format(self.path))
-                return http.server.SimpleHTTPRequestHandler.do_GET(self)
-            else:
-                print("ERROR: cannot access file: {}".format(self.path))
-
-        elif self.path.startswith("/cinema"):
+        if self.path.startswith("/cinema/"):
             # handle a requests for sub components of the viewers 
             # NOTE: fragile - requires 'cinema' path be unique
 
@@ -130,6 +111,8 @@ class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
         else:
             # everything else
             self.log("NORMAL   : {}".format(self.path))
+            self.path = relpath(self.path.strip("/"), getcwd())
+            # self.log("UPDATED  : {}".format(self.path))
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 def run_cinema_server( viewer, data, port, assetname=None):
