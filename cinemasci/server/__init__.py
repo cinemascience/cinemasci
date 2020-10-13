@@ -44,12 +44,28 @@ def get_relative_install_path( initpath ):
 #
 class CinemaRequestHandler(http.server.SimpleHTTPRequestHandler):
 
+    @property
+    def assetname(self):
+        return self._assetname
+
+    @assetname.setter
+    def assetname(self, value):
+        self._assetname = value
+
+    @property
+    def viewer(self):
+        return self._viewer
+
+    @viewer.setter
+    def viewer(self, value):
+        self._viewer = value
+
     def translate_path(self, path ):
         print("translate_path: {}".format(path))
         return path 
 
     def log(self, message):
-        if False:
+        if True:
             print(message)
 
     def do_GET(self):
@@ -119,11 +135,12 @@ def run_cinema_server( viewer, data, port, assetname=None):
     localhost = "http://127.0.0.1"
 
     set_install_path()
-    my_handler = CinemaRequestHandler 
-    with socketserver.TCPServer(("", port), my_handler) as httpd:
-        urlstring = "{}:{}/?viewer={}&databases={}".format(localhost, port, viewer, data)
-        if not assetname is None:
-            urlstring = urlstring + "&assetname{}".format(assetname)
+    cin_handler = CinemaRequestHandler
+    cin_handler.base_path = data
+    cin_handler.viewer    = viewer
+    cin_handler.assetname = assetname
+    with socketserver.TCPServer(("", port), cin_handler) as httpd:
+        urlstring = "{}:{}".format(localhost, port)
         print(urlstring)
         httpd.serve_forever()
 
