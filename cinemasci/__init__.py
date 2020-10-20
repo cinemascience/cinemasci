@@ -1,6 +1,6 @@
 __all__ = ["cis", "cdb", "viewers", "pynb"]
 
-Version = "1.0"
+Version = "1.1"
 
 #
 # new factory function
