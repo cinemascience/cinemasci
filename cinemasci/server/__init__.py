@@ -196,7 +196,7 @@ def run_cinema_server( viewer, data, port, assetname="FILE"):
     set_install_path()
     cin_handler = CinemaSimpleRequestHandler
     cin_handler.base_path = cinemadir
-    cin_handler.verbose   = True
+    cin_handler.verbose   = False
     cin_handler.viewer    = viewer
     cin_handler.assetname = assetname
     with socketserver.TCPServer(("", port), cin_handler) as httpd:
