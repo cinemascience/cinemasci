@@ -2,93 +2,136 @@
 
 <h3>Starting the Cinema Server</h3>
 
-<pre><code>
-        python -m cinemasci.server --viewer explorer --data data/sphere.cdb --port 8200
-</code></pre>
-
 <h3>Tests</h3>
 
 <table>
 <tr>
-    <td><strong>Explorer</strong></td>
+    <td><strong>Cinema Explorer</strong></td>
     <td>&nbsp</td>
-    <td>Normal behavior</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb">
-            http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb</a></td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Adding a relative path to the DB</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=../../data/sphere.cdb">
-            http://127.0.0.1:8200/?viewer=explorer&databases=../../data/sphere.cdb</a></td>
+    <td>local</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Testing ParaView database</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=data/test_paraview.cdb">
-            http://127.0.0.1:8200/?viewer=explorer&databases=data/test_paraview.cdb</a></td>
+    <td>server</td>
+    <td>&nbsp</td>
+    <td>python -m cinemasci.server --port 8100 --viewer explorer --data data/sphere.cdb</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>ERROR: not there</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=explorer&databases=data/error.cdb">
-            http://127.0.0.1:8200/?viewer=explorer&databases=data/error.cdb</a></td>
+    <td>url</td>
+    <td>&nbsp</td>
+    <td><a href="http://127.0.0.1:8100/">http://127.0.0.1:8100/</a></td>
 </tr>
-<td>&nbsp</td>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+</tr>
 
 <tr>
-    <td><strong>View</strong></td>
     <td>&nbsp</td>
-    <td>Normal behavior</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb">
-            http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb</a></td>
+    <td>ParaView</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Adding a relative path to the DB</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=../../data/sphere.cdb">
-            http://127.0.0.1:8200/?viewer=view&databases=../../data/sphere.cdb</a></td>
+    <td>server</td>
+    <td>&nbsp</td>
+    <td>python -m cinemasci.server --port 8200 --viewer explorer --data data/sphere_pv.cdb</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Multiple databases</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb,data/sedov3.cdb">
-            http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb,data/sedov3.cdb</a></td>
+    <td>url</td>
+    <td>&nbsp</td>
+    <td><a href="http://127.0.0.1:8200/">http://127.0.0.1:8200/</a></td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Multiple databases, some relative paths</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=../../data/sedov1.cdb,data/sedov2.cdb">
-            http://127.0.0.1:8200/?viewer=view&databases=../../data/sedov1.cdb,data/sedov2.cdb</a></td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+</tr>
+
+<tr>
+    <td><strong>Cinema View</strong></td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>Testing ParaView database</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=data/test_paraview.cdb&assetname=FILE_png">
-            http://127.0.0.1:8200/?viewer=view&databases=data/test_paraview.cdb&assetname=FILE_png</a></td>
+    <td>local</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
 </tr>
 <tr>
-    <td></td>
     <td>&nbsp</td>
-    <td>ERROR: not there</td>
     <td>&nbsp</td>
-    <td><a href="http://127.0.0.1:8200/?viewer=view&databases=data/error.cdb">
-            http://127.0.0.1:8200/?viewer=view&databases=data/error.cdb</a></td>
+    <td>server</td>
+    <td>&nbsp</td>
+    <td>python -m cinemasci.server --port 8300 --viewer view --data data/sphere.cdb</td>
 </tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>url</td>
+    <td>&nbsp</td>
+    <td><a href="http://127.0.0.1:8300/">http://127.0.0.1:8300/</a></td>
+</tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+</tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>ParaView</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+</tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>server</td>
+    <td>&nbsp</td>
+    <td>python -m cinemasci.server --port 8400 --viewer view --data data/sphere_pv.cdb --assetname FILE_png</td>
+</tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>url</td>
+    <td>&nbsp</td>
+    <td><a href="http://127.0.0.1:8400/">http://127.0.0.1:8400/</a></td>
+</tr>
+<tr>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
+</tr>
+
 </table>
