@@ -1,0 +1,6 @@
+#!/bin/bash
+
+python -m cinemasci.server --port 8100 --viewer explorer --data data/sphere.cdb &
+python -m cinemasci.server --port 8200 --viewer explorer --data data/sphere_pv.cdb &
+python -m cinemasci.server --port 8300 --viewer view --data data/sphere.cdb &
+python -m cinemasci.server --port 8400 --viewer view --data data/sphere_pv.cdb --assetname FILE_png &
