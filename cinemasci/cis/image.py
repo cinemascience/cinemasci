@@ -127,3 +127,14 @@ class imageview:
     def get_active_channel(self, layername):
         return self.active_channels[layername] 
 
+    def get_variable_range(self, layername):
+        var = self.cis.get_variable(self.get_active_channel(layername))
+
+        data = [var["min"], var["max"]] 
+        if var["type"] == "float":
+            data = [float(var["min"]), float(var["max"])]
+        elif var["type"] == "float":
+            data = [int(var["min"]), int(var["max"])]
+
+        return data 
+

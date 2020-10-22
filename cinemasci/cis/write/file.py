@@ -161,7 +161,7 @@ class file_writer:
             f.write("{\n")
             f.write("    \"type\" : \"{}\",\n".format(vdata['type']))
             f.write("    \"min\"  : \"{}\",\n".format(vdata['min']))
-            f.write("    \"max\"  : \"{}\",\n".format(vdata['max']))
+            f.write("    \"max\"  : \"{}\"\n".format(vdata['max']))
             f.write("}\n")
 
     def __write_colormap(self, path, colormap):

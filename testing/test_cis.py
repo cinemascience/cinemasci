@@ -306,6 +306,7 @@ class TestCIS(unittest.TestCase):
         # activate some layers
         i_view.activate("l000")
         i_view.activate("l001")
+        i_view.activate("l002")
 
         # now, there is a set of layers and available colormaps for rendering
         # use the image view to iterate through the data like this
@@ -325,6 +326,8 @@ class TestCIS(unittest.TestCase):
             l_offset = i_view.get_layer_offset(l)
             l_data   = i_view.get_layer_data(l)
             l_cmap   = i_view.get_colormap_name(l)
+            l_range  = i_view.get_variable_range(l)
+            # print("{}: {}".format(i_view.get_active_channel(l), l_range))
             # print(l_data)
 
             # using what you know about the state, do the composite
