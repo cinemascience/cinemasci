@@ -129,7 +129,7 @@ class TestCIS(unittest.TestCase):
             layer.set_dims( layerData[l]['dims'][0], layerData[l]['dims'][1] )
             for c in channels:
                 channel = layer.add_channel(c)
-                channel.create_test_data()
+                channel.data = numpy.random.random_sample(layer.dims)
 
     def __check_file_database(self):
         # is the directory there
