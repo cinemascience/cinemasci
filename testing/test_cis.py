@@ -322,11 +322,12 @@ class TestCIS(unittest.TestCase):
 
         # iterate over the layers, each of which has only one active channel
         for l in i_view.get_layer_names():
-            l_dims   = i_view.get_layer_dims(l)
-            l_offset = i_view.get_layer_offset(l)
-            l_data   = i_view.get_layer_data(l)
-            l_cmap   = i_view.get_colormap_name(l)
-            l_range  = i_view.get_variable_range(l)
+            l_channel = i_view.get_active_channel(l)
+            l_dims    = i_view.get_layer_dims(l)
+            l_offset  = i_view.get_layer_offset(l)
+            l_data    = i_view.get_layer_data(l)
+            l_cmap    = i_view.get_colormap_name(l)
+            l_range   = i_view.get_variable_range(l)
             # print("{}: {}".format(i_view.get_active_channel(l), l_range))
             # print(l_data)
 
