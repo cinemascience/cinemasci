@@ -157,10 +157,6 @@ class TestCIS(unittest.TestCase):
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
-    def test_read_file_database(self):
-        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
-        return
-
     def test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
@@ -221,6 +217,114 @@ class TestCIS(unittest.TestCase):
 
         gold = os.path.join(TestCIS.gold_dir, iname) 
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
+
+    def test_read_file_database(self):
+        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
+        cis     = cinemasci.cis.cis(self.gold_file_fullpath)
+        reader  = cinemasci.cis.read.file.reader(cis)
+        reader.read()
+
+    def test_imageview(self):
+        # read a CIS file
+        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
+        myCIS = cinemasci.cis.cis(self.gold_file_fullpath)
+        file_reader = cinemasci.cis.read.file.reader(myCIS)
+        file_reader.read()
+        # myCIS.debug_print()
+
+        # create an image view
+        i_view = cinemasci.cis.image.imageview()
+        i_view.cis = myCIS
+        i_view.image = "0000"
+        i_view.alpha = True
+        i_view.depth = True
+        i_view.lighting = True
+        i_view.set_active_channel( "l000", "temperature" )
+        i_view.set_colormap( "l000", "blue-orange-div" )
+        i_view.set_active_channel( "l001", "pressure" )
+        i_view.set_colormap( "l001", "blue-orange-div" )
+        i_view.set_active_channel( "l002", "procID" )
+        i_view.set_colormap( "l002", "blue-orange-div" )
+
+        # test dimensions and offsets
+        self.assertTrue(numpy.array_equal(i_view.get_image_dims(), [1024, 768]))
+        self.assertTrue(i_view.get_layer_dims("l000") == [100, 200])
+        # print(i_view.get_layer_dims("l000"))
+        self.assertTrue(i_view.get_layer_offset("l000") == [0, 10])
+        # print(i_view.get_layer_offset("l000"))
+
+        # test activate
+        i_view.activate( "l000" )
+        # print("First test ...")
+        for n in i_view.get_layer_names():
+            self.assertTrue( n == "l000" ) 
+            self.assertTrue( i_view.get_active_channel(n) == "temperature" ) 
+            # print(i_view.get_layer_data(n))
+            # print(i_view.get_colormap(n).points)
+
+        # test activate/deactivate 
+        i_view.activate( "l001" )
+        i_view.deactivate( "l000" )
+        # print("Second test ...")
+        for n in i_view.get_layer_names():
+            self.assertTrue( n == "l001" ) 
+            self.assertTrue( i_view.get_active_channel(n) == "pressure" ) 
+            # print(i_view.get_layer_data(n))
+            # print(i_view.get_colormap(n).points)
+
+    def test_imageview_example(self):
+        # read a CIS file
+        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
+        myCIS = cinemasci.cis.cis(self.gold_file_fullpath)
+        file_reader = cinemasci.cis.read.file.reader(myCIS)
+        file_reader.read()
+
+        # output if you'd like to see it
+        # myCIS.debug_print()
+
+        # create an image view
+        # The data here is from what we know in the test data sets
+        i_view = cinemasci.cis.image.imageview()
+        i_view.cis = myCIS
+            # set the image ID
+        i_view.image = "0000"
+            # turn on or off alpha, depth and lighting
+        i_view.alpha = True
+        i_view.depth = True
+        i_view.lighting = True
+            # create active channels
+            # l000
+        i_view.set_active_channel( "l000", "temperature" )
+        i_view.set_colormap( "l000", "blue-orange-div" )
+            # l001
+        i_view.set_active_channel( "l001", "pressure" )
+        i_view.set_colormap( "l001", "blue-orange-div" )
+            # l002
+        i_view.set_active_channel( "l002", "procID" )
+        i_view.set_colormap( "l002", "blue-orange-div" )
+
+        # now, there is a set of layers and available colormaps for rendering
+        # use the image view to iterate through the data like this
+
+        # get overall dims of the image
+        size = i_view.get_image_dims()
+
+        # pre-load any colormaps, assuming you need to create your own
+        # data structures before the render
+        for l in i_view.get_layer_names():
+            cmap = i_view.get_colormap(l)
+            print(cmap.points)
+
+        # iterate over the layers, each of which has only one active channel
+        for l in i_view.get_layer_names():
+            print(l)
+            l_dims   = i_view.get_layer_dims(l)
+            l_offset = i_view.get_layer_offset(l)
+            l_data   = i_view.get_layer_data(l)
+            l_cmap   = i_view.get_layer_colormap_name(l)
+
+            # using what you know about the state, do the composite
+            # composite()
 
 if __name__ == '__main__':
     unittest.main()
