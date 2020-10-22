@@ -303,6 +303,10 @@ class TestCIS(unittest.TestCase):
         i_view.set_active_channel( "l002", "procID" )
         i_view.set_colormap( "l002", "blue-orange-div" )
 
+        # activate some layers
+        i_view.activate("l000")
+        i_view.activate("l001")
+
         # now, there is a set of layers and available colormaps for rendering
         # use the image view to iterate through the data like this
 
@@ -313,15 +317,15 @@ class TestCIS(unittest.TestCase):
         # data structures before the render
         for l in i_view.get_layer_names():
             cmap = i_view.get_colormap(l)
-            print(cmap.points)
+            # print(cmap.points)
 
         # iterate over the layers, each of which has only one active channel
         for l in i_view.get_layer_names():
-            print(l)
             l_dims   = i_view.get_layer_dims(l)
             l_offset = i_view.get_layer_offset(l)
             l_data   = i_view.get_layer_data(l)
-            l_cmap   = i_view.get_layer_colormap_name(l)
+            l_cmap   = i_view.get_colormap_name(l)
+            # print(l_data)
 
             # using what you know about the state, do the composite
             # composite()
