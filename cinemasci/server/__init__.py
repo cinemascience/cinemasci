@@ -188,8 +188,9 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 def run_cinema_server( viewer, data, port, assetname="FILE"):
     localhost = "http://127.0.0.1"
 
-    datadir = path.dirname(data)
-    cinemadir = path.basename(data)
+    fullpath  = path.abspath(data)
+    datadir   = path.dirname(fullpath)
+    cinemadir = path.basename(fullpath)
 
     chdir(datadir)
 
