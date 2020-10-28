@@ -28,7 +28,6 @@ def set_install_path():
     # edit the path to get the correct installation path
     CinemaInstallPath = CinemaInstallPath.strip("/server")
     CinemaInstallPath = "/" + CinemaInstallPath + "/viewers"
-    print("CinemaInstallPath: {}".format(CinemaInstallPath))
 
 #
 # CinemaSimpleReqestHandler
