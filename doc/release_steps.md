@@ -2,7 +2,7 @@
 
 - update version information in repository by editing the following files:
 ```
-    cinemasci/__init__.py
+    cinemasci/version.py
     setup.py
 ```
 - push changes to github
