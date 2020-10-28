@@ -5,7 +5,7 @@ setuptools.setup(
     version="1.3",
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
-    description="Tools for the Cinema scientific toolset.",
+    description="Cinema scientific toolset.",
     url="https://github.com/cinemascience",
     include_package_data=True,
     packages=["cinemasci", 
