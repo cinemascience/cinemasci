@@ -134,22 +134,13 @@ class TestCIS(unittest.TestCase):
     def __check_file_database(self):
         # is the directory there
         self.assertTrue( os.path.exists(self.result_file_fullpath) )
+
         # is the assets file the same
         gold = os.path.join(self.gold_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
         result = os.path.join(self.result_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
-        # the specs state that in the absense of other information the app will initialize atleast a singel image, layer and channel. Therefore, there must always be atleast one image, layer and channel present
-        # checking for appropriate directories
-        imageFolderPath = os.path.join(self.result_file_fullpath, "image")
-        self.assertTrue( os.path.exists(imageFolderPath) )
-        testImgFolder = os.path.join( imageFolderPath, (next(os.walk(imageFolderPath))[1])[0])
-        layerFolderPath = os.path.join(testImgFolder, "layer")
-        self.assertTrue( os.path.exists(layerFolderPath) )
-        testLayerFolder = os.path.join( layerFolderPath, (next(os.walk(layerFolderPath))[1])[0] )
-        channelFolderPath = os.path.join(testLayerFolder, "channel")
-        self.assertTrue( os.path.exists(channelFolderPath) )
 
         # check if colormap there
         result_xml = os.path.join(TestCIS.scratch_dir, self.result_file, self.xmlColormap)
@@ -189,6 +180,7 @@ class TestCIS(unittest.TestCase):
         # check values read in
         self.assertTrue( b_o_div.pathToFile == os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
         self.assertTrue( b_o_div.name == 'blue-orange-div')
+        #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def __test_read_colormap_url(self):
@@ -198,6 +190,7 @@ class TestCIS(unittest.TestCase):
         # check values read in
         self.assertTrue( b_o_div.pathToFile == pathToColormap )
         self.assertTrue( b_o_div.name == 'blue-orange-div')
+        #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
 
     def test_create_image(self):

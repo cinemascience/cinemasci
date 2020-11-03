@@ -1,6 +1,5 @@
 import unittest
 import cinemasci.pynb
-import warnings
 
 class TestPYNB(unittest.TestCase):
 
@@ -8,11 +7,9 @@ class TestPYNB(unittest.TestCase):
         print("Running test: {}".format(self._testMethodName))
 
     def test_hello(self):
-        warnings.filterwarnings(action="ignore", message="unclosed",    category=ResourceWarning)
         viewer = cinemasci.pynb.CinemaViewer()
 
     def test_UIFunctions(self):
-        warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
         cdb_path = "testing/data/sphere.cdb"
         viewer = cinemasci.pynb.CinemaViewer()
         viewer.load(cdb_path)
@@ -39,7 +36,6 @@ class TestPYNB(unittest.TestCase):
         self.assertEqual(viewer.getUIValue('image size'), 200)
         
     def test_ParameterFunctions(self):
-        warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
         cdb_paths = "testing/data/sedov1.cdb testing/data/sedov2.cdb"
         viewer = cinemasci.pynb.CinemaViewer()
         viewer.load(cdb_paths)
