@@ -141,6 +141,16 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
         # TODO check the rest of the data
+        # the specs state that in the absense of other information the app will initialize atleast a singel image, layer and channel. Therefore, there must always be atleast one image, layer and channel present
+        # checking for appropriate directories
+        imageFolderPath = os.path.join(self.result_file_fullpath, "image")
+        self.assertTrue( os.path.exists(imageFolderPath) )
+        testImgFolder = os.path.join( imageFolderPath, (next(os.walk(imageFolderPath))[1])[0])
+        layerFolderPath = os.path.join(testImgFolder, "layer")
+        self.assertTrue( os.path.exists(layerFolderPath) )
+        testLayerFolder = os.path.join( layerFolderPath, (next(os.walk(layerFolderPath))[1])[0] )
+        channelFolderPath = os.path.join(testLayerFolder, "channel")
+        self.assertTrue( os.path.exists(channelFolderPath) )
 
         # check if colormap there
         result_xml = os.path.join(TestCIS.scratch_dir, self.result_file, self.xmlColormap)
