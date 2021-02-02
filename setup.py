@@ -22,7 +22,8 @@ setuptools.setup(
         "pillow",
         "h5py",
         "jupyterlab",
-        "ipywidgets"
+        "ipywidgets",
+        "yaml"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
