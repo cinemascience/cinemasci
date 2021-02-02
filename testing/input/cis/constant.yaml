@@ -4,55 +4,55 @@ layers :
     dims   : [200, 100]
     channels :
         depth :
-            type : linear
+            type : constant
             value : 0.0 
         lighting : 
-            type : linear
+            type : constant
             value : 0.0 
         temperature' :
-            type : linear
+            type : constant
             value : 0.0 
         pressure' :
-            type : linear
+            type : constant
             value : 0.0 
         procID' :
-            type : linear
+            type : constant
             value : 0.0 
   l001:
     offset : [100, 110]
     dims   : [300, 350]
     channels :
         depth :
-            type : linear
+            type : constant
             value : 0.0 
         lighting : 
-            type : linear
+            type : constant
             value : 0.0 
         temperature' :
-            type : linear
+            type : constant
             value : 0.0 
         pressure' :
-            type : linear
+            type : constant
             value : 0.0 
         procID' :
-            type : linear
+            type : constant
             value : 0.0 
   l002:
     offset : [200, 210]
     dims   : [400, 350]
     channels :
         depth :
-            type : linear
+            type : constant
             value : 0.0 
         lighting : 
-            type : linear
+            type : constant
             value : 0.0 
         temperature' :
-            type : linear
+            type : constant
             value : 0.0 
         pressure' :
-            type : linear
+            type : constant
             value : 0.0 
         procID' :
-            type : linear
+            type : constant
             value : 0.0 
