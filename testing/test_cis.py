@@ -8,10 +8,12 @@ import filecmp
 import PIL
 import sys
 import json
+import yaml
 
 class TestCIS(unittest.TestCase):
     gold_dir     = 'testing/gold/cis'
     scratch_dir  = 'testing/scratch/cis'
+    test_dir     = 'testing'
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
@@ -103,33 +105,27 @@ class TestCIS(unittest.TestCase):
 #        cis.add_colormap(name, path)
 
     def add_test_image(self, cis, imName):
-        channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
 
         cis.add_image(imName)
         image = cis.get_image(imName)
 
-        layerData = {
-            'l000' : {
-                'offset' : [0, 10],
-                'dims'   : [100, 200]
-            },
-            'l001': {
-                'offset' : [100, 110],
-                'dims'   : [250, 300]
-            },
-            'l002': {
-                'offset' : [200, 210],
-                'dims'   : [350, 400]
-            }
+        rtypes = {
+            'random' : cinemasci.cis.channel.RampType.RANDOM,
+            'linear' : cinemasci.cis.channel.RampType.LINEAR
         }
+        layerData = {}
+        with open(os.path.join(TestCIS.test_dir, "input", "cis", "random.yaml"), 'r') as lfile:
+            layerData = yaml.load(lfile, Loader=yaml.FullLoader)
 
-        for l in layerData:
+        layers = layerData['layers']
+        for l in layers:
             layer = image.add_layer(l)
-            layer.set_offset( layerData[l]['offset'][0], layerData[l]['offset'][1] )
-            layer.set_dims( layerData[l]['dims'][0], layerData[l]['dims'][1] )
-            for c in channels:
+            layer.set_offset( layers[l]['offset'][0], layers[l]['offset'][1] )
+            layer.set_dims( layers[l]['dims'][0], layers[l]['dims'][1] )
+            for c in layers[l]['channels']:
+                ch = layers[l]['channels'][c]
                 channel = layer.add_channel(c)
-                channel.create_test_data()
+                channel.create_test_data(rtypes[ch['type']], ch['value'])
 
     def __check_file_database(self):
         # is the directory there

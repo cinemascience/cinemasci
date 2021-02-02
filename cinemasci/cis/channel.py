@@ -1,4 +1,10 @@
 import numpy
+from enum import Enum
+
+class RampType(Enum):
+    RANDOM = 0
+    CONSTANT = 1
+    LINEAR   = 2
 
 class channel:
     """Channel Class
@@ -9,6 +15,7 @@ class channel:
     A channel can contain **depth** or **lighting** information.
     A channel may reference a variable or colormap to use for rasterization.  
     """
+
 
     def __init__(self, name):
         self.name = name
@@ -22,5 +29,10 @@ class channel:
     def set_dims(self, w, h):
         self.dims = [w, h]
 
-    def create_test_data(self):
-        self.data = numpy.random.random_sample(self.dims)
+    def create_test_data(self, ramptype, value=0.0, vrange=0.0):
+
+        if ramptype is RampType.RANDOM:
+            self.data = numpy.random.random_sample(self.dims)
+
+        elif ramptype is RampType.CONSTANT:
+            self.data = numpy.full(self.dims, value)

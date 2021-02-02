@@ -1,0 +1,58 @@
+layers : 
+  l000 : 
+    offset : [0, 10]
+    dims   : [100, 200]
+    channels :
+        depth :
+            type : random
+            value : 0.0 
+        lighting : 
+            type : random
+            value : 0.0 
+        temperature' :
+            type : random
+            value : 0.0 
+        pressure' :
+            type : random
+            value : 0.0 
+        procID' :
+            type : random
+            value : 0.0 
+  l001:
+    offset : [100, 110]
+    dims   : [250, 300]
+    channels :
+        depth :
+            type : random
+            value : 0.0 
+        lighting : 
+            type : random
+            value : 0.0 
+        temperature' :
+            type : random
+            value : 0.0 
+        pressure' :
+            type : random
+            value : 0.0 
+        procID' :
+            type : random
+            value : 0.0 
+  l002:
+    offset : [200, 210]
+    dims   : [350, 400]
+    channels :
+        depth :
+            type : random
+            value : 0.0 
+        lighting : 
+            type : random
+            value : 0.0 
+        temperature' :
+            type : random
+            value : 0.0 
+        pressure' :
+            type : random
+            value : 0.0 
+        procID' :
+            type : random
+            value : 0.0 
