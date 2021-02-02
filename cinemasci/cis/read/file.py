@@ -173,6 +173,6 @@ class reader(cisfile):
         # read data
         datafile = self._get_channel_data_file(iname, layer.name, cname)
         if os.path.isfile(datafile):
-            zdata = numpy.load(datafile)
+            zdata = numpy.load(datafile, allow_pickle=True)
             newchannel.data = zdata['data']
 

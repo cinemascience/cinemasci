@@ -18,21 +18,34 @@ class TestCIS(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
 
+        self.cur_test = ""
+        self.cur_results_dir = ""
+
         self.result_hdf5 = 'hdf5.cis'
-        self.result_hdf5_fullpath = os.path.join(TestCIS.scratch_dir, self.result_hdf5)
-        
+        self.result_hdf5_fullpath = "" 
         self.result_file = 'file.cis'
-        self.result_file_fullpath = os.path.join(TestCIS.scratch_dir, self.result_file)
+        self.result_file_fullpath = "" 
         
-        self.gold_hdf5   = self.result_hdf5 
-        self.gold_hdf5_fullpath = os.path.join(TestCIS.gold_dir, self.gold_hdf5)
-        
-        self.gold_file   = self.result_file
-        self.gold_file_fullpath = os.path.join(TestCIS.gold_dir, self.gold_file)
+        self.cur_gold_dir = ""
+        self.gold_hdf5 = self.result_hdf5 
+        self.gold_hdf5_fullpath = "" 
+        self.gold_file = self.result_file
+        self.gold_file_fullpath = "" 
 
         self.xmlColormap = 'colormaps/blue-orange-div.xml'
         self.jsonColormap = 'colormaps/blue-1.json'
 
+    def set_cur_test(self, test):
+
+        self.cur_test = test
+
+        self.cur_results_dir = os.path.join(TestCIS.scratch_dir, test)
+        self.result_hdf5_fullpath = os.path.join(self.cur_results_dir, self.result_hdf5)
+        self.result_file_fullpath = os.path.join(self.cur_results_dir, self.result_file)
+        
+        self.cur_gold_dir         = os.path.join(TestCIS.gold_dir, test)
+        self.gold_hdf5_fullpath   = os.path.join(self.cur_gold_dir, self.gold_hdf5)
+        self.gold_file_fullpath   = os.path.join(self.cur_gold_dir, self.gold_file)
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -64,12 +77,42 @@ class TestCIS(unittest.TestCase):
         for i in images:
             self.add_test_image(myCIS, i)
 
-        colormaps = [os.path.join(TestCIS.gold_dir, 'file.cis', self.xmlColormap),
-                     os.path.join(TestCIS.gold_dir, 'file.cis', self.jsonColormap)]
+        colormaps = [os.path.join(self.cur_gold_dir, 'file.cis', self.xmlColormap),
+                     os.path.join(self.cur_gold_dir, 'file.cis', self.jsonColormap)]
         for c in colormaps:
             self.add_test_colormap(myCIS, c)
 
-    def test_create_hdf5_database(self):
+    def test_databases(self):
+        cases = ['random', 'linear']
+
+        for case in cases:
+            print("Test case: {}".format(case))
+            self.set_cur_test(case)
+            print("Creating file database ...")
+            self.__test_create_file_database()
+            print("Creating hdf5 database ...")
+            self.__test_create_hdf5_database()
+            print("Creating test image ...") 
+            self.__test_create_image()
+            self.__test_read_colormap_file()
+            print("Reading file database ...")
+            self.__test_read_file_database()
+            print("Reading hdf5 database ...")
+            self.__test_read_hdf5_database()
+            print("\n")
+
+    def __test_create_file_database(self):
+        myCIS = cinemasci.cis.cis(self.result_file_fullpath)
+        self.__create_test_cis(myCIS)
+
+        # write file format
+        file_writer = cinemasci.cis.write.file.file_writer()
+        file_writer.write(myCIS)
+
+        # check
+        self.__check_file_database()
+
+    def __test_create_hdf5_database(self):
         myCIS = cinemasci.cis.cis(self.result_hdf5_fullpath)
         self.__create_test_cis(myCIS)
 
@@ -80,16 +123,6 @@ class TestCIS(unittest.TestCase):
         # check
         self.__check_hdf5_database()
 
-    def test_create_file_database(self):
-        myCIS = cinemasci.cis.cis(self.result_file_fullpath)
-        self.__create_test_cis(myCIS)
-
-        # write file format
-        file_writer = cinemasci.cis.write.file.file_writer()
-        file_writer.write(myCIS)
-
-        # check
-        self.__check_file_database()
 
     def add_test_colormap(self, cis, path):
         file_extension = os.path.splitext(path)[1]
@@ -114,7 +147,7 @@ class TestCIS(unittest.TestCase):
             'linear' : cinemasci.cis.channel.RampType.LINEAR
         }
         layerData = {}
-        with open(os.path.join(TestCIS.test_dir, "input", "cis", "random.yaml"), 'r') as lfile:
+        with open(os.path.join(TestCIS.test_dir, "input", "cis", self.cur_test + ".yaml"), 'r') as lfile:
             layerData = yaml.load(lfile, Loader=yaml.FullLoader)
 
         layers = layerData['layers']
@@ -139,25 +172,25 @@ class TestCIS(unittest.TestCase):
         # TODO check the rest of the data
 
         # check if colormap there
-        result_xml = os.path.join(TestCIS.scratch_dir, self.result_file, self.xmlColormap)
-        result_json = os.path.join(TestCIS.scratch_dir, self.result_file, self.jsonColormap)
+        result_xml = os.path.join(self.cur_results_dir, self.result_file, self.xmlColormap)
+        result_json = os.path.join(self.cur_results_dir, self.result_file, self.jsonColormap)
         self.assertTrue(os.path.exists(result_xml))
         self.assertTrue(os.path.exists(result_json))
 
         # are the colormaps the same - filecmp does not have option to disregard white space
-        gold_xml = os.path.join(TestCIS.gold_dir, self.result_file, self.xmlColormap)
-        gold_json = os.path.join(TestCIS.gold_dir, self.result_file, self.jsonColormap)
+        gold_xml = os.path.join(self.cur_gold_dir, self.result_file, self.xmlColormap)
+        gold_json = os.path.join(self.cur_gold_dir, self.result_file, self.jsonColormap)
         self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
         self.assertTrue( filecmp.cmp (result_json, gold_json, shallow=False))
 
     def __check_hdf5_database(self):
         self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
 
-    def test_read_file_database(self):
+    def __test_read_file_database(self):
         self.assertTrue( os.path.exists(self.gold_file_fullpath) )
         return
 
-    def test_read_hdf5_database(self):
+    def __test_read_hdf5_database(self):
         self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
 
         myCIS = cinemasci.cis.cis(self.gold_hdf5_fullpath)
@@ -173,12 +206,12 @@ class TestCIS(unittest.TestCase):
         self.assertTrue( myCIS.origin    == "UL" )
         # myCIS.debug_print()
 
-    def test_read_colormap_file(self):
-        pathToColormap = os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml')
+    def __test_read_colormap_file(self):
+        pathToColormap = os.path.join(self.cur_gold_dir, 'file.cis/colormaps/blue-orange-div.xml')
         b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
 
         # check values read in
-        self.assertTrue( b_o_div.pathToFile == os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
+        self.assertTrue( b_o_div.pathToFile == os.path.join(self.cur_gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
         self.assertTrue( b_o_div.name == 'blue-orange-div')
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
@@ -193,18 +226,19 @@ class TestCIS(unittest.TestCase):
         #self.assertTrue( b_o_div.name == 'Divergent 1')
         self.assertTrue( len(b_o_div.points) == 47 )
 
-    def test_create_image(self):
-        cispath = os.path.join(TestCIS.gold_dir, "file.cis")
+    def __test_create_image(self):
+        # cispath = os.path.join(TestCIS.gold_dir, "file.cis")
+        cispath = os.path.join(self.cur_results_dir, "file.cis")
         cis = cinemasci.cis.cis(cispath)
-
         check = cinemasci.cis.read.file.cisfile(cis)
         self.assertTrue( check.verify() )
-        fname = "file.cis.dump"
-        scratch_dump = os.path.join(TestCIS.scratch_dir, fname) 
-        gold_dump    = os.path.join(TestCIS.gold_dir,    fname) 
-        with open(scratch_dump, "w") as dumpfile:
-            check.dump(dumpfile)
-        self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
+
+        # fname = "file.cis.dump"
+        # scratch_dump = os.path.join(self.cur_results_dir, fname) 
+        # gold_dump    = os.path.join(TestCIS.gold_dir,    fname) 
+        # with open(scratch_dump, "w") as dumpfile:
+            # check.dump(dumpfile)
+        # self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
 
         reader = cinemasci.cis.read.file.reader(cis)
         reader.read()
@@ -212,10 +246,10 @@ class TestCIS(unittest.TestCase):
         iname = "render_image.png"
         render = cinemasci.cis.render.render()
         im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
-        result = os.path.join(TestCIS.scratch_dir, iname) 
+        result = os.path.join(self.cur_results_dir, iname) 
         im.save(result)
 
-        gold = os.path.join(TestCIS.gold_dir, iname) 
+        gold = os.path.join(self.cur_gold_dir, iname) 
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
 if __name__ == '__main__':
