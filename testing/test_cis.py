@@ -86,20 +86,13 @@ class TestCIS(unittest.TestCase):
         cases = ['random', 'linear']
 
         for case in cases:
-            print("Test case: {}".format(case))
             self.set_cur_test(case)
-            print("Creating file database ...")
             self.__test_create_file_database()
-            print("Creating hdf5 database ...")
             self.__test_create_hdf5_database()
-            print("Creating test image ...") 
             self.__test_create_image()
             self.__test_read_colormap_file()
-            print("Reading file database ...")
             self.__test_read_file_database()
-            print("Reading hdf5 database ...")
             self.__test_read_hdf5_database()
-            print("\n")
 
     def __test_create_file_database(self):
         myCIS = cinemasci.cis.cis(self.result_file_fullpath)
