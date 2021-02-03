@@ -1,7 +1,0 @@
-{
-  "classname" : "COMPOSABLE_IMAGE_SET",
-  "dims"      : [1024, 768],
-  "version"   : "1.0",
-  "flags"     : "CONSTANT_CHANNELS",
-  "origin"    : "UL"
-}
