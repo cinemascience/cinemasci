@@ -13,14 +13,22 @@ class channel:
     def __init__(self, name):
         self.name = name
         self.type = "float" 
-        self.data = None
         self.dims = [0,0]
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        shape = value.shape
+        if shape[0] == self.dims[0] and shape[1] == self.dims[1]:
+            self._data = value
+        else:
+            print("ERROR: channel data is the wrong shape")
 
     def set_type(self, type):
         self.type = type
 
     def set_dims(self, w, h):
         self.dims = [w, h]
-
-    def create_test_data(self):
-        self.data = numpy.random.random_sample(self.dims)

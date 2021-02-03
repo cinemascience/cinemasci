@@ -35,6 +35,11 @@ class cisfile():
                     if os.path.isfile(self._get_channel_data_file(i, l, c)):
                         dumpfile.write("              {}\n".format(cisfile.dataname))
 
+    def get_channels(self, iname, lname):
+        channels = glob.glob(os.path.join(self._get_channel_basedir(iname, lname), "*"))
+        for c in sorted(channels):
+            yield os.path.basename(c)
+
     def get_colormaps(self):
         colormaps = glob.glob(os.path.join(self._get_colormap_basedir(), "*"))
         for c in sorted(colormaps):
@@ -50,10 +55,10 @@ class cisfile():
         for l in sorted(layers):
             yield os.path.basename(l)
 
-    def get_channels(self, iname, lname):
-        channels = glob.glob(os.path.join(self._get_channel_basedir(iname, lname), "*"))
-        for c in sorted(channels):
-            yield os.path.basename(c)
+    def get_variables(self):
+        variables = glob.glob(os.path.join(self._get_variable_basedir(), "*"))
+        for v in sorted(variables):
+            yield v
 
     def verify(self):
         result = True
@@ -74,6 +79,9 @@ class cisfile():
 
     def _get_channel_basedir(self, iname, lname):
         return os.path.join( self.cis.fname, "image", iname, "layer", lname, "channel" )
+
+    def _get_variable_basedir(self):
+        return os.path.join( self.cis.fname, "variables" )
 
     def _get_layer_dir(self):
         return os.path.join( self.cis.fname, "image", iname, "layer" )
@@ -126,6 +134,9 @@ class reader(cisfile):
         for colormapPath in self.get_colormaps():
             self.__read_colormap(colormapPath)
 
+        for variable in self.get_variables():
+            self.__read_variable(variable)
+
         for image in self.get_images():
             self.__read_image(image)
 
@@ -142,6 +153,13 @@ class reader(cisfile):
                     data = json.load(jFile)
             newcolormap = self.cis.add_colormap(name, data['url'])
 
+
+    def __read_variable(self, vname):
+        varname = os.path.basename(vname)
+        varname, ext = os.path.splitext(varname)
+        with open(vname) as f:
+            data = json.load(f)
+            self.cis.add_variable(varname, data["type"], data["min"], data["max"])
 
     def __read_image(self, iname):
         newimage = self.cis.add_image(iname)
