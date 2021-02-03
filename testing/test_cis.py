@@ -83,7 +83,7 @@ class TestCIS(unittest.TestCase):
             self.add_test_colormap(myCIS, c)
 
     def test_databases(self):
-        cases = ['random', 'constant']
+        cases = ['random', 'constant', 'linear']
 
         for case in cases:
             self.set_cur_test(case)
@@ -137,7 +137,8 @@ class TestCIS(unittest.TestCase):
 
         rtypes = {
             'random' : cinemasci.cis.channel.RampType.RANDOM,
-            'constant' : cinemasci.cis.channel.RampType.CONSTANT
+            'constant' : cinemasci.cis.channel.RampType.CONSTANT,
+            'linear' : cinemasci.cis.channel.RampType.LINEAR
         }
         layerData = {}
         with open(os.path.join(TestCIS.test_dir, "input", "cis", self.cur_test + ".yaml"), 'r') as lfile:

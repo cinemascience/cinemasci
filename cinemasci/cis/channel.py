@@ -29,10 +29,21 @@ class channel:
     def set_dims(self, w, h):
         self.dims = [w, h]
 
-    def create_test_data(self, ramptype, value=0.0, vrange=0.0):
+    def create_test_data(self, ramptype, value=0.0):
 
         if ramptype is RampType.RANDOM:
             self.data = numpy.random.random_sample(self.dims)
 
         elif ramptype is RampType.CONSTANT:
             self.data = numpy.full(self.dims, value)
+
+        elif ramptype is RampType.LINEAR:
+            self.data = numpy.zeros(self.dims, dtype=float)
+
+            for w in range(self.dims[0]):
+                for h in range(self.dims[1]):
+                    self.data[w][h] = float(w)/float(self.dims[0])
+                    
+
+
+
