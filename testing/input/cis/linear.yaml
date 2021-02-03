@@ -9,13 +9,13 @@ layers :
         lighting : 
             type : linear
             value : 0.0 
-        temperature' :
+        temperature :
             type : linear
             value : 0.0 
-        pressure' :
+        pressure :
             type : linear
             value : 0.0 
-        procID' :
+        procID :
             type : linear
             value : 0.0 
   l001:
@@ -28,13 +28,13 @@ layers :
         lighting : 
             type : linear
             value : 0.0 
-        temperature' :
+        temperature :
             type : linear
             value : 0.0 
-        pressure' :
+        pressure :
             type : linear
             value : 0.0 
-        procID' :
+        procID :
             type : linear
             value : 0.0 
   l002:
@@ -47,12 +47,12 @@ layers :
         lighting : 
             type : linear
             value : 0.0 
-        temperature' :
+        temperature :
             type : linear
             value : 0.0 
-        pressure' :
+        pressure :
             type : linear
             value : 0.0 
-        procID' :
+        procID :
             type : linear
             value : 0.0 
