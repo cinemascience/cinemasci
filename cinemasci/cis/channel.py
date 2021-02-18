@@ -32,6 +32,7 @@ class channel:
     def create_test_data(self, ramptype, value=0.0):
 
         if ramptype is RampType.RANDOM:
+            numpy.random.seed(12345)
             self.data = numpy.random.random_sample(self.dims)
 
         elif ramptype is RampType.CONSTANT:

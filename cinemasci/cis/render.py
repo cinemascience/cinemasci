@@ -23,7 +23,7 @@ class render():
     def render(self, cis, iname, lnames, cnames):
         image = cis.get_image(iname)
 
-        result = np.zeros((cis.dims[0], cis.dims[1], 3))
+        result = np.zeros((cis.dims[1], cis.dims[0], 3))
 
         # for now, assume only variables (no shadow, depth, etc.)
         for layer in lnames:
