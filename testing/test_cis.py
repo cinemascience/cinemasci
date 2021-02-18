@@ -1,14 +1,15 @@
-import unittest
-import cinemasci.cis
-import pandas
-import os
-import numpy
-import shutil
 import filecmp
-import PIL
-import sys
 import json
+import os
+import shutil
+import unittest
+
+import numpy
+import pandas
 import yaml
+
+import cinemasci.cis
+
 
 class TestCIS(unittest.TestCase):
     gold_dir     = 'testing/gold/cis'
@@ -241,9 +242,11 @@ class TestCIS(unittest.TestCase):
         render = cinemasci.cis.render.render()
         im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
         result = os.path.join(self.cur_results_dir, iname) 
-        im.save(result)
 
-        gold = os.path.join(self.cur_gold_dir, iname) 
+        import skimage.io, skimage.util
+        skimage.io.imsave(result, skimage.util.img_as_ubyte(im))
+
+        gold = os.path.join(self.cur_gold_dir, iname)
         self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
 
 if __name__ == '__main__':

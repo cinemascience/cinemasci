@@ -1,4 +1,19 @@
-from PIL import Image, ImageDraw
+import numpy as np
+import skimage.color
+
+
+def paste(x, y, offset):
+    dims = y.shape
+    x[offset[0]:(offset[0] + dims[0]), offset[1]:(offset[1] + dims[1]), :] = y
+    return x
+
+
+def depth_composite(a, depth_a, b, depth_b):
+    mask = depth_a < depth_b
+    composited = b
+    composited[mask] = a[mask]
+    return composited
+
 
 class render():
 
@@ -7,19 +22,14 @@ class render():
 
     def render(self, cis, iname, lnames, cnames):
         image = cis.get_image(iname)
-        imode = "RGB"
 
-        im = Image.new(mode=imode, size=(cis.dims[0], cis.dims[1]))
+        result = np.zeros((cis.dims[0], cis.dims[1], 3))
 
         # for now, assume only variables (no shadow, depth, etc.)
-        for layer in lnames: 
+        for layer in lnames:
             l = image.get_layer(layer)
             if l:
-                shape = [(0,0),(l.dims[0], l.dims[1])]
-                limage = Image.new(mode=imode, size=(l.dims[0], l.dims[1]))
-                lidraw = ImageDraw.Draw(limage)
-                lidraw.rectangle(shape, fill="#ffff33", outline="red")
-                im.paste(limage, l.offset)
+                arr = skimage.color.gray2rgb(l.get_channel(cnames[0]).data)
+                result = paste(result, arr, l.offset)
 
-        return im
-
+        return result
