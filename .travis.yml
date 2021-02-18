@@ -6,6 +6,7 @@ notifications:
     recipients:
       - ethan.stam@gmail.com
       - dhr@lanl.gov
+      - ollie@lanl.gov
 
 # Get the repository
 git:

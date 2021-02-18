@@ -23,7 +23,8 @@ setuptools.setup(
         "h5py",
         "jupyterlab",
         "ipywidgets",
-        "pyyaml"
+        "pyyaml",
+        "skimage"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
