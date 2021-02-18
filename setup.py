@@ -24,7 +24,7 @@ setuptools.setup(
         "jupyterlab",
         "ipywidgets",
         "pyyaml",
-        "skimage"
+        "scikit-image"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
