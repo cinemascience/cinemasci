@@ -10,7 +10,11 @@ Cinema now includes Jupyter notebook components to view databases. These databas
 <td style="text-align:center;">PeleLM</td>
 </tr>
 <tr>
-<td><img src="img/pynb/cloverleaf_pynb_cdb.png"></img></td>
+<td>
+    <a href="https://gesis.mybinder.org/binder/v2/gh/cinemascience/cinema_binder/d0fb8584775cd671b2a596b349eb24c4c90f6af3">
+        <img src="img/pynb/cloverleaf_pynb_cdb.png"></img>
+    </a>
+</td>
 <td><img src="img/pynb/nyx_pynb_cdb.png"></img></td>
 <td><img src="img/pynb/pelelm_pynb_cdb.png"></img></td>
 </tr>
