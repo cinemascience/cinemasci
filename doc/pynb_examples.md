@@ -1,6 +1,6 @@
 # Cinema Jupyter Notebook Examples
 
-Cinema now includes Jupyter notebook components to view databases. These databases were created with different applications, and viewed with an automatically generated ```ipynb``` file: 
+Cinema now includes Jupyter notebook components to view databases. These databases were created using science applications linked to <a href="https://ascent.readthedocs.io/en/latest">Ascent</a>, and viewed with an automatically generated ```ipynb``` file: 
 
 <p align="center">
 <table>
