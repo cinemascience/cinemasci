@@ -19,6 +19,12 @@ Cinema now includes Jupyter notebook components to view databases. These databas
 
 ## Example notebook file
 
+To view a Cinema database in jupyter notebook, first install the ```cinemasci``` module:
+
+```
+pip install cinemasci
+```
+
 This snippet is all the ```json``` you need in order to create a viewer on ```yourdata.cdb```. Save this file as ```cinema.ipynb```, then run jupyter notebook and load it.
 
 ```
@@ -44,6 +50,18 @@ This snippet is all the ```json``` you need in order to create a viewer on ```yo
     "nbformat": 4,
     "nbformat_minor": 2
 }
+```
+
+Alternatively, you can run jupyter notebook and enter the following python code:
+
+```
+    import cinemasci.pynb
+
+    cdb_path = "yourdata.cdb"
+    viewer = cinemasci.pynb.CinemaViewer()
+    viewer.load(cdb_path)
+    viewer.setLayoutToHorizontal()
+    viewer.setUIValues({'image size': 500})
 ```
 
 
