@@ -16,11 +16,11 @@ Cinema now includes Jupyter notebook components to view databases. These databas
     </a>
 </td>
 <td>
-    <a href="https://mybinder.org/v2/gh/cinemascience/cinema_binder/HEAD?filepath=nyx%2Fsphere.ipynb">
+    <a href="https://mybinder.org/v2/gh/cinemascience/cinema_binder/HEAD?filepath=nyx%2Fpantheon.ipynb">
         <img src="img/pynb/nyx_pynb_cdb.png"></img></td>
     </a>
 <td>
-    <a href="https://mybinder.org/v2/gh/cinemascience/cinema_binder/HEAD?filepath=pelelm%2Fsphere.ipynb">
+    <a href="https://mybinder.org/v2/gh/cinemascience/cinema_binder/HEAD?filepath=pelelm%2Fpantheon.ipynb">
         <img src="img/pynb/pelelm_pynb_cdb.png"></img></td>
     </a>
 </tr>
