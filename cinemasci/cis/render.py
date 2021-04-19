@@ -15,7 +15,7 @@ def blend(a, b, mask):
     return output
 
 
-def depth_composite(a, depth_a, b, depth_b):
+def depth_composite(color_a, depth_a, color_b, depth_b):
     mask = np.nan_to_num(depth_a, nan=np.inf) < np.nan_to_num(depth_b, nan=np.inf)
     return blend(color_a, color_b, mask)
 
