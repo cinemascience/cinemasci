@@ -9,11 +9,15 @@ def paste(x, y, offset):
     return x
 
 
+def blend(a, b, mask):
+    output = np.copy(b)
+    output[mask] = a[mask]
+    return output
+
+
 def depth_composite(a, depth_a, b, depth_b):
-    mask = depth_a < depth_b
-    composited = b
-    composited[mask] = a[mask]
-    return composited
+    mask = np.nan_to_num(depth_a, nan=np.inf) < np.nan_to_num(depth_b, nan=np.inf)
+    return blend(color_a, color_b, mask)
 
 
 class render():
