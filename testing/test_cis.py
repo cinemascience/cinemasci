@@ -2,16 +2,15 @@ import unittest
 import filecmp
 import cinemasci
 import cinemasci.cis
-import cinemasci.cis.view
 import os.path
 import shutil
 
-class TestCISCDB(unittest.TestCase):
+class TestCIS(unittest.TestCase):
     gold_dir    = "testing/gold/cdb"
     scratch_dir = "testing/scratch/cdb"
 
     def __init__(self, *args, **kwargs):
-        super(TestCISCDB, self).__init__(*args, **kwargs)
+        super(TestCIS, self).__init__(*args, **kwargs)
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
@@ -33,14 +32,17 @@ class TestCISCDB(unittest.TestCase):
         self.assertTrue(cdb.extract_parameter_exists("FILE"))
         self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
 
+        # cis view
+        cview = cinemasci.cis.cdbview.cdbview(cdb)
+
         # test the same query with parameters in different order
-        images = cdb.get_cis_image_names()
+        images = cview.get_image_names()
         # print("images: {}".format(images))
         for i in images:
-            layers = cdb.get_cis_image_layers(i) 
+            layers = cview.get_image_layers(i) 
             # print("layers: {}".format(layers))
             for l in layers: 
-                channels = cdb.get_cis_layer_channels(i, l) 
+                channels = cview.get_layer_channels(i, l) 
                 # print("channels: {}".format(channels))
                 for c in channels:
                     # print("{}:{}:{}".format(i, l, c))
@@ -56,28 +58,32 @@ class TestCISCDB(unittest.TestCase):
 
         
 
-    def test_create_cis_object(self):
+    def test_create_cis_view(self):
         cdb_path = "testing/data/cis.cdb"
         cdb = cinemasci.new("cdb", {"path": cdb_path})
 
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
-        cview = cinemasci.cis.view.view(cdb)
+        cview = cinemasci.cis.cdbview.cdbview(cdb)
         cview.set_image("i000")
         cview.set_layers(["l000", "l001"])
         cview.set_channels(["depth", "temperature"])
         extracts = cview.get_extracts({"time": "0.0"})
-        for e in extracts:
-            print(e)
+        expected = [ "testing/data/cis.cdb/image/i000/layer/l000/channel/depth/data.npz",
+                    "testing/data/cis.cdb/image/i000/layer/l000/channel/temperature/data.npz",
+                    "testing/data/cis.cdb/image/i000/layer/l001/channel/depth/data.npz",
+                    "testing/data/cis.cdb/image/i000/layer/l001/channel/temperature/data.npz"
+                  ]
+        self.assertEqual(extracts, expected)
 
         results = cview.get_image_parameters()
-        print(results)
+        self.assertEqual(results, {'dims': [1024, 768]})
 
         results = cview.get_layer_parameters("l000")
-        print(results)
+        self.assertEqual(results, {'dims': [100, 200], 'offset': [0, 10]})
 
         results = cview.get_channel_parameters("l000", "temperature")
-        print(results)
+        self.assertEqual(results, {'variable': 'temperature', 'range': ['10.0', '100.0']})
 
 
