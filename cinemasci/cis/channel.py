@@ -1,19 +1,44 @@
+import os
 import numpy
 
+#
+# channel class
+#
 class channel:
-    """Channel Class
+    def __init__(self):
+        self.data = None
 
-    A channel is a set of values, the size of the layer that contains it (wxh) 
-    and it relative to the *layer* it is a part of. 
-    It can be of any type, the default if of type float. 
-    A channel can contain **depth** or **lighting** information.
-    A channel may reference a variable or colormap to use for rasterization.  
-    """
+    @property
+    def name(self):
+        return self._name
 
-    def __init__(self, name):
-        self.name = name
-        self.type = "float" 
-        self.dims = [0,0]
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def colormap(self):
+        return self._colormap
+
+    @colormap.setter
+    def colormap(self, value):
+        self._colormap = value
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        self._url = value
+
+    @property
+    def active(self):
+        return self._active
+
+    @active.setter
+    def active(self, value):
+        self._active = value
 
     @property
     def data(self):
@@ -21,14 +46,18 @@ class channel:
 
     @data.setter
     def data(self, value):
-        shape = value.shape
-        if shape[0] == self.dims[0] and shape[1] == self.dims[1]:
-            self._data = value
-        else:
-            print("ERROR: channel data is the wrong shape")
+        self._data = value
 
-    def set_type(self, type):
-        self.type = type
+    @property
+    def type(self):
+        return self._type
 
-    def set_dims(self, w, h):
-        self.dims = [w, h]
+    @type.setter
+    def type(self, value):
+        self._type = value
+
+    def load(self, url):
+        self.url = url
+        if os.path.isfile(url):
+            zdata = numpy.load(url)
+            self.data = zdata['data']
