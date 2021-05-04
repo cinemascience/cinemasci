@@ -11,8 +11,6 @@ setuptools.setup(
     packages=["cinemasci", 
                 "cinemasci.cdb", 
                 "cinemasci.cis",
-                "cinemasci.cis.read",
-                "cinemasci.cis.write",
                 "cinemasci.viewers",
                 "cinemasci.pynb",
                 "cinemasci.server"
