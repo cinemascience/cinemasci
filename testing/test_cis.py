@@ -114,8 +114,10 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(True, cview.shadow)
 
         # set the state
-        iview.depth = True
-        iview.shadow = False
+        self.assertEqual(iview.use_depth, False)
+        self.assertEqual(iview.use_shadow, False)
+        iview.use_depth = True
+        iview.use_shadow = False
         iview.activate_layer("l000")
         iview.activate_layer("l001")
         iview.activate_layer("l002")
@@ -143,8 +145,10 @@ class TestCIS(unittest.TestCase):
 
         # iterate over the datastructure
         print("printing image")
-        print("  dims:   {}".format(iview.dims))
-        print("  origin: {}".format(iview.origin))
+        print("  dims       :   {}".format(iview.dims))
+        print("  origin     : {}".format(iview.origin))
+        print("  use_depth  : {}".format(iview.use_depth))
+        print("  use_shadow : {}".format(iview.use_shadow))
         print()
         data = iview.get_layer_data()
         print("  layers")

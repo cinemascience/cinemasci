@@ -125,6 +125,22 @@ class imageview:
     """
 
     @property
+    def use_depth(self):
+        return self._use_depth
+
+    @use_depth.setter
+    def use_depth(self, value):
+        self._use_depth = value
+
+    @property
+    def use_shadow(self):
+        return self._use_shadow
+
+    @use_shadow.setter
+    def use_shadow(self, value):
+        self._use_shadow = value
+
+    @property
     def depth(self):
         return self._depth
 
@@ -169,6 +185,8 @@ class imageview:
         self.active_channels = {} 
         self.cisview = cview
         self.data = {}
+        self._use_depth = False
+        self._use_shadow = False
 
     def get_active_layers(self):
         return self.active_layers
@@ -244,7 +262,7 @@ class imageview:
             newlayer.channel = newchannel
 
             # load the depth map
-            if self.depth:
+            if self.use_depth:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISDepth") 
                 newchannel = channel()
                 newchannel.name = self.active_channels[l]
@@ -252,7 +270,7 @@ class imageview:
                 newlayer.depth = newchannel
 
             # load the shadow map
-            if self.shadow:
+            if self.use_shadow:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISShadow") 
                 newchannel = channel()
                 newchannel.name = self.active_channels[l]
