@@ -275,7 +275,7 @@ class imageview:
             if self.use_depth:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISDepth") 
                 newchannel = channel()
-                newchannel.name = self.active_channels[l]
+                newchannel.name = "CISDepth" 
                 newchannel.load(extract[0])
                 newlayer.depth = newchannel
 
@@ -283,7 +283,7 @@ class imageview:
             if self.use_shadow:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISShadow") 
                 newchannel = channel()
-                newchannel.name = self.active_channels[l]
+                newchannel.name = "CISShadow"
                 newchannel.load(extract[0])
                 newchannel.shadow = newchannel
 
