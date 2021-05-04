@@ -63,6 +63,46 @@ class cdbview:
 
         return names
 
+    def get_layer_names(self):
+        query = "SELECT DISTINCT CISLayer from {}".format(self.cdb.tablename)
+        result = self.cdb.execute(query)
+
+        names = []
+        for row in result: 
+            names.append(str(row[0]))
+
+        return names
+
+    def get_channel_names(self):
+        query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
+        result = self.cdb.execute(query)
+
+        names = []
+        for row in result: 
+            names.append(str(row[0]))
+
+        return names
+
+    def get_depth(self):
+        query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
+        result = self.cdb.execute(query)
+
+        names = []
+        for row in result: 
+            names.append(str(row[0]))
+
+        return "CISDepth" in names 
+
+    def get_lighting(self):
+        query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
+        result = self.cdb.execute(query)
+
+        names = []
+        for row in result: 
+            names.append(str(row[0]))
+
+        return "CISLighting" in names 
+
     def get_image_layers(self, image):
         query = "SELECT DISTINCT CISLayer from {} WHERE CISImage = \'{}\'".format(self.cdb.tablename, image)
         result = self.cdb.execute(query) 
@@ -104,7 +144,7 @@ class cdbview:
     #
     #
     def get_image_parameters(self):
-        query = "SELECT CISImageWidth, CISImageHeight from {} WHERE CISImage = \'{}\' LIMIT 1".format(self.cdb.tablename, self.image)
+        query = "SELECT CISImageWidth, CISImageHeight from {} LIMIT 1".format(self.cdb.tablename)
         results = self.cdb.execute(query)
         data = {
                     "dims": [results[0][0], results[0][1]]
