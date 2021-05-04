@@ -1,125 +1,5 @@
-import os
-import numpy
-
-#
-# layer class
-#
-class layer:
-    def __init__(self, name):
-        self.channel = []
-        self._depth = None
-        self._shadow = None
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def channel(self):
-        return self._channel
-
-    @channel.setter
-    def channel(self, value):
-        self._channel = value
-
-    @property
-    def dims(self):
-        return self._dims
-
-    @dims.setter
-    def dims(self, value):
-        self._dims = value
-
-    @property
-    def offset(self):
-        return self._offset
-
-    @offset.setter
-    def offset(self, value):
-        self._offset = value
-
-    @property
-    def depth(self):
-        return self._depth
-
-    @depth.setter
-    def depth(self, value):
-        self._depth = value
-
-    @property
-    def shadow(self):
-        return self._shadow
-
-    @shadow.setter
-    def shadow(self, value):
-        self._shadow = value
-
-
-#
-# channel class
-#
-class channel:
-    def __init__(self):
-        self.data = None
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @property
-    def colormap(self):
-        return self._colormap
-
-    @colormap.setter
-    def colormap(self, value):
-        self._colormap = value
-
-    @property
-    def url(self):
-        return self._url
-
-    @url.setter
-    def url(self, value):
-        self._url = value
-
-    @property
-    def active(self):
-        return self._active
-
-    @active.setter
-    def active(self, value):
-        self._active = value
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, value):
-        self._data = value
-
-    @property
-    def type(self):
-        return self._type
-
-    @type.setter
-    def type(self, value):
-        self._type = value
-
-    def load(self, url):
-        self.url = url
-        if os.path.isfile(url):
-            zdata = numpy.load(url)
-            self.data = zdata['data']
-
+from . import layer
+from . import channel
 
 #
 # imageview class
@@ -257,7 +137,7 @@ class imageview:
         # TODO: error if image not set
         for l in self.active_layers:
             ldata = self.cisview.get_layer_parameters(self.image, l)
-            newlayer = layer(l)
+            newlayer = layer.layer(l)
             newlayer.name = l
             newlayer.dims = ldata["dims"]
             newlayer.offset = ldata["offset"]
@@ -265,7 +145,7 @@ class imageview:
 
             extract = self.cisview.get_channel_extract(self.image, l, self.active_channels[l])
             cdata = self.cisview.get_channel_parameters(self.image, l, self.active_channels[l])
-            newchannel = channel()
+            newchannel = channel.channel()
             newchannel.name = self.active_channels[l]
             newchannel.load(extract[0])
             newchannel.colormap = cdata["colormap"]
@@ -274,7 +154,7 @@ class imageview:
             # load the depth map
             if self.use_depth:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISDepth") 
-                newchannel = channel()
+                newchannel = channel.channel()
                 newchannel.name = "CISDepth" 
                 newchannel.load(extract[0])
                 newlayer.depth = newchannel
@@ -282,7 +162,7 @@ class imageview:
             # load the shadow map
             if self.use_shadow:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISShadow") 
-                newchannel = channel()
+                newchannel = channel.channel()
                 newchannel.name = "CISShadow"
                 newchannel.load(extract[0])
                 newchannel.shadow = newchannel

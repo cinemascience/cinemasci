@@ -1,3 +1,30 @@
+from enum import Enum
+
+class CISPARAMS(Enum):
+        image           = "CISImage"
+        origin          = "CISOrigin"
+        version         = "CISVersion" 
+        imageFlags      = "CISImageFlags"
+        imageWidth      = "CISImageWidth"
+        imageHeight     = "CISImageHeight"
+        layer           = "CISLayer"
+        layerOffsetX    = "CISLayerOffsetX"
+        layerOffsetY    = "CISLayerOffsetY"
+        layerWidth      = "CISLayerWidth"
+        layerHeight     = "CISLayerHeight"
+        channel         = "CISChannel"
+        channelVar      = "CISChannelVar"
+        channelVarType  = "CISChannelVarType"
+        channelVarMin   = "CISChannelVarMin"
+        channelVarMax   = "CISChannelVarMax"
+
+        @staticmethod
+        def contains(value):
+            if value in CISPARAMS.__members__.values():
+                return True
+            else:
+                return False
+
 class cdbview:
     """Composible Image Set View Class
        
@@ -7,13 +34,6 @@ class cdbview:
        We note that CIS entries are expected to use Cinema's FILE column
        to record any files needed.
     """
-
-    CISPARAMS = [   "CISImage", "CISOrigin", "CISVersion", 
-                    "CISImageFlags", "CISImageWidth", "CISImageHeight", 
-                    "CISLayer", "CISLayerOffsetX", 
-                    "CISLayerOffsetY", "CISLayerWidth", "CISLayerHeight",
-                    "CISChannel", "CISChannelVar", "CISChannelVarType", 
-                    "CISChannelVarMin", "CISChannelVarMax"]
 
     @property
     def depth(self):
@@ -45,7 +65,7 @@ class cdbview:
         # find the CIS parameters that are in the database 
         params = cdb.get_parameter_names()
         for p in params:
-            if p in cdbview.CISPARAMS: 
+            if CISPARAMS.contains(p):
                 self.CISParams.append(p)
             else:
                 self.parameters.append(p)

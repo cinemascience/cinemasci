@@ -11,16 +11,12 @@ setuptools.setup(
     packages=["cinemasci", 
                 "cinemasci.cdb", 
                 "cinemasci.cis",
-                "cinemasci.cis.read",
-                "cinemasci.cis.write",
                 "cinemasci.viewers",
                 "cinemasci.pynb",
                 "cinemasci.server"
             ],
     install_requires=[
         "pandas",
-        "pillow",
-        "h5py",
         "jupyterlab",
         "ipywidgets",
         "pyyaml",
