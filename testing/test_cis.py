@@ -37,13 +37,13 @@ class TestCIS(unittest.TestCase):
         cview = cinemasci.cis.cdbview.cdbview(cdb)
 
         # test the same query with parameters in different order
-        images = cview.get_image_names()
+        images = cview.images
         # print("images: {}".format(images))
         for i in images:
-            layers = cview.get_image_layers(i) 
+            layers = cview.layers
             # print("layers: {}".format(layers))
             for l in layers: 
-                channels = cview.get_layer_channels(i, l) 
+                channels = cview.channels[l]
                 # print("channels: {}".format(channels))
                 for c in channels:
                     # print("{}:{}:{}".format(i, l, c))
@@ -55,8 +55,6 @@ class TestCIS(unittest.TestCase):
                             })
                     # print(extract)
                     self.assertEqual(extract, ["testing/data/cis.cdb/image/{}/layer/{}/channel/{}/data.npz".format(i, l, c)])
-
-
         
 
     def test_create_cis_view(self):
@@ -66,24 +64,28 @@ class TestCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         cview = cinemasci.cis.cdbview.cdbview(cdb)
-        cview.set_image("i000")
-        cview.set_layers(["l000", "l001"])
-        cview.set_channels(["pressure", "temperature"])
-        extracts = cview.get_extracts({"time": "0.0"})
-        expected = [ "testing/data/cis.cdb/image/i000/layer/l000/channel/pressure/data.npz",
-                    "testing/data/cis.cdb/image/i000/layer/l000/channel/temperature/data.npz",
-                    "testing/data/cis.cdb/image/i000/layer/l001/channel/pressure/data.npz",
-                    "testing/data/cis.cdb/image/i000/layer/l001/channel/temperature/data.npz"
+        extracts = cview.get_channel_extracts("i000", "l000")
+        expected = [ 
+                        "testing/data/cis.cdb/image/i000/layer/l000/channel/CISDepth/data.npz",
+                        "testing/data/cis.cdb/image/i000/layer/l000/channel/CISShadow/data.npz",
+                        "testing/data/cis.cdb/image/i000/layer/l000/channel/pressure/data.npz",
+                        "testing/data/cis.cdb/image/i000/layer/l000/channel/procID/data.npz",
+                        "testing/data/cis.cdb/image/i000/layer/l000/channel/temperature/data.npz"
                   ]
         self.assertEqual(extracts, expected)
 
         results = cview.get_image_parameters()
-        self.assertEqual(results, {'dims': [1024, 768]})
+        self.assertEqual(   results, 
+                            {
+                                'dims': [1024, 768],
+                                'origin' : 'UL'
+                            }
+                        )
 
-        results = cview.get_layer_parameters("l000")
+        results = cview.get_layer_parameters("i000", "l000")
         self.assertEqual(results, {'dims': [100, 200], 'offset': [0, 10]})
 
-        results = cview.get_channel_parameters("l000", "temperature")
+        results = cview.get_channel_parameters("i000", "l000", "temperature")
         self.assertEqual(results, {'variable': 'temperature', 'range': ['10.0', '100.0']})
 
 
@@ -97,46 +99,64 @@ class TestCIS(unittest.TestCase):
         cview = cinemasci.cis.cdbview.cdbview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
-        # test the same query with parameters in different order
-        images = cview.get_image_names()
-        self.assertEqual(images, ['i000', 'i001', 'i002'])
-
-        layers = cview.get_layer_names()
-        self.assertEqual(layers, ['l000', 'l001', 'l002'])
-
-        channels = cview.get_channel_names()
-        self.assertEqual(channels, ['CISDepth', 'CISLighting', 'pressure', 'procID', 'temperature'])
-
-        depth = cview.get_depth()
-        self.assertEqual(True, depth)
-
-        lighting = cview.get_lighting()
-        self.assertEqual(True, lighting)
+        # test the cisview 
+        self.assertEqual(cview.images, ['i000', 'i001', 'i002'])
+        self.assertNotEqual(cview.images, ['i000', 'i001', 'i003'])
+        self.assertEqual(cview.layers, ['l000', 'l001', 'l002'])
+        self.assertEqual(   cview.channels, 
+                            {   
+                                "l000" : ['CISDepth', 'CISShadow', 'pressure', 'procID', 'temperature'],
+                                "l001" : ['CISDepth', 'CISShadow', 'pressure', 'procID', 'temperature'],
+                                "l002" : ['CISDepth', 'CISShadow', 'pressure', 'procID', 'temperature']
+                            }
+                        )    
+        self.assertEqual(True, cview.depth)
+        self.assertEqual(True, cview.shadow)
 
         # set the state
         iview.depth = True
-        iview.lighting = False
+        iview.shadow = False
         iview.activate_layer("l000")
         iview.activate_layer("l001")
-        iview.activate_channel("pressure")
+        iview.activate_layer("l002")
+        iview.activate_channel("l000", "temperature")
+        iview.activate_channel("l001", "pressure")
+        iview.activate_channel("l002", "procID")
 
         layers = []
         for l in iview.get_active_layers():
             layers.append(l)
-        self.assertEqual(layers, ['l000', 'l001'])
+        self.assertEqual(layers, ['l000', 'l001', 'l002'])
 
-        channels = []
-        for c in iview.get_active_channels():
-            channels.append(c)
-        self.assertEqual(channels, ['CISDepth', 'pressure'])
+        self.assertEqual(iview.get_active_layers(), ['l000', 'l001', 'l002'])
+        self.assertEqual(iview.get_active_channel("l000"), 'temperature')
+        self.assertEqual(iview.get_active_channel("l001"), 'pressure')
+        self.assertEqual(iview.get_active_channel("l002"), 'procID')
 
         # update
+        iview.image = "i000"
         iview.update()
 
-        # print("after update")
-        # print(iview.dims)
-        # for l in iview.data:
-            # print(l.name)
+        # check the updated iview object
+        self.assertEqual(iview.dims, [1024, 768])
+        self.assertEqual(iview.origin, "UL")
 
-
+        # iterate over the datastructure
+        print("printing image")
+        print("  dims:   {}".format(iview.dims))
+        print("  origin: {}".format(iview.origin))
+        print()
+        data = iview.get_layer_data()
+        print("  layers")
+        for d in data:
+            print("    name:    {}".format(data[d].name))
+            print("    dims:    {}".format(data[d].dims))
+            print("    channel: {}".format(data[d].channel.name))
+            print("             {}".format(data[d].channel.data))
+            if not data[d].depth is None:
+                print("    depth:   {}".format(data[d].depth.name))
+                print("             {}".format(data[d].depth.data))
+            if not data[d].shadow is None:
+                print("    shadow:  {}".format(data[d].shadow.name))
+                print("             {}".format(data[d].shadow.data))
 

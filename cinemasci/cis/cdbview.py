@@ -1,5 +1,3 @@
-
-
 class cdbview:
     """Composible Image Set View Class
        
@@ -17,15 +15,32 @@ class cdbview:
                     "CISChannel", "CISChannelVar", "CISChannelVarType", 
                     "CISChannelVarMin", "CISChannelVarMax"]
 
+    @property
+    def depth(self):
+        return self._depth
+
+    @depth.setter
+    def cis(self, value):
+        self._depth = value        
+
+    @property
+    def shadow(self):
+        return self._shadow
+
+    @shadow.setter
+    def cis(self, value):
+        self._shadow = value        
+
+
     def __init__(self, cdb):
         self.cdb = cdb
         self.parameters = []
         self.CISParams = []
 
         # state
-        self.image = None
+        self.images = []
         self.layers = [] 
-        self.channels = [] 
+        self.channels = {} 
 
         # find the CIS parameters that are in the database 
         params = cdb.get_parameter_names()
@@ -35,17 +50,12 @@ class cdbview:
             else:
                 self.parameters.append(p)
 
-    def set_image(self, i):
-        #TODO error check
-        self.image = i
-
-    def set_layers(self, layers):
-        #TODO error check
-        self.layers = layers
-
-    def set_channels(self, channels):
-        #TODO error check
-        self.channels = channels
+        # get layer and channel information
+        self.images     = self.__get_image_names()
+        self.layers     = self.__get_layer_names()
+        self.channels   = self.__get_channel_names()
+        self._depth     = self.__query_depth()
+        self._shadow    = self.__query_shadow()
 
     def get_cdb_parameters():
         return self.parameters
@@ -53,7 +63,7 @@ class cdbview:
     def get_cis_parameters():
         return self.CISParameters
 
-    def get_image_names(self):
+    def __get_image_names(self):
         query = "SELECT DISTINCT CISImage from {}".format(self.cdb.tablename)
         result = self.cdb.execute(query)
 
@@ -63,7 +73,7 @@ class cdbview:
 
         return names
 
-    def get_layer_names(self):
+    def __get_layer_names(self):
         query = "SELECT DISTINCT CISLayer from {}".format(self.cdb.tablename)
         result = self.cdb.execute(query)
 
@@ -73,17 +83,20 @@ class cdbview:
 
         return names
 
-    def get_channel_names(self):
-        query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
-        result = self.cdb.execute(query)
+    def __get_channel_names(self):
+        results = {} 
 
-        names = []
-        for row in result: 
-            names.append(str(row[0]))
+        for l in self.layers:
+            results[l] = []
+            query = "SELECT DISTINCT CISChannel from {} WHERE CISLayer = \'{}\'".format(self.cdb.tablename, l)
+            result = self.cdb.execute(query)
 
-        return names
+            for row in result: 
+                results[l].append(str(row[0]))
 
-    def get_depth(self):
+        return results
+
+    def __query_depth(self):
         query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
         result = self.cdb.execute(query)
 
@@ -93,7 +106,7 @@ class cdbview:
 
         return "CISDepth" in names 
 
-    def get_lighting(self):
+    def __query_shadow(self):
         query = "SELECT DISTINCT CISChannel from {}".format(self.cdb.tablename)
         result = self.cdb.execute(query)
 
@@ -101,7 +114,7 @@ class cdbview:
         for row in result: 
             names.append(str(row[0]))
 
-        return "CISLighting" in names 
+        return "CISShadow" in names 
 
     def get_image_layers(self, image):
         query = "SELECT DISTINCT CISLayer from {} WHERE CISImage = \'{}\'".format(self.cdb.tablename, image)
@@ -124,21 +137,25 @@ class cdbview:
         return names
 
 
-    def get_extracts(self, params):
-
+    def get_channel_extracts(self, image, layer):
         extracts = []
-        for l in self.layers:
-            for c in self.channels:
-                params["CISLayer"] = l 
-                params["CISImage"] = self.image
-                params["CISChannel"] = c
-
-                ext = self.cdb.get_extracts(params)
-
-                for e in ext:
-                    extracts.append(e)
+        for channel in self.channels[layer]:
+            ext = self.get_channel_extract(image, layer, channel)
+            for e in ext:
+                extracts.append(e)
 
         return extracts
+
+    def get_channel_extract(self, image, layer, channel):
+        extracts = []
+        params = {
+                    "CISImage": image,
+                    "CISLayer": layer,
+                    "CISChannel": channel 
+                 }
+        extract = self.cdb.get_extracts(params)
+
+        return extract
 
     #
     #
@@ -150,13 +167,19 @@ class cdbview:
                     "dims": [results[0][0], results[0][1]]
                 }
 
+        if "CISOrigin" in self.CISParams:
+            query = "SELECT CISOrigin from {} LIMIT 1".format(self.cdb.tablename)
+            results = self.cdb.execute(query)
+        else:
+            data["origin"] = "UL"
+
         return data
 
     #
     #
     #
-    def get_layer_parameters(self, layer):
-        query = "SELECT CISLayerWidth, CISLayerHeight, CISLayerOffsetX, CISLayerOffsetY from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' LIMIT 1".format(self.cdb.tablename, self.image, layer)
+    def get_layer_parameters(self, image, layer):
+        query = "SELECT CISLayerWidth, CISLayerHeight, CISLayerOffsetX, CISLayerOffsetY from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' LIMIT 1".format(self.cdb.tablename, image, layer)
         results = self.cdb.execute(query)
         data = {
                     "dims": [results[0][0], results[0][1]], 
@@ -164,9 +187,12 @@ class cdbview:
                }
         return data
 
-    def get_channel_parameters(self, layer, channel):
+    #
+    #
+    #
+    def get_channel_parameters(self, image, layer, channel):
         query = "SELECT CISChannelVar, CISChannelVarMin, CISChannelVarMax from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\' LIMIT 1".format(
-                    self.cdb.tablename, self.image, layer, channel)
+                    self.cdb.tablename, image, layer, channel)
         results = self.cdb.execute(query)
         data = { 
                     "variable": results[0][0], 
