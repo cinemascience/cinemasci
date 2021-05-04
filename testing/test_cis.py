@@ -133,10 +133,10 @@ class TestCIS(unittest.TestCase):
         # update
         iview.update()
 
-        print("after update")
-        print(iview.dims)
-        for l in iview.data:
-            print(l.name)
+        # print("after update")
+        # print(iview.dims)
+        # for l in iview.data:
+            # print(l.name)
 
 
 
