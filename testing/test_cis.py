@@ -144,23 +144,24 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.origin, "UL")
 
         # iterate over the datastructure
-        print("printing image")
-        print("  dims       :   {}".format(iview.dims))
-        print("  origin     : {}".format(iview.origin))
-        print("  use_depth  : {}".format(iview.use_depth))
-        print("  use_shadow : {}".format(iview.use_shadow))
-        print()
-        data = iview.get_layer_data()
-        print("  layers")
-        for d in data:
-            print("    name:    {}".format(data[d].name))
-            print("    dims:    {}".format(data[d].dims))
-            print("    channel: {}".format(data[d].channel.name))
-            print("             {}".format(data[d].channel.data))
-            if not data[d].depth is None:
-                print("    depth:   {}".format(data[d].depth.name))
-                print("             {}".format(data[d].depth.data))
-            if not data[d].shadow is None:
-                print("    shadow:  {}".format(data[d].shadow.name))
-                print("             {}".format(data[d].shadow.data))
+        if False:
+            print("printing image")
+            print("  dims       :   {}".format(iview.dims))
+            print("  origin     : {}".format(iview.origin))
+            print("  use_depth  : {}".format(iview.use_depth))
+            print("  use_shadow : {}".format(iview.use_shadow))
+            print()
+            data = iview.get_layer_data()
+            print("  layers")
+            for d in data:
+                print("    name:    {}".format(data[d].name))
+                print("    dims:    {}".format(data[d].dims))
+                print("    channel: {}".format(data[d].channel.name))
+                print("             {}".format(data[d].channel.data))
+                if not data[d].depth is None:
+                    print("    depth:   {}".format(data[d].depth.name))
+                    print("             {}".format(data[d].depth.data))
+                if not data[d].shadow is None:
+                    print("    shadow:  {}".format(data[d].shadow.name))
+                    print("             {}".format(data[d].shadow.data))
 
