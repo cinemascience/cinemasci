@@ -1,8 +1,10 @@
-from . import image
-from . import read
-from . import write
-from . import colormap
-from . import render
+# from . import image
+# from . import read
+# from . import write
+# from . import colormap
+# from . import render
+from . import imageview
+from . import cdbview
 
 
 class cis:
@@ -35,6 +37,15 @@ class cis:
         print("  flags:     {}".format(self.flags))
         print("  version:   {}".format(self.version))
         print("  origin:    {}".format(self.origin))
+        print("  colormaps: ")
+        for m in self.colormaps:
+            print(m)
+
+        for i in self.get_images():
+            print("    image: {}".format(self.get_image(i).name))
+            for l in self.get_image(i).get_layers():
+                print("      layer: {}".format(self.get_image(i).get_layer(l).name))
+
         print("\n")
 
     def get_image(self, key):
@@ -119,7 +130,7 @@ class cis:
     def get_colormap(self,name):
         """ Return a colormap. """
         colormap = None
-        
+
         if name in self.colormaps:
             colormap = self.colormaps[name]
 
