@@ -15,8 +15,12 @@ class TestRenderer():
     #
     def render(self, iview):
 
+        #
         # these print statements show how to iterate over the datastructure
-        if True:
+        #
+        # set the loop condition to 'True' to see the printouts
+        #
+        if False:
             print("printing image")
             print("  dims       : {}".format(iview.dims))
             print("  origin     : {}".format(iview.origin))
@@ -208,30 +212,10 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.dims, [1024, 768])
         self.assertEqual(iview.origin, "UL")
 
-        # iterate over the datastructure
-        if True:
-            print("printing image")
-            print("  dims       :   {}".format(iview.dims))
-            print("  origin     : {}".format(iview.origin))
-            print("  use_depth  : {}".format(iview.use_depth))
-            print("  use_shadow : {}".format(iview.use_shadow))
-            print()
-            data = iview.get_layer_data()
-            print("  layers")
-            for d in data:
-                print("    name:    {}".format(data[d].name))
-                print("    offset:  {}".format(data[d].offset))
-                print("    dims:    {}".format(data[d].dims))
-                print("    channel:")
-                print("      name:     {}".format(data[d].channel.name))
-                print("      colormap: {}".format(data[d].channel.colormap))
-                print("      data:     {}".format(data[d].channel.data))
-                if not data[d].depth is None:
-                    print("    depth:   {}".format(data[d].depth.name))
-                    print("             {}".format(data[d].depth.data))
-                if not data[d].shadow is None:
-                    print("    shadow:  {}".format(data[d].shadow.name))
-                    print("             {}".format(data[d].shadow.data))
+        # test render
+        renderer = TestRenderer()
+        image = renderer.render(iview)
+
     #
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
