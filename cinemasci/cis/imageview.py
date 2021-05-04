@@ -75,6 +75,14 @@ class channel:
         self._name = value
 
     @property
+    def colormap(self):
+        return self._colormap
+
+    @colormap.setter
+    def colormap(self, value):
+        self._colormap = value
+
+    @property
     def url(self):
         return self._url
 
@@ -252,13 +260,15 @@ class imageview:
             newlayer = layer(l)
             newlayer.name = l
             newlayer.dims = ldata["dims"]
-            newlayer.dims = ldata["offset"]
+            newlayer.offset = ldata["offset"]
             self.data[l] = newlayer
 
             extract = self.cisview.get_channel_extract(self.image, l, self.active_channels[l])
+            cdata = self.cisview.get_channel_parameters(self.image, l, self.active_channels[l])
             newchannel = channel()
             newchannel.name = self.active_channels[l]
             newchannel.load(extract[0])
+            newchannel.colormap = cdata["colormap"]
             newlayer.channel = newchannel
 
             # load the depth map

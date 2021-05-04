@@ -195,9 +195,23 @@ class cdbview:
                     self.cdb.tablename, image, layer, channel)
         results = self.cdb.execute(query)
         data = { 
-                    "variable": results[0][0], 
-                    "range"   : [results[0][1], results[0][2]]
-                }
+                    "variable": {
+                        "name"  : results[0][0], 
+                        "range" : [results[0][1], results[0][2]]
+                    }
+               }
+
+        if "CISColormap" in self.CISParams:
+            query = "SELECT CISColormap, FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
+                        self.cdb.tablename, image, layer, channel)
+            results = self.cdb.execute(query)
+            data["colormap"] = results[0][0]
+
+        else:
+            data["colormap"] = { 
+                                "source": "matplotlib",
+                                "name"  : "gray"
+                               }
 
         return data
 

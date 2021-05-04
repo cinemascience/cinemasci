@@ -86,8 +86,18 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(results, {'dims': [100, 200], 'offset': [0, 10]})
 
         results = cview.get_channel_parameters("i000", "l000", "temperature")
-        self.assertEqual(results, {'variable': 'temperature', 'range': ['10.0', '100.0']})
-
+        self.assertEqual(   results, 
+                            {
+                                'variable': {
+                                    'name' : 'temperature', 
+                                    'range': ['10.0', '100.0']
+                                },
+                                'colormap' : {
+                                    'source' : 'matplotlib',
+                                    'name'   : 'gray'
+                                }
+                            }
+                        )
 
 
     def test_create_image_views(self):
@@ -144,7 +154,7 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.origin, "UL")
 
         # iterate over the datastructure
-        if False:
+        if True:
             print("printing image")
             print("  dims       :   {}".format(iview.dims))
             print("  origin     : {}".format(iview.origin))
@@ -155,9 +165,12 @@ class TestCIS(unittest.TestCase):
             print("  layers")
             for d in data:
                 print("    name:    {}".format(data[d].name))
+                print("    offset:  {}".format(data[d].offset))
                 print("    dims:    {}".format(data[d].dims))
-                print("    channel: {}".format(data[d].channel.name))
-                print("             {}".format(data[d].channel.data))
+                print("    channel:")
+                print("      name:     {}".format(data[d].channel.name))
+                print("      colormap: {}".format(data[d].channel.colormap))
+                print("      data:     {}".format(data[d].channel.data))
                 if not data[d].depth is None:
                     print("    depth:   {}".format(data[d].depth.name))
                     print("             {}".format(data[d].depth.data))
