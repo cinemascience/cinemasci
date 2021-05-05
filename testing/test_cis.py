@@ -29,6 +29,11 @@ class TestRenderer():
         image[:, :, 0] = scalars
         return image
 
+        # values = colormap[:, 0]
+        # rgbs = colormap[:, 2:]
+        # cmap_fn = interp1d(values, rgbs, axis=0)
+        # return cmap_fn(scalars)
+
     @staticmethod
     def blend(dest, src, mask):
         dest[mask] = src[mask]
@@ -106,7 +111,7 @@ class TestRenderer():
                 # else:
                 # print("NOT using SHADOW information")
 
-        return None
+        return (canvas, depth)
 
 
 class TestCIS(unittest.TestCase):
@@ -297,4 +302,4 @@ class TestCIS(unittest.TestCase):
         iview.update()
 
         renderer = TestRenderer()
-        image = renderer.render(iview)
+        (image, depth) = renderer.render(iview)
