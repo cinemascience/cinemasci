@@ -242,6 +242,10 @@ class TestCIS(unittest.TestCase):
         iview.activate_channel("l001", "pressure")
         iview.activate_channel("l002", "procID")
 
+        self.assertEqual(cview.get_image({"time": "0.0"}), "i000")
+        self.assertEqual(cview.get_image({"time": "1.0"}), "i001")
+        self.assertEqual(cview.get_image({"time": "2.0"}), "i002")
+
         # load data into the image view 
             # set the image
         iview.image = "i000"

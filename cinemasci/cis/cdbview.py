@@ -20,7 +20,7 @@ class CISPARAMS(Enum):
 
         @staticmethod
         def contains(value):
-            if value in CISPARAMS.__members__.values():
+            if value in [e.value for e in CISPARAMS]: 
                 return True
             else:
                 return False
@@ -77,11 +77,11 @@ class cdbview:
         self._depth     = self.__query_depth()
         self._shadow    = self.__query_shadow()
 
-    def get_cdb_parameters():
+    def get_cdb_parameters(self):
         return self.parameters
 
-    def get_cis_parameters():
-        return self.CISParameters
+    def get_cis_parameters(self):
+        return self.CISParams
 
     def __get_image_names(self):
         query = "SELECT DISTINCT CISImage from {}".format(self.cdb.tablename)
@@ -234,4 +234,26 @@ class cdbview:
                                }
 
         return data
+
+    #
+    # get the image for a parameter set
+    #
+    def get_image(self, params):
+        query = "SELECT DISTINCT CISImage from {} WHERE ".format(self.cdb.tablename)
+        
+        first = True
+        for key in params: 
+            if not first:
+                query = query + " AND "
+            else:
+                first = False
+            value = params[key]
+            query = query + "{} = \'{}\' ".format(key, value)
+        results = self.cdb.execute(query)
+
+        retval = results[0][0]
+        if len(results) != 1:
+            print("ERROR: incorrect return from image query")
+
+        return retval 
 
