@@ -1,5 +1,7 @@
 from . import layer
 from . import channel
+import json
+import os
 
 #
 # imageview class
@@ -174,10 +176,32 @@ class imageview:
         # return a default gray colormap if nothing else
         colormap = {
                     "colorspace" : "rgb",
-                    "points" : [{'r': 0.0, 'g': 0.0, 'b': 0.0, 'x': 0.0, 'a': 1.0},
-                                {'r': 1.0, 'g': 1.0, 'b': 1.0, 'x': 1.0, 'a': 1.0},
+                    "points" : [{'x': 0.0, 'r': 0.0, 'g': 0.0, 'b': 0.0, 'a': 1.0},
+                                {'x': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0, 'a': 1.0},
                                ]
                    }
+
+        if "type" in params:
+            # for now, parse as a local file
+            # TODO: add logic to detect and load remote URLs
+            if params["type"] is "url":
+                # this path is currently required to be local to the cdb
+                fullpath = os.path.join(self.cisview.cdb.path, params["url"])
+
+                colormap["colorspace"] = "rgb"
+                colormap["points"] = []
+                with open(fullpath) as cmfile:
+                    data = json.load(cmfile)
+                    numpoints = int(len(data[0]["RGBPoints"])/4)
+                    for i in range(numpoints):
+                        colormap["points"].append(
+                                                   {'x': data[0]["RGBPoints"][i*4],
+                                                    'r': data[0]["RGBPoints"][i*4+1],
+                                                    'g': data[0]["RGBPoints"][i*4+2],
+                                                    'b': data[0]["RGBPoints"][i*4+3],
+                                                    'a': 1.0 
+                                                   }
+                                                 )
 
         return colormap
 

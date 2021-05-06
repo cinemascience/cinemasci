@@ -94,7 +94,8 @@ class TestCIS(unittest.TestCase):
                                  'range': ['10.0', '100.0']
                              },
                              'colormap': {
-                                 'type': 'default'
+                                 'type': 'url',
+                                 'url' : 'colormaps/cooltowarm.json'
                              }
                          }
                          )
@@ -153,15 +154,14 @@ class TestCIS(unittest.TestCase):
 
         # check a colormap
         layers = iview.get_layer_data()
-        for l in layers:
-            self.assertEqual('rgb', layers[l].channel.colormap["colorspace"])
-            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["r"])
-            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["g"])
-            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["b"])
-            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["x"])
-            self.assertEqual(1.0,   layers[l].channel.colormap["points"][1]["x"])
-            self.assertEqual(1.0,   layers[l].channel.colormap["points"][0]["a"])
-            self.assertEqual(1.0,   layers[l].channel.colormap["points"][1]["a"])
+        l = 'l000'
+        self.assertEqual(   'rgb', layers[l].channel.colormap["colorspace"])
+        self.assertEqual(   layers[l].channel.colormap["points"][0], 
+                            {'x': 0.0, 'r': 0.23137254902, 'g': 0.298039215686, 'b': 0.752941176471, 'a': 1.0} ) 
+        self.assertEqual(   layers[l].channel.colormap["points"][1], 
+                            {'x': 0.5, 'r': 0.865, 'g': 0.865, 'b': 0.865, 'a': 1.0} )
+        self.assertEqual(   layers[l].channel.colormap["points"][2], 
+                            {'x': 1, 'r': 0.705882352941, 'g': 0.0156862745098, 'b': 0.149019607843, 'a': 1.0} )
 
         # check the updated iview object
         self.assertEqual(iview.dims, [1024, 768])

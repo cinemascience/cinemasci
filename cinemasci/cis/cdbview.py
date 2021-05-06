@@ -17,6 +17,7 @@ class CISPARAMS(Enum):
         channelVarType  = "CISChannelVarType"
         channelVarMin   = "CISChannelVarMin"
         channelVarMax   = "CISChannelVarMax"
+        channelColormap = "CISChannelColormap"
 
         @staticmethod
         def contains(value):
@@ -214,25 +215,27 @@ class cdbview:
         query = "SELECT CISChannelVar, CISChannelVarMin, CISChannelVarMax from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\' LIMIT 1".format(
                     self.cdb.tablename, image, layer, channel)
         results = self.cdb.execute(query)
+
+        # set the default colormap value, in preparation for the next logic about the colormap
         data = { 
                     "variable": {
                         "name"  : results[0][0], 
                         "range" : [results[0][1], results[0][2]]
+                    },
+                    "colormap": {
+                        "type" : "default"
                     }
                }
 
-        if "CISColormap" in self.CISParams:
-            query = "SELECT CISColormap, FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
+        if "CISChannelColormap" in self.CISParams:
+            query = "SELECT CISChannelColormap FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
                         self.cdb.tablename, image, layer, channel)
             results = self.cdb.execute(query)
-            data["colormap"] = results[0][0]
 
-        else:
-            # if none is present, return a default colormap
-            data["colormap"] = { 
-                                 "type" : "default"
-                               }
-
+            if not results[0][0] is "":
+                data["colormap"]["type"] = "url"
+                data["colormap"]["url"] = results[0][0]
+                    
         return data
 
     #
