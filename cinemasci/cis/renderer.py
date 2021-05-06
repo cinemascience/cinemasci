@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Renderer():
+class Renderer:
 
     def __init__(self):
         return
@@ -35,7 +35,7 @@ class Renderer():
 
     @staticmethod
     def depth_composite(dest_color, dest_z, src_color, src_z):
-        mask = np.nan_to_num(dest_z, nan=np.inf) < \
+        mask = np.nan_to_num(dest_z, nan=np.inf) > \
                np.nan_to_num(src_z, nan=np.inf)
         Renderer.blend(dest_color, src_color, mask)
         Renderer.blend(dest_z, src_z, mask)
@@ -61,4 +61,4 @@ class Renderer():
                                          colored, layer.depth.data)
             else:
                 canvas = Renderer.paste(canvas, colored, layer.offset)
-        return canvas, depth
+        return canvas.transpose((1, 0, 2)), depth.T

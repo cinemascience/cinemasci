@@ -198,3 +198,8 @@ class TestCIS(unittest.TestCase):
 
         renderer = Renderer()
         (image, depth) = renderer.render(iview)
+
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
