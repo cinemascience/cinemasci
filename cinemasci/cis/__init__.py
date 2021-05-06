@@ -1,6 +1,7 @@
 # from . import colormap
 from . import imageview
 from . import cdbview
+from . import renderer
 
 
 class cis:

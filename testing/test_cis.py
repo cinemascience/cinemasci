@@ -1,117 +1,8 @@
 import unittest
 
-import numpy as np
-
 import cinemasci
 import cinemasci.cis
-
-
-class TestRenderer():
-
-    def __init__(self):
-        return
-
-    # Paste buffer 'src' to buffer 'dest' at the 'offset' assuming dest is
-    # large enough.
-    @staticmethod
-    def paste(dest, src, offset):
-        ends = offset + src.shape
-        # TODO: check on ends[] such that it actually fits. Does numpy
-        #  automatically do this?
-        dest[offset[0]:ends[0], offset[1]:ends[1], :] = src
-        return dest
-
-    # Color a scalar value buffer 'scalars' by the 'colormap'
-    @staticmethod
-    def color(scalars, colormap):
-        # TODO: this is an NOP, replace it with the real stuff
-        image = np.zeros((scalars.shape[0], scalars.shape[1], 3))
-        image[:, :, 0] = scalars
-        return image
-
-        # values = colormap[:, 0]
-        # rgbs = colormap[:, 2:]
-        # cmap_fn = interp1d(values, rgbs, axis=0)
-        # return cmap_fn(scalars)
-
-    @staticmethod
-    def blend(dest, src, mask):
-        dest[mask] = src[mask]
-
-    @staticmethod
-    def depth_composite(dest_color, dest_z, src_color, src_z):
-        mask = np.nan_to_num(dest_z, nan=np.inf) < \
-               np.nan_to_num(src_z, nan=np.inf)
-        TestRenderer.blend(dest_color, src_color, mask)
-        TestRenderer.blend(dest_z, src_z, mask)
-
-    #
-    # an example of how to iterate over the datastructure
-    #
-    def render(self, iview):
-
-        # FXIME: this assumes RGB rather than RGBA color
-        canvas = np.zeros((iview.dims[0], iview.dims[1], 3), float)
-        depth = np.ones((iview.dims[0], iview.dims[1])) * np.inf
-
-        # TODO: how to make use of 'origin'?
-        layers = iview.get_layer_data()
-        for name, layer in layers.items():
-            # TODO: where is the actual predefined colormaps aka. cis.colormaps?
-            data = layer.channel.data
-            colored = TestRenderer.color(data, layer.channel.colormap)
-            rectangle = [
-                slice(layer.offset[0], layer.offset[0] + data.shape[0]),
-                slice(layer.offset[1], layer.offset[1] + data.shape[1])]
-            if iview.use_depth:
-                TestRenderer.depth_composite(canvas[tuple(rectangle)],
-                                             depth[tuple(rectangle)],
-                                             colored, layer.depth.data)
-            else:
-                canvas = TestRenderer.paste(canvas, colored, layer.offset)
-                # else:
-                # print("printing image")
-                # print("  dims       : {}".format(iview.dims))
-                # print("  origin     : {}".format(iview.origin))
-                # print("  use_depth  : {}".format(iview.use_depth))
-                # print("  use_shadow : {}".format(iview.use_shadow))
-                # print()
-                #
-                # #
-                # # layer data is a dictionary of layer objects
-                # #
-                # # 1. layers are composited in iterator order
-                # # 2. each layer has a single active layer, and optional
-                # #    'depth' and 'shadow' layers that can be used
-                # #
-                # print("  layers")
-                # data = iview.get_layer_data()
-                # for l in data:
-                #     print("    name:    {}".format(data[l].name))
-                # print("    offset:  {}".format(data[l].offset))
-                # print("    dims:    {}".format(data[l].dims))
-                # print("    channel:")
-                # print("      name:     {}".format(data[l].channel.name))
-                # print("      colormap: {}".format(data[l].channel.colormap))
-                # print("      data:     {}".format(data[l].channel.data))
-                #
-                # # depth flag indicates whether or not to use the depth info
-                # if iview.use_depth:
-                #     print("    depth:")
-                # print("      name:  {}".format(data[l].depth.name))
-                # print("             {}".format(data[l].depth.data))
-                # else:
-                # print("NOT using DEPTH information")
-                #
-                # # shadow flag indicates whether or not to use the shadow info
-                # if iview.use_shadow:
-                #     print("    shadow:")
-                # print("      name:  {}".format(data[l].shadow.name))
-                # print("             {}".format(data[l].shadow.data))
-                # else:
-                # print("NOT using SHADOW information")
-
-        return (canvas, depth)
+from cinemasci.cis.renderer import Renderer
 
 
 class TestCIS(unittest.TestCase):
@@ -266,7 +157,7 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.origin, "UL")
 
         # test render
-        renderer = TestRenderer()
+        renderer = Renderer()
         image = renderer.render(iview)
 
     #
@@ -295,11 +186,15 @@ class TestCIS(unittest.TestCase):
         iview.activate_channel("l001", "pressure")
         iview.activate_channel("l002", "procID")
 
+        self.assertEqual(cview.get_image({"time": "0.0"}), "i000")
+        self.assertEqual(cview.get_image({"time": "1.0"}), "i001")
+        self.assertEqual(cview.get_image({"time": "2.0"}), "i002")
+
         # load data into the image view 
         # set the image
         iview.image = "i000"
         # update, which loads data per the state
         iview.update()
 
-        renderer = TestRenderer()
+        renderer = Renderer()
         (image, depth) = renderer.render(iview)
