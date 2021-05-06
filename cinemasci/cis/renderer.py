@@ -40,7 +40,8 @@ class Renderer:
         Renderer.blend(dest_color, src_color, mask)
         Renderer.blend(dest_z, src_z, mask)
 
-    def render(self, iview):
+    @staticmethod
+    def render(iview):
 
         # FXIME: this assumes RGB rather than RGBA color
         canvas = np.zeros((iview.dims[0], iview.dims[1], 3), float)

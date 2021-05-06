@@ -196,8 +196,7 @@ class TestCIS(unittest.TestCase):
         # update, which loads data per the state
         iview.update()
 
-        renderer = Renderer()
-        (image, depth) = renderer.render(iview)
+        (image, depth) = Renderer.render(iview)
 
         import matplotlib.pyplot as plt
         import skimage.util
