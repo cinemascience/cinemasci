@@ -61,4 +61,6 @@ class Renderer:
                                          colored, layer.depth.data)
             else:
                 canvas = Renderer.paste(canvas, colored, layer.offset)
+        # iview.dims is in row by column rather than x-dims by y-dims,
+        # we need to transpose the two axes.
         return canvas.transpose((1, 0, 2)), depth.T
