@@ -18,6 +18,18 @@ class channel:
 
     @property
     def colormap(self):
+        """ A colormap is a dictionary with at least one entry, 
+            'points', which is a list of dicts each of which is expected 
+            to have five elements:
+
+            'r': r float value
+            'g': g float value
+            'b': b float value
+            'x': x position float value
+            'a': alpha float value
+
+            If there is no entry "colorspace", then "rgb" is assumed.
+        """
         return self._colormap
 
     @colormap.setter

@@ -3,7 +3,6 @@
 #
 class layer:
     def __init__(self, name):
-        self.channel = []
         self._depth = None
         self._shadow = None
 

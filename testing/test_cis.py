@@ -94,8 +94,7 @@ class TestCIS(unittest.TestCase):
                                  'range': ['10.0', '100.0']
                              },
                              'colormap': {
-                                 'source': 'matplotlib',
-                                 'name': 'gray'
+                                 'type': 'default'
                              }
                          }
                          )

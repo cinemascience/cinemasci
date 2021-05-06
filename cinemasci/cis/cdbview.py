@@ -228,9 +228,9 @@ class cdbview:
             data["colormap"] = results[0][0]
 
         else:
+            # if none is present, return a default colormap
             data["colormap"] = { 
-                                "source": "matplotlib",
-                                "name"  : "gray"
+                                 "type" : "default"
                                }
 
         return data

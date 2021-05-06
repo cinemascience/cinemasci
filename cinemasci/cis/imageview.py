@@ -148,7 +148,7 @@ class imageview:
             newchannel = channel.channel()
             newchannel.name = self.active_channels[l]
             newchannel.load(extract[0])
-            newchannel.colormap = cdata["colormap"]
+            newchannel.colormap = self.load_colormap(cdata["colormap"])
             newlayer.channel = newchannel
 
             # load the depth map
@@ -169,3 +169,16 @@ class imageview:
 
     def get_layer_data(self):
         return self.data
+
+    def load_colormap(self, params):
+        # return a default gray colormap if nothing else
+        colormap = {
+                    "colorspace" : "rgb",
+                    "points" : [{'r': 0.0, 'g': 0.0, 'b': 0.0, 'x': 0.0, 'a': 1.0},
+                                {'r': 1.0, 'g': 1.0, 'b': 1.0, 'x': 1.0, 'a': 1.0},
+                               ]
+                   }
+
+        return colormap
+
+
