@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import interp1d
 
 
 class Renderer:
@@ -19,15 +20,17 @@ class Renderer:
     # Color a scalar value buffer 'scalars' by the 'colormap'
     @staticmethod
     def color(scalars, colormap):
-        # TODO: this is an NOP, replace it with the real stuff
-        image = np.zeros((scalars.shape[0], scalars.shape[1], 3))
-        image[:, :, 0] = scalars
-        return image
-
-        # values = colormap[:, 0]
-        # rgbs = colormap[:, 2:]
-        # cmap_fn = interp1d(values, rgbs, axis=0)
-        # return cmap_fn(scalars)
+        # TODO: extract this to make_rgb_colormap
+        points = np.asarray(colormap['points'])
+        values = np.zeros(len(points))
+        rgbs = np.zeros((len(points), 3))
+        for i in range(len(points)):
+            values[i] = points[i]['x']
+            rgbs[i, 0] = points[i]['r']
+            rgbs[i, 1] = points[i]['g']
+            rgbs[i, 2] = points[i]['b']
+        cmap_fn = interp1d(values, rgbs, axis=0)
+        return cmap_fn(scalars)
 
     @staticmethod
     def blend(dest, src, mask):
