@@ -151,6 +151,18 @@ class TestCIS(unittest.TestCase):
         iview.image = "i000"
         iview.update()
 
+        # check a colormap
+        layers = iview.get_layer_data()
+        for l in layers:
+            self.assertEqual('rgb', layers[l].channel.colormap["colorspace"])
+            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["r"])
+            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["g"])
+            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["b"])
+            self.assertEqual(0.0,   layers[l].channel.colormap["points"][0]["x"])
+            self.assertEqual(1.0,   layers[l].channel.colormap["points"][1]["x"])
+            self.assertEqual(1.0,   layers[l].channel.colormap["points"][0]["a"])
+            self.assertEqual(1.0,   layers[l].channel.colormap["points"][1]["a"])
+
         # check the updated iview object
         self.assertEqual(iview.dims, [1024, 768])
         self.assertEqual(iview.origin, "UL")
