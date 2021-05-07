@@ -165,21 +165,37 @@ class cdb:
         path = "/"
         first = True
         for key in self.parameternames:
-            if not first:
-                query = query + " AND "
-                path = path + "/"
-            else:
-                first = False
 
             if key in parameters:
+                if not first:
+                    query = query + " AND "
+                    path = path + "/"
+                else:
+                    first = False
                 value = parameters[key]
-            else:
-                value = Null
-
-            query = query + "{} = \'{}\' ".format(key, value)
-            path = path + value  
+                query = query + "{} = \'{}\' ".format(key, value)
+                path = path + value  
 
         return path, query
+
+    def get_params_for_params(self, parameters):
+        query = "SELECT * from {} WHERE ".format(self.tablename)
+
+        first = True
+        for key in self.parameternames:
+            if key in parameters:
+                if not first:
+                    query = query + " AND "
+                else:
+                    first = False
+
+                value = parameters[key]
+                query = query + "{} = \'{}\' ".format(key, value)
+
+        cur = self.con.cursor()
+        results = cur.execute(query)
+
+        return results  
 
     def get_extracts(self, parameters):
         """Return the extracts for a set of parameters
@@ -332,4 +348,11 @@ class cdb:
             cfile.write("    \"version\": \"{}\"\n".format(version.Version))
             cfile.write("  }\n" )
             cfile.write("}\n")
+
+
+    def execute(self, query):
+        cur = self.con.cursor()
+        cur.execute(query)
+
+        return cur.fetchall()
 

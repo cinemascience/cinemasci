@@ -54,7 +54,7 @@ These are examples that can be run using the `test-url.html` file, or by pasting
     http://127.0.0.1:8200/?viewer=explorer&databases=data/sphere.cdb
 ```
 <p align="center">
-<img src="doc/img/explorer.png"></img>
+<img src="img/explorer.png"></img>
 </p>
 
 ```
@@ -63,7 +63,7 @@ These are examples that can be run using the `test-url.html` file, or by pasting
     http://127.0.0.1:8200/?viewer=view&databases=data/sphere.cdb
 ```
 <p align="center">
-<img src="doc/img/view_single.png"></img>
+<img src="img/view_single.png"></img>
 </p>
 
 ```
@@ -72,6 +72,6 @@ These are examples that can be run using the `test-url.html` file, or by pasting
     http://127.0.0.1:8200/?viewer=view&databases=data/sedov1.cdb,data/sedov2.cdb
 ```
 <p align="center">
-<img src="doc/img/view_multiple.png"></img>
+<img src="img/view_multiple.png"></img>
 </p>
 
