@@ -12,8 +12,6 @@ class Renderer:
     @staticmethod
     def paste(dest, src, offset):
         ends = offset + src.shape
-        # TODO: check on ends[] such that it actually fits. Does numpy
-        #  automatically do this?
         dest[offset[0]:ends[0], offset[1]:ends[1], :] = src
         return dest
 
@@ -21,7 +19,7 @@ class Renderer:
     @staticmethod
     def color(scalars, colormap):
         # TODO: extract this to make_rgb_colormap
-        points = np.asarray(colormap['points'])
+        points = colormap['points']
         values = np.zeros(len(points))
         rgbs = np.zeros((len(points), 3))
         for i in range(len(points)):
@@ -53,7 +51,6 @@ class Renderer:
         # TODO: how to make use of 'origin'?
         layers = iview.get_layer_data()
         for name, layer in layers.items():
-            # TODO: where is the actual predefined colormaps aka. cis.colormaps?
             data = layer.channel.data
             colored = Renderer.color(data, layer.channel.colormap)
             rectangle = [

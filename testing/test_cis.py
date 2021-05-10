@@ -172,6 +172,9 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.dims, [1024, 768])
         self.assertEqual(iview.origin, "UL")
 
+        # test render
+        image = Renderer.render(iview)
+
     #
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
