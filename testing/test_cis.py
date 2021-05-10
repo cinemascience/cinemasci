@@ -1,4 +1,5 @@
 import unittest
+import numpy
 
 import cinemasci
 import cinemasci.cis
@@ -152,6 +153,10 @@ class TestCIS(unittest.TestCase):
         iview.image = "i000"
         iview.update()
 
+        # check some float values
+        layers = iview.get_layer_data()
+        self.assertEqual(0.4993848879589741, numpy.nanmean(layers['l000'].channel.data))
+
         # check a colormap
         layers = iview.get_layer_data()
         l = 'l000'
@@ -166,10 +171,6 @@ class TestCIS(unittest.TestCase):
         # check the updated iview object
         self.assertEqual(iview.dims, [1024, 768])
         self.assertEqual(iview.origin, "UL")
-
-        # test render
-        renderer = Renderer()
-        image = renderer.render(iview)
 
     #
     # an example of loading a cinema dataset that includes CIS data

@@ -100,17 +100,14 @@ class imageview:
 
     def get_layer_data(self, layer):
         channel = self.get_active_channel(layer) 
-        data = self.cis.get_image(self.image).get_layer(layer).get_channel(channel).data
+        data = self.cisview.get_image(self.image).get_layer(layer).get_channel(channel).data
         return data 
 
-    def get_image_dims(self):
-        return self.cis.dims
-
     def get_layer_dims(self, layer):
-        return self.cis.get_image(self.image).get_layer(layer).dims 
+        return self.cisview.get_image(self.image).get_layer(layer).dims 
 
     def get_layer_offset(self, layer):
-        return self.cis.get_image(self.image).get_layer(layer).offset 
+        return self.cisview.get_image(self.image).get_layer(layer).offset 
 
     def get_active_channel(self, layer):
         results = None
@@ -121,7 +118,7 @@ class imageview:
         return results    
 
     def get_variable_range(self, layer):
-        var = self.cis.get_variable(self.get_active_channel(layer))
+        var = self.cisview.get_variable(self.get_active_channel(layer))
 
         data = [var["min"], var["max"]] 
         if var["type"] == "float":
