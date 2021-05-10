@@ -12,4 +12,8 @@ cp     ../../data/cisviewer/* .
 
 jupyter notebook cisviewer.ipynb
 
+# if testing ascent conversion
+# cp -rf ../../../bin/pantheon.cdb .
+# jupyter notebook ascent.ipynb
+
 popd

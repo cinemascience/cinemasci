@@ -4,10 +4,14 @@ import glob
 import cinemasci
 
 data = {} 
-basename = "scalar_rendering"
+basename = "pantheon_output"
 
 cdbname = "pantheon.cdb"
-cycles  = ["000000", "000001", "000002"]
+cycles  =   [
+                "000000", "000010", "000020", "000030", "000040", "000050", "000060", "000070", "000080", "000090",         
+                "000100", "000110", "000120", "000130", "000140", "000150", "000160", "000170", "000180", "000190",         
+                "000200", "000210", "000220", "000230", "000240", "000250", "000260", "000270"
+            ] 
 
 # create the cinema database
 cdb = cinemasci.new("cdb", {"path": cdbname})
@@ -36,6 +40,9 @@ for c in cycles:
                 data[v] = bpf.get("fields/{}/values".format(v))[...].reshape((w,h))
                 numpy.savez_compressed("{}/{}".format(cdbname, str(curextract).zfill(6)), data=data[v])
 
+                channel = v
+                if channel is 'depth':
+                    channel = 'CISDepth'
                 # insert an entry in to the database
                 id = cdb.add_entry({'cycle':            c, 
                                     'CISImage':         'cycle_{}'.format(c.zfill(6)), 
@@ -48,7 +55,7 @@ for c in cycles:
                                     'CISLayerOffsetY':  0, 
                                     'CISLayerWidth':    w, 
                                     'CISLayerHeight':   h, 
-                                    'CISChannel':       v, 
+                                    'CISChannel':       channel, 
                                     'CISChannelVar':    v, 
                                     'CISChannelType':   'float', 
                                     'FILE':             '{}.npz'.format(str(curextract).zfill(6))})

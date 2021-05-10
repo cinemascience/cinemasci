@@ -191,6 +191,8 @@ class cdbview:
         if "CISOrigin" in self.CISParams:
             query = "SELECT CISOrigin from {} LIMIT 1".format(self.cdb.tablename)
             results = self.cdb.execute(query)
+            data["origin"] = results[0][0]
+
         else:
             data["origin"] = "UL"
 
@@ -212,20 +214,27 @@ class cdbview:
     #
     #
     def get_channel_parameters(self, image, layer, channel):
-        query = "SELECT CISChannelVar, CISChannelVarMin, CISChannelVarMax from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\' LIMIT 1".format(
+        query = "SELECT CISChannelVar from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
                     self.cdb.tablename, image, layer, channel)
         results = self.cdb.execute(query)
 
         # set the default colormap value, in preparation for the next logic about the colormap
         data = { 
                     "variable": {
-                        "name"  : results[0][0], 
-                        "range" : [results[0][1], results[0][2]]
+                        "name"  : results[0][0]
                     },
                     "colormap": {
                         "type" : "default"
                     }
                }
+
+        if ("CISChannelVarMin" in self.CISParams) and ("CISChannelVarMax") in self.CISParams:
+            query = "SELECT CISChannelVarMin, CISChannelVarMax FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
+                        self.cdb.tablename, image, layer, channel)
+            results = self.cdb.execute(query)
+
+            if not results[0][0] is "":
+                data["variable"]["range"] = [results[0][0], results[0][1]] 
 
         if "CISChannelColormap" in self.CISParams:
             query = "SELECT CISChannelColormap FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(

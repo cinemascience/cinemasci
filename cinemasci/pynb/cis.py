@@ -1,4 +1,3 @@
-from IPython.display import Image, display
 import ipywidgets as widgets
 
 class ParamSet():
@@ -32,5 +31,15 @@ class CISViewer():
         return
 
     def display(self, image):
-        display(image)
+        import matplotlib.pyplot as plt
+        import skimage.util
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            # plt.figure(figsize=(1,1))
+            # plt.imshow(skimage.util.img_as_ubyte(image))
+            plt.imshow(image)
+            plt.axis('off')
+            plt.show()
+
 
