@@ -98,7 +98,7 @@ class ascent():
                         vmax = numpy.nanmax(data)
                         if vmin < self.minmax[v][0]:
                             self.minmax[v][0] = vmin
-                        if vmax < self.minmax[v][1]:
+                        if vmax > self.minmax[v][1]:
                             self.minmax[v][1] = vmax
                     else:
                         self.minmax[v] = [numpy.nanmin(data), numpy.nanmax(data)]

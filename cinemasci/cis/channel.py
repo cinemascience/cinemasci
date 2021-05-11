@@ -88,7 +88,7 @@ class channel:
     def varmax(self):
         return self._varmax
 
-    @var.setter
+    @varmax.setter
     def varmax(self, value):
         self._varmax = value
 
