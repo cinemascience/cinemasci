@@ -215,9 +215,6 @@ class TestCIS(unittest.TestCase):
         # update, which loads data per the state
         iview.update()
 
-        # check some float values
-        layers = iview.get_layer_data()
-
         (image, depth) = Renderer.render(iview)
 
         import matplotlib.pyplot as plt
@@ -229,7 +226,7 @@ class TestCIS(unittest.TestCase):
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
     #
-    def dont_test_render_ascent_data(self):
+    def test_render_ascent_data(self):
         cdb = cinemasci.new("cdb", {"path": TestCIS.ascent_cdb_path})
 
         self.assertTrue(cdb.read_data_from_file())
@@ -247,6 +244,10 @@ class TestCIS(unittest.TestCase):
 
         # load data into the image view 
         iview.update()
+
+        # check some float values
+        layers = iview.get_layer_data()
+        self.assertEqual( 2.027437210083008, numpy.nanmean(layers['layer0'].channel.data))
 
         # render
         (image, depth) = Renderer.render(iview)
