@@ -7,9 +7,10 @@ from cinemasci.cis.renderer import Renderer
 
 
 class TestCIS(unittest.TestCase):
-    gold_dir = "testing/gold/cdb"
-    scratch_dir = "testing/scratch/cdb"
-    cdb_path = "testing/data/cis.cdb"
+    gold_dir        = "testing/gold/cdb"
+    scratch_dir     = "testing/scratch/cdb"
+    cdb_path        = "testing/data/cis.cdb"
+    ascent_cdb_path = "testing/data/pantheon_ascent-clover.cdb"
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
@@ -176,7 +177,6 @@ class TestCIS(unittest.TestCase):
 
         # test render
         image = Renderer.render(iview)
-
     #
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
@@ -215,6 +215,38 @@ class TestCIS(unittest.TestCase):
 
         (image, depth) = Renderer.render(iview)
 
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+    #
+    # an example of loading a cinema dataset that includes CIS data
+    # loading the CIS data, and then passing to a renderer
+    #
+    def test_render_ascent_data(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.ascent_cdb_path})
+
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
+
+        # set the imageview state
+        iview.image = "cycle_000100"
+        iview.use_depth = True
+        iview.use_shadow = False
+        iview.activate_layer("layer0")
+        iview.activate_channel("layer0", "energy")
+
+        # load data into the image view 
+        iview.update()
+
+        # render
+        (image, depth) = Renderer.render(iview)
+
+        # display the image
         import matplotlib.pyplot as plt
         import skimage.util
         plt.imshow(skimage.util.img_as_ubyte(image))
