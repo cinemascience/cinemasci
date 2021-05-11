@@ -18,7 +18,15 @@ class Renderer:
     # Color a scalar value buffer 'scalars' by the 'colormap'
     @staticmethod
     def color(scalars, colormap):
-        # TODO: extract this to make_rgb_colormap
+        cmap_fn, values = Renderer.make_rgb_colormap(colormap)
+        # rescale scalars to be within the range of the colormap
+        scalars = (scalars - np.nanmin(scalars)) / \
+                  (np.nanmax(scalars) - np.nanmin(scalars))
+        scalars = values.min() + scalars * (values.max() - values.min())
+        return cmap_fn(scalars)
+
+    @staticmethod
+    def make_rgb_colormap(colormap):
         assert colormap['colorspace'] == 'rgb'
         points = colormap['points']
         values = np.zeros(len(points))
@@ -29,10 +37,7 @@ class Renderer:
             rgbs[i, 1] = points[i]['g']
             rgbs[i, 2] = points[i]['b']
         cmap_fn = interp1d(values, rgbs, axis=0)
-        # rescale scalars to be within the range of the colormap
-        scalars = (scalars - np.nanmin(scalars)) / (np.nanmax(scalars) - np.nanmin(scalars))
-        scalars = values.min() + scalars * (values.max() - values.min())
-        return cmap_fn(scalars)
+        return cmap_fn, values
 
     @staticmethod
     def blend(dest, src, mask):
