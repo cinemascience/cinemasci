@@ -7,7 +7,7 @@ mkdir pynb
 pushd pynb
 
 cp -rf ../../../cinemasci .
-cp -rf ../../data/cis.cdb .
+cp -rf ../../gold/cis/linear/cis.cdb .
 cp     ../../data/cisviewer/* .
 
 jupyter notebook cisviewer.ipynb
