@@ -148,6 +148,10 @@ class imageview:
             newchannel.name = self.active_channels[l]
             newchannel.load(extract[0])
             newchannel.colormap = self.load_colormap(cdata["colormap"])
+            newchannel.var      = cdata["variable"]["name"]
+            newchannel.vartype  = cdata["variable"]["type"]
+            newchannel.varmin   = cdata["variable"]["min"]
+            newchannel.varmax   = cdata["variable"]["max"]
             newlayer.channel = newchannel
 
             # load the depth map

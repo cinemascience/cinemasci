@@ -211,7 +211,11 @@ class cdbview:
         return data
 
     #
-    #
+    # get variable, variable min/max and colormap from a channel if the data exists
+    # 
+    # Variable: required
+    # Min, Max are set to default, if not present (optional)
+    # Colormap are set to default, if not present (optional)
     #
     def get_channel_parameters(self, image, layer, channel):
         query = "SELECT CISChannelVar from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
@@ -221,12 +225,23 @@ class cdbview:
         # set the default colormap value, in preparation for the next logic about the colormap
         data = { 
                     "variable": {
-                        "name"  : results[0][0]
+                        "name"  : results[0][0],
+                        "type"  : "float",
+                        "min"   : -100000.0,
+                        "max"   :  100000.0
                     },
                     "colormap": {
                         "type" : "default"
                     }
                }
+
+        if ("CISChannelVarType" in self.CISParams) and ("CISChannelVarMax") in self.CISParams:
+            query = "SELECT CISChannelVarType FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
+                        self.cdb.tablename, image, layer, channel)
+            results = self.cdb.execute(query)
+
+            if not results[0][0] is "":
+                data["variable"]["type"] = results[0][0]
 
         if ("CISChannelVarMin" in self.CISParams) and ("CISChannelVarMax") in self.CISParams:
             query = "SELECT CISChannelVarMin, CISChannelVarMax FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
@@ -234,7 +249,8 @@ class cdbview:
             results = self.cdb.execute(query)
 
             if not results[0][0] is "":
-                data["variable"]["range"] = [results[0][0], results[0][1]] 
+                data["variable"]["min"] = results[0][0]
+                data["variable"]["max"] = results[0][1] 
 
         if "CISChannelColormap" in self.CISParams:
             query = "SELECT CISChannelColormap FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(

@@ -91,8 +91,10 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(results,
                          {
                              'variable': {
-                                 'name': 'temperature',
-                                 'range': ['10.0', '100.0']
+                                 'name' : 'temperature',
+                                 'type' : 'float',
+                                 'min'  : '10.0',
+                                 'max'  : '100.0',
                              },
                              'colormap': {
                                  'type': 'url',

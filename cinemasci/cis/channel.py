@@ -68,6 +68,38 @@ class channel:
     def type(self, value):
         self._type = value
 
+    @property
+    def var(self):
+        return self._var
+
+    @var.setter
+    def var(self, value):
+        self._var = value
+
+    @property
+    def varmin(self):
+        return self._varmin
+
+    @varmin.setter
+    def varmin(self, value):
+        self._varmin = value
+
+    @property
+    def varmax(self):
+        return self._varmax
+
+    @var.setter
+    def varmax(self, value):
+        self._varmax = value
+
+    @property
+    def vartype(self):
+        return self._vartype
+
+    @var.setter
+    def vartype(self, value):
+        self._vartype = value
+
     def load(self, url):
         self.url = url
         if os.path.isfile(url):
