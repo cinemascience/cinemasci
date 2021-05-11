@@ -20,8 +20,10 @@ class ParamSlider():
 class ParamSliders():
     def __init__(self, params):
         self.sliders = {}
-        for p in params: 
-            self.sliders[p] = ParamSlider({"name": p})
+
+        # don't do this yet
+        # for p in params: 
+        #     self.sliders[p] = ParamSlider({"name": p})
 
 class CISViewer():
 
