@@ -248,6 +248,7 @@ class TestCIS(unittest.TestCase):
         # check some float values
         layers = iview.get_layer_data()
         self.assertEqual( 2.027437210083008, numpy.nanmean(layers['layer0'].channel.data))
+        self.assertNotEqual( 0.0, numpy.nanmean(layers['layer0'].channel.data))
 
         # render
         (image, depth) = Renderer.render(iview)
