@@ -23,6 +23,7 @@ setuptools.setup(
         "scikit-image",
         "h5py"
     ],
+    scripts=['scripts/cisconvert'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
