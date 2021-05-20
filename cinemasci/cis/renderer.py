@@ -11,7 +11,7 @@ class Renderer:
     # large enough.
     @staticmethod
     def paste(dest, src, offset):
-        ends = offset + src.shape
+        ends = np.array(offset) + np.array(src.shape[0:1])
         dest[offset[0]:ends[0], offset[1]:ends[1], :] = src
         return dest
 
