@@ -237,6 +237,7 @@ class TestCIS(unittest.TestCase):
 
         # set the imageview state
         iview.image = "cycle_000100"
+            # CHANGE TO FALSE, and the test fails in the render
         iview.use_depth = True
         iview.use_shadow = False
         iview.activate_layer("layer0")
