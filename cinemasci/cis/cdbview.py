@@ -202,12 +202,27 @@ class cdbview:
     #
     #
     def get_layer_parameters(self, image, layer):
-        query = "SELECT CISLayerWidth, CISLayerHeight, CISLayerOffsetX, CISLayerOffsetY from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' LIMIT 1".format(self.cdb.tablename, image, layer)
-        results = self.cdb.execute(query)
         data = {
-                    "dims": [results[0][0], results[0][1]], 
-                    "offset": [results[0][2], results[0][3]]
+                    "dims"  : [0.0, 0.0],
+                    "offset": [0.0, 0.0] 
                }
+
+        # both must be present, or they are ignored
+        if ("CISLayerWidth" in self.CISParams) and ("CISLayerHeight" in self.CISParams):
+            query = "SELECT CISLayerWidth, CISLayerHeight from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' LIMIT 1".format(self.cdb.tablename, image, layer)
+            results = self.cdb.execute(query)
+            data["dims"] = [results[0][0], results[0][1]] 
+
+        else:
+            params = self.get_image_parameters()
+            data["dims"] = params["dims"] 
+
+        # both must be present, or they are ignored
+        if ("CISLayerOffsetX" in self.CISParams) and ("CISLayerOffsetY" in self.CISParams):
+            query = "SELECT CISLayerOffsetX, CISLayerOffsetY from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' LIMIT 1".format(self.cdb.tablename, image, layer)
+            results = self.cdb.execute(query)
+            data["offset"] = [results[0][0], results[0][1]] 
+
         return data
 
     #
@@ -218,14 +233,10 @@ class cdbview:
     # Colormap are set to default, if not present (optional)
     #
     def get_channel_parameters(self, image, layer, channel):
-        query = "SELECT CISChannelVar from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
-                    self.cdb.tablename, image, layer, channel)
-        results = self.cdb.execute(query)
-
         # set the default colormap value, in preparation for the next logic about the colormap
         data = { 
                     "variable": {
-                        "name"  : results[0][0],
+                        "name"  : None, 
                         "type"  : "float",
                         "min"   : -100000.0,
                         "max"   :  100000.0
@@ -235,22 +246,26 @@ class cdbview:
                     }
                }
 
-        if ("CISChannelVarType" in self.CISParams) and ("CISChannelVarMax") in self.CISParams:
+        if ("CISChannelVar" in self.CISParams):
+            query = "SELECT CISChannelVar from {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
+                        self.cdb.tablename, image, layer, channel)
+            results = self.cdb.execute(query)
+            data["variable"]["name"] = results[0][0]
+
+        if ("CISChannelVarType" in self.CISParams):
             query = "SELECT CISChannelVarType FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
                         self.cdb.tablename, image, layer, channel)
             results = self.cdb.execute(query)
 
-            if not results[0][0] is "":
-                data["variable"]["type"] = results[0][0]
+            data["variable"]["type"] = results[0][0]
 
-        if ("CISChannelVarMin" in self.CISParams) and ("CISChannelVarMax") in self.CISParams:
+        if ("CISChannelVarMin" in self.CISParams) and ("CISChannelVarMax" in self.CISParams):
             query = "SELECT CISChannelVarMin, CISChannelVarMax FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
                         self.cdb.tablename, image, layer, channel)
             results = self.cdb.execute(query)
 
-            if not results[0][0] is "":
-                data["variable"]["min"] = results[0][0]
-                data["variable"]["max"] = results[0][1] 
+            data["variable"]["min"] = results[0][0]
+            data["variable"]["max"] = results[0][1] 
 
         if "CISChannelColormap" in self.CISParams:
             query = "SELECT CISChannelColormap FROM {} WHERE CISImage = \'{}\' and CISLayer = \'{}\' and CISChannel = \'{}\'".format(
