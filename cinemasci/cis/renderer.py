@@ -20,9 +20,13 @@ class Renderer:
     def color(scalars, colormap):
         cmap_fn, values = Renderer.make_rgb_colormap(colormap)
         # rescale scalars to be within the range of the colormap
-        scalars = (scalars - np.nanmin(scalars)) / \
-                  (np.nanmax(scalars) - np.nanmin(scalars))
-        scalars = values.min() + scalars * (values.max() - values.min())
+        if np.nanmin(scalars) == np.nanmax(scalars):
+            # prevent divide by zero when scalars are the same values.
+            scalars = values.min()
+        else:
+            scalars = (scalars - np.nanmin(scalars)) / \
+                      (np.nanmax(scalars) - np.nanmin(scalars))
+            scalars = values.min() + scalars * (values.max() - values.min())
         return cmap_fn(scalars)
 
     @staticmethod
