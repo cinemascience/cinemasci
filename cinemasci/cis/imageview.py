@@ -15,6 +15,19 @@ class imageview:
     """
 
     @property
+    def background(self):
+        return self._background
+
+    @background.setter
+    def background(self, color):
+        # TODO check type of color
+        if (len(color) == 3) and (all(isinstance(value, (float, int)) for value in color)):
+            self._background = color
+        else:
+            print("ERROR: color arg must be three values, each either an int or float") 
+            self._background = [0.0, 0.0, 0.0]
+
+    @property
     def use_depth(self):
         return self._use_depth
 
@@ -77,6 +90,7 @@ class imageview:
         self.data = {}
         self._use_depth = False
         self._use_shadow = False
+        self.background = [0.0, 0.0, 0.0]
 
     def get_active_layers(self):
         return self.active_layers
