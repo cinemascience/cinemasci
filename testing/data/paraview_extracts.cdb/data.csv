@@ -1,4 +1,4 @@
-phi,producer,theta,time,FILE,CISVersion,CISImage,CISImageWidth,CISImageHeight,CISLayer,CISLayerWidth,CISLayerHeight,CISLayerOffsetX,CISLayerOffsetY,CISChannel,CISChannelVar
-000.00,Recolorable Image1,000.00,0,RenderView1_000000p=000.00t=000.00.npz,"1.0",i000,1400,1000,l000,1400,1000,0,0,scalars,scalars
-000.00,Recolorable Image1,060.00,0,RenderView1_000000p=000.00t=060.00.npz,"1.0",i001,1400,1000,l000,1400,1000,0,0,scalars,scalars
+phi,producer,theta,time,FILE,CISVersion,CISImage,CISImageWidth,CISImageHeight,CISLayer,CISLayerWidth,CISLayerHeight,CISLayerOffsetX,CISLayerOffsetY,CISChannel,CISChannelVar,CISChannelColormap
+000.00,Recolorable Image1,000.00,0,RenderView1_000000p=000.00t=000.00.npz,"1.0",i000,1400,1000,l000,1400,1000,0,0,scalars,scalars,colormap/blackbody.json
+000.00,Recolorable Image1,060.00,0,RenderView1_000000p=000.00t=060.00.npz,"1.0",i001,1400,1000,l000,1400,1000,0,0,scalars,scalars,colormap/cooltowarm.json
 000.00,Recolorable Image1,120.00,0,RenderView1_000000p=000.00t=120.00.npz,"1.0",i002,1400,1000,l000,1400,1000,0,0,scalars,scalars

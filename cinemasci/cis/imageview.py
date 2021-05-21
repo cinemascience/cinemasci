@@ -191,6 +191,7 @@ class imageview:
         # return a default gray colormap if nothing else
         colormap = {
                     "colorspace" : "rgb",
+                    "name" : "default",
                     "points" : [{'x': 0.0, 'r': 0.0, 'g': 0.0, 'b': 0.0, 'a': 1.0},
                                 {'x': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0, 'a': 1.0},
                                ]
