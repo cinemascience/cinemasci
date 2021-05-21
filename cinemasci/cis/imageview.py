@@ -88,8 +88,8 @@ class imageview:
         self.active_channels = {} 
         self.cisview = cview
         self.data = {}
-        self._use_depth = False
-        self._use_shadow = False
+        self.use_depth = False
+        self.use_shadow = False
         self.background = [0.0, 0.0, 0.0]
 
     def get_active_layers(self):
