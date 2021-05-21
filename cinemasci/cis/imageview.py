@@ -201,7 +201,8 @@ class imageview:
             # for now, parse as a local file
             # TODO: add logic to detect and load remote URLs
             if params["type"] is "url":
-                # this path is currently required to be local to the cdb
+                # this path is currently required to be a ParaView json colormap
+                # local to the cinema database 
                 fullpath = os.path.join(self.cisview.cdb.path, params["url"])
 
                 colormap["colorspace"] = "rgb"
