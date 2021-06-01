@@ -18,6 +18,8 @@ class CISPARAMS(Enum):
         channelVarMin   = "CISChannelVarMin"
         channelVarMax   = "CISChannelVarMax"
         channelColormap = "CISChannelColormap"
+        shadowChannel   = "CISShadow"
+        depthChannel    = "CISDepth"
 
         @staticmethod
         def contains(value):

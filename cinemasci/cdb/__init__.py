@@ -122,8 +122,10 @@ class cdb:
         """Set the parameter names that are considered extracts
         """
         for n in names:
-            self.parameternames.remove(n)
-            self.extractnames.append(n)
+            if n in self.parameternames:
+                self.parameternames.remove(n)
+            if not n in self.extractnames:
+                self.extractnames.append(n)
 
     def get_data_filename(self):
         return self.DataFile
