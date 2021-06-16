@@ -5,6 +5,7 @@ import cinemasci
 import cinemasci.cis
 from cinemasci.cis.renderer import Renderer
 
+SAVE_IMAGE_HACK = False
 
 class TestCIS(unittest.TestCase):
     gold_dir            = "testing/gold/cdb"
@@ -180,7 +181,38 @@ class TestCIS(unittest.TestCase):
         self.assertEqual(iview.origin, "UL")
 
         # test render
-        image = Renderer.render(iview)
+        (image, depth) = Renderer.render(iview)
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+    def dont_test_imageview(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.ttk_cdb_path})
+
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        # create cis view and an image view
+        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
+
+        # set the imageview state
+        iview.image = "i000"
+        iview.use_depth = True
+        iview.use_shadow = True
+        iview.activate_layer("l000")
+        iview.activate_channel("l000", "Elevation")
+        iview.activate_layer("l001")
+        iview.activate_channel("l001", "Elevation")
+
+        # load data into the image view 
+        iview.update()
+
+        for im in iview.get_active_layers():
+            print("active layer: {}".format(im))
+            data = iview.get_active_channel_data(im)
+
     #
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
@@ -225,9 +257,11 @@ class TestCIS(unittest.TestCase):
         plt.show()
 
         # change the background
-        iview.background = [1.0, 0.0, 0.0]
+        iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
         plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("render.png", image)
         plt.show()
 
     #
@@ -268,9 +302,11 @@ class TestCIS(unittest.TestCase):
         plt.show()
 
         # change the background
-        iview.background = [1.0, 0.0, 0.0]
+        iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
         plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("paraview.png", image)
         plt.show()
 
     #
@@ -312,9 +348,11 @@ class TestCIS(unittest.TestCase):
         plt.show()
 
         # change the background
-        iview.background = [1.0, 0.0, 0.0]
+        iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
         plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("ascent.png", image)
         plt.show()
 
     #
@@ -352,7 +390,27 @@ class TestCIS(unittest.TestCase):
         plt.show()
 
         # change the background
-        iview.background = [1.0, 0.0, 0.0]
+        iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
         plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("ttk_composited.png", image)
+        plt.show()
+
+        iview.activate_layer("l000")
+        iview.deactivate_layer("l001")
+        iview.update()
+        (image, depth) = Renderer.render(iview)
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("ttk_streamlines.png", image)
+        plt.show()
+
+        iview.activate_layer("l001")
+        iview.deactivate_layer("l000")
+        iview.update()
+        (image, depth) = Renderer.render(iview)
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("ttk_stones.png", image)
         plt.show()
