@@ -14,6 +14,7 @@ class TestCIS(unittest.TestCase):
     linear_cdb_path     = "testing/gold/cis/linear/cis.cdb"
     random_cdb_path     = "testing/gold/cis/random/cis.cdb"
     ascent_cdb_path     = "testing/data/pantheon_ascent-clover.cdb"
+    paraview_cdb_path   = "testing/data/paraview_extracts.cdb"
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
@@ -204,7 +205,7 @@ class TestCIS(unittest.TestCase):
         iview.activate_channel("l000", "temperature")
         iview.activate_channel("l001", "pressure")
         iview.activate_channel("l002", "procID")
-
+        
         self.assertEqual(cview.get_image({"time": "0.0"}), "i000")
         self.assertEqual(cview.get_image({"time": "1.0"}), "i001")
         self.assertEqual(cview.get_image({"time": "2.0"}), "i002")
@@ -222,6 +223,55 @@ class TestCIS(unittest.TestCase):
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
 
+        # change the background
+        iview.background = [1.0, 0.0, 0.0]
+        (image, depth) = Renderer.render(iview)
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+    #
+    # test for loading paraview-generated data 
+    #
+    def test_render_paraview_data(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.paraview_cdb_path})
+
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        # create cis view and an image view
+        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
+
+        # set the imageview state
+        iview.image = "i000"
+        iview.use_depth = False
+        iview.use_shadow = False
+        iview.activate_layer("l000")
+        iview.activate_channel("l000", "scalars")
+
+        # load data into the image view 
+        iview.update()
+
+        # check some float values
+        # layers = iview.get_layer_data()
+        # self.assertEqual( 2.027437210083008, numpy.nanmean(layers['layer0'].channel.data))
+        # self.assertNotEqual( 0.0, numpy.nanmean(layers['layer0'].channel.data))
+
+        # render
+        (image, depth) = Renderer.render(iview)
+
+        # display the image
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+        # change the background
+        iview.background = [1.0, 0.0, 0.0]
+        (image, depth) = Renderer.render(iview)
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
     #
     # an example of loading a cinema dataset that includes CIS data
     # loading the CIS data, and then passing to a renderer
@@ -232,6 +282,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
+        # create cis view and an image view
         cview = cinemasci.cis.cdbview.cdbview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
@@ -256,5 +307,11 @@ class TestCIS(unittest.TestCase):
         # display the image
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+        # change the background
+        iview.background = [1.0, 0.0, 0.0]
+        (image, depth) = Renderer.render(iview)
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
