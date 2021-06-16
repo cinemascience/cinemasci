@@ -3,6 +3,10 @@ from scipy.interpolate import interp1d
 
 
 class Renderer:
+    """Cinema CIS Renderer 
+
+    Class that renders a CIS image
+    """
 
     def __init__(self):
         return
