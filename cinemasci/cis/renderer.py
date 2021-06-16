@@ -62,8 +62,8 @@ class Renderer:
     def render(iview):
 
         # FXIME: this assumes RGB rather than RGBA color
-        canvas = np.zeros((iview.dims[0], iview.dims[1], 3), float)
-        depth = np.ones((iview.dims[0], iview.dims[1])) * np.inf
+        canvas = np.full((iview.dims[0], iview.dims[1], 3), iview.background, float)
+        depth = np.full((iview.dims[0], iview.dims[1]), np.inf, float)
 
         # TODO: how to make use of 'origin'?
         layers = iview.get_layer_data()
