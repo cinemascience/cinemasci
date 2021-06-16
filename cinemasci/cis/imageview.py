@@ -103,7 +103,7 @@ class imageview:
         if layer in self.active_layers:
             self.active_layers.remove(layer)
 
-    def __is_active_layer(self, layer):
+    def is_active_layer(self, layer):
         return layer in self.active_layers
 
     #
@@ -112,7 +112,7 @@ class imageview:
     def activate_channel(self, layer, channel):
         self.active_channels[layer] = channel
 
-    def get_layer_data(self, layer):
+    def get_active_channel_data(self, layer):
         channel = self.get_active_channel(layer) 
         data = self.cisview.get_image(self.image).get_layer(layer).get_channel(channel).data
         return data 
