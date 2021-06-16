@@ -1,0 +1,5 @@
+time,FILE,CISVersion,CISImage,CISImageWidth,CISImageHeight,CISLayer,CISLayerWidth,CISLayerHeight,CISLayerOffsetX,CISLayerOffsetY,CISChannel,CISChannelVar
+000,000_Depth.npz,"1.0",i000,1024,1024,l000,1024,1024,0,0,CISDepth,Depth
+000,000_Elevation.npz,"1.0",i000,1024,1024,l000,1024,1024,0,0,Elevation,Elevation
+000,012_Depth.npz,"1.0",i000,1024,1024,l001,1024,1024,0,0,CISDepth,Depth
+000,012_Elevation.npz,"1.0",i000,1024,1024,l001,1024,1024,0,0,Elevation,Elevation
