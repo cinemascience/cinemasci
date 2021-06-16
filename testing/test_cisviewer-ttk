@@ -7,9 +7,10 @@ mkdir pynb
 pushd pynb
 
 cp -rf ../../../cinemasci .
-cp -rf ../../data/ttk_extracts.cdb .
+cp -rf ../../data/ttk_extracts_000.cdb .
+cp -rf ../../data/ttk_extracts_001.cdb .
 cp     ../../data/cisviewer/* .
 
-jupyter notebook ttk-extracts.ipynb
+jupyter notebook ttk-extracts_000.ipynb
 
 popd
