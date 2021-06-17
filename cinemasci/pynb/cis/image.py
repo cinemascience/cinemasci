@@ -9,25 +9,7 @@ class CISImageViewer():
         self.cdbview     = cdbview
         self.title       = ""
         self.figsize     = (1, 1)
-        self.widths      = [1]
-        self.height      = [1]
         return
-
-    @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, value):
-        self._height = value
-
-    @property
-    def widths(self):
-        return self._widths
-
-    @widths.setter
-    def widths(self, value):
-        self._widths = value
 
     @property
     def size(self):
@@ -72,7 +54,7 @@ class CISImageViewer():
         # cdata = layers[alayer].channel.data
 
         fig = plt.figure(figsize=self.size, constrained_layout=True)
-        spec = fig.add_gridspec(ncols=1, nrows=1, width_ratios=self.widths, height_ratios=self.height)
+        spec = fig.add_gridspec(ncols=1, nrows=1)
         fig.suptitle(self.title)
 
         # render the image view

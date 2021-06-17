@@ -118,32 +118,31 @@ class CISHistogramViewer():
         import numpy
         from matplotlib import pyplot as plt
 
-        # update
+        # update the input data
         iview.update()
 
         layers = iview.get_layer_data()
         cdata = layers[alayer].channel.data
 
         fig = plt.figure(figsize=self.size, constrained_layout=True)
-        # widths = [2, 5]
-        # heights = [0.5]
         spec = fig.add_gridspec(ncols=2, nrows=1, width_ratios=self.widths, height_ratios=self.height)
         fig.suptitle(self.title)
-
-        ax = fig.add_subplot(spec[0, 0])
-        ax.hist(cdata[~numpy.isnan(cdata)], self.num_bins)
-        ax.set_title(self.left_label)
 
         # render the image view
         (image, depth) = Renderer.render(iview)
 
         # display the rendered image
         import warnings
-        ax = fig.add_subplot(spec[0,1])
+        ax = fig.add_subplot(spec[0,0])
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             ax.axis('off')
-            ax.set_title(self.right_label)
+            ax.set_title(self.left_label)
             ax.imshow(image, aspect='equal')
+
+        ax = fig.add_subplot(spec[0, 1])
+        ax.hist(cdata[~numpy.isnan(cdata)], self.num_bins)
+        ax.set_title(self.right_label)
+
 
 
