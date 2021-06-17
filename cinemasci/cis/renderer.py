@@ -69,21 +69,27 @@ class Renderer:
         # TODO: how to make use of 'origin'?
         layers = iview.get_layer_data()
         for name, layer in layers.items():
-            data = layer.channel.data
-            background = np.full((data.shape[0], data.shape[1], 3),
-                                 iview.background, float)
-            foreground = Renderer.color(data, layer.channel.colormap)
-            Renderer.blend(foreground, background, np.isnan(data))
+            # TODO: fix this loop
+            # The imageview object is intended to provide a way of iterating 
+            # over active layers, but at present this has a bug in it. For
+            # this release, we simply query to determine if the layer is active
+            # and that is correct.
+            if iview.is_active_layer(name): 
+                data = layer.channel.data
+                background = np.full((data.shape[0], data.shape[1], 3),
+                                     iview.background, float)
+                foreground = Renderer.color(data, layer.channel.colormap)
+                Renderer.blend(foreground, background, np.isnan(data))
 
-            rectangle = [
-                slice(layer.offset[0], layer.offset[0] + data.shape[0]),
-                slice(layer.offset[1], layer.offset[1] + data.shape[1])]
-            if iview.use_depth:
-                Renderer.depth_composite(canvas[tuple(rectangle)],
-                                         depth[tuple(rectangle)],
-                                         foreground, layer.depth.data)
-            else:
-                canvas = Renderer.paste(canvas, foreground, layer.offset)
+                rectangle = [
+                    slice(layer.offset[0], layer.offset[0] + data.shape[0]),
+                    slice(layer.offset[1], layer.offset[1] + data.shape[1])]
+                if iview.use_depth:
+                    Renderer.depth_composite(canvas[tuple(rectangle)],
+                                             depth[tuple(rectangle)],
+                                             foreground, layer.depth.data)
+                else:
+                    canvas = Renderer.paste(canvas, foreground, layer.offset)
 
         # iview.dims is in row by column rather than x-dims by y-dims,
         # we need to transpose the two axes.
