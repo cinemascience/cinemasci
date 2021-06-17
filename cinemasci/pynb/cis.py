@@ -1,4 +1,5 @@
 import ipywidgets as widgets
+from cinemasci.cis.renderer import Renderer
 
 class ParamSet():
 
@@ -50,18 +51,36 @@ class CISViewer():
     def size(self, value):
         self._size = value
 
+    def display(self, iview, alayer):
+        import numpy
+        from matplotlib import pyplot as plt
 
-    def display(self, image):
-        import matplotlib.pyplot as plt
-        import skimage.util
+        # update
+        iview.update()
+
+        layers = iview.get_layer_data()
+        cdata = layers[alayer].channel.data
+
+        fig = plt.figure(figsize=(10, 3.5), constrained_layout=True)
+        widths = [2, 5]
+        heights = [0.5]
+        spec = fig.add_gridspec(ncols=2, nrows=1, width_ratios=widths, height_ratios=heights)
+        # fig.suptitle("Here is the title of the thing")
+
+        ax = fig.add_subplot(spec[0, 0])
+        ax.hist(cdata[~numpy.isnan(cdata)], 50)
+        ax.set_title("value histogram")
+
+        # render the image view
+        (image, depth) = Renderer.render(iview)
+
+        # display the rendered image
         import warnings
+        ax = fig.add_subplot(spec[0,1])
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            # plt.figure(figsize=(1,1))
-            # plt.imshow(skimage.util.img_as_ubyte(image))
-            plt.figure(figsize = self.size) 
-            plt.axis('off')
-            plt.imshow(image, aspect=self.aspect)
-            # plt.show()
+            ax.axis('off')
+            ax.set_title("rendered image")
+            ax.imshow(image, aspect='equal')
 
 
