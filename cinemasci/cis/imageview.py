@@ -8,6 +8,7 @@ import os
 #
 class imageview:
     """ImageView Class
+
     A collection of settings that define a specific way of compositing the
     elements of an image. Once it is set up, the imageview's layers can
     be iterated over to return an order-dependent set of data plus colormaps
@@ -86,6 +87,7 @@ class imageview:
     def __init__(self, cview):
         self.active_layers = []
         self.active_channels = {} 
+            # a CIS view of a cinema database
         self.cisview = cview
         self.data = {}
         self.use_depth = False
@@ -187,7 +189,7 @@ class imageview:
                     newchannel = channel.channel()
                     newchannel.name = "CISShadow"
                     newchannel.load(extract[0])
-                    newchannel.shadow = newchannel
+                    newlayer.shadow = newchannel
 
     def get_layer_data(self):
         return self.data
