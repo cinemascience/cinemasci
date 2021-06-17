@@ -371,7 +371,7 @@ class TestCIS(unittest.TestCase):
         # set the imageview state
         iview.image = "i000"
         iview.use_depth = True
-        iview.use_shadow = True
+        iview.use_shadow = False
         iview.activate_layer("l000")
         iview.activate_channel("l000", "Elevation")
         iview.activate_layer("l001")
@@ -397,6 +397,16 @@ class TestCIS(unittest.TestCase):
             plt.imsave("ttk_composited.png", image)
         plt.show()
 
+        # turn on shadows
+        iview.use_shadow = True
+        iview.update()
+        (image, depth) = Renderer.render(iview)
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave("ttk_composited_with_shadows.png", image)
+        plt.show()
+
+        # change the background
         iview.activate_layer("l000")
         iview.deactivate_layer("l001")
         iview.update()
