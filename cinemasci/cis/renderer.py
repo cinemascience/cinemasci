@@ -74,11 +74,14 @@ class Renderer:
             # over active layers, but at present this has a bug in it. For
             # this release, we simply query to determine if the layer is active
             # and that is correct.
-            if iview.is_active_layer(name): 
+            if iview.is_active_layer(name):
                 data = layer.channel.data
                 background = np.full((data.shape[0], data.shape[1], 3),
                                      iview.background, float)
                 foreground = Renderer.color(data, layer.channel.colormap)
+                if iview.use_shadow:
+                    foreground = foreground * \
+                                 layer.shadow.data[:, :, np.newaxis]
                 Renderer.blend(foreground, background, np.isnan(data))
 
                 rectangle = [
