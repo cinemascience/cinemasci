@@ -179,10 +179,15 @@ class imageview:
             # load the shadow map
             if self.use_shadow:
                 extract = self.cisview.get_channel_extract(self.image, l, "CISShadow") 
-                newchannel = channel.channel()
-                newchannel.name = "CISShadow"
-                newchannel.load(extract[0])
-                newchannel.shadow = newchannel
+                # did the data load?
+                # this is equivalent to asking if the channel is there
+                # TODO: find a better way to express requesting a load, but getting
+                #       no data, i.e. the channel is not there
+                if extract:
+                    newchannel = channel.channel()
+                    newchannel.name = "CISShadow"
+                    newchannel.load(extract[0])
+                    newchannel.shadow = newchannel
 
     def get_layer_data(self):
         return self.data

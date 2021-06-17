@@ -3,8 +3,8 @@
 #
 class layer:
     def __init__(self, name):
-        self._depth = None
-        self._shadow = None
+        self.depth = None
+        self.shadow = None
 
     @property
     def name(self):
