@@ -11,9 +11,9 @@
 
 DOXYFILE_ENCODING      = UTF-8
 
-# Project Name: This Doxyfile is for the Cinemagic project
+# Project Name: This Doxyfile is for the Cinemsci project
 
-PROJECT_NAME           = "Cinemagic"
+PROJECT_NAME           = "Cinemsci"
 
 # Project Number: Will be consistent with the specification as defined
 # in cinema_projectmanagement 
