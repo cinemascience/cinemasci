@@ -84,12 +84,12 @@ class Renderer:
                                  layer.shadow.data[:, :, np.newaxis]
                 Renderer.blend(foreground, background, np.isnan(data))
 
-                rectangle = [
+                rectangle = (
                     slice(layer.offset[0], layer.offset[0] + data.shape[0]),
-                    slice(layer.offset[1], layer.offset[1] + data.shape[1])]
+                    slice(layer.offset[1], layer.offset[1] + data.shape[1]))
                 if iview.use_depth:
-                    Renderer.depth_composite(canvas[tuple(rectangle)],
-                                             depth[tuple(rectangle)],
+                    Renderer.depth_composite(canvas[rectangle],
+                                             depth[rectangle],
                                              foreground, layer.depth.data)
                 else:
                     canvas = Renderer.paste(canvas, foreground, layer.offset)
