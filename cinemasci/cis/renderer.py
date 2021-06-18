@@ -72,7 +72,6 @@ class Renderer:
                          float)
         depth = np.full((iview.dims[0], iview.dims[1]), np.inf, float)
 
-        # TODO: how to make use of 'origin'?
         layers = iview.get_layer_data()
         for name, layer in layers.items():
             # TODO: fix this loop
