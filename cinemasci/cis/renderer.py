@@ -3,9 +3,15 @@ from scipy.interpolate import interp1d
 
 
 class Renderer:
-    """Cinema CIS Renderer 
+    """Cinema CIS Renderer
 
-    Class that renders a CIS image
+    The Renderer.renderer() renders a CIS image into the final composited and/or
+    shadowed image. Currently, it support image composition through depth-buffer
+    and applies "simulated" shadow using (pre-computed) shadow map. NaN values
+    in images and depth buffers are considered as identification of "background"
+    pixels and will be colored with imageview.background. Renderer() returns a
+    tuple of final RGB image, represented as a 3D numpy array and depth buffer
+    represented as a 2D numpy array.
     """
 
     def __init__(self):
