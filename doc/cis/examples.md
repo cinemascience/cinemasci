@@ -6,13 +6,7 @@ Because the CIS format contains data values, and not rendered pixels (RGB values
 
 In this simple example, we can graph the values in a histogram, and then look at the image itself as well.
 
-<table>
-<tr>
-<td>Interactive compositing. Using the depth values, a Cinema viewer can composite layers and interleave pixels from different objects, providing a more interactive visualization. In addition, .</td>
-<td>
-<td><img width="400" src="img/histogram_view.png"</td>
-</tr>
-</table>
+<img width="400" src="img/histogram_view.png"</img>
 
 ## Interactive rendering
 
@@ -24,9 +18,9 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td>
 <table>
 <tr>
-<td><img width="150" src="img/ttk_stone.png"</td>
-<td><img width="150" src="img/ttk_streamlines.png"</td>
-<td><img width="150" src="img/ttk_composited.png"</td>
+<td><img width="150" src="img/ttk_stone.png"</img></td>
+<td><img width="150" src="img/ttk_streamlines.png"</img></td>
+<td><img width="150" src="img/ttk_composited.png"</img></td>
 </tr>
 <tr>
 <td>Stone Layer</td>
@@ -42,8 +36,8 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td>
 <table>
 <tr>
-<td><img width="225" src="img/ttk_stone.png"</td>
-<td><img width="225" src="img/ttk_stone_grey_colormap.png"</td>
+<td><img width="225" src="img/ttk_stone.png"</img></td>
+<td><img width="225" src="img/ttk_stone_grey_colormap.png"</img></td>
 </tr>
 <tr>
 <td>Warm to Cool colormap</td>
@@ -57,8 +51,8 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td>
 <table>
 <tr>
-<td><img width="225" src="img/ttk_composited.png"</td>
-<td><img width="225" src="img/ttk_composited_with_shadows.png"</td>
+<td><img width="225" src="img/ttk_composited.png"</img></td>
+<td><img width="225" src="img/ttk_composited_with_shadows.png"</img></td>
 </tr>
 <tr>
 <td>No shadow map</td>
