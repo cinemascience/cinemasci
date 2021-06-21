@@ -9,8 +9,6 @@ class cis:
     The data structure to hold properties of a Composible Image Set.
     """
 
-    Origins = ['UL', 'UR', 'LL', 'LR']
-
     def __init__(self, filename):
         """ The constructor. """
         self.fname          = filename
@@ -18,7 +16,6 @@ class cis:
         self.dims           = [0,0]
         self.flags          = "CONSTANT_CHANNELS"
         self.version        = "1.0"
-        self.origin         = "UL"
         self.parameterlist  = []
         self.parametertable = None
         self.variables      = {}
@@ -33,7 +30,6 @@ class cis:
         print("  dims:      {}".format(self.dims))
         print("  flags:     {}".format(self.flags))
         print("  version:   {}".format(self.version))
-        print("  origin:    {}".format(self.origin))
         print("  colormaps: ")
         for m in self.colormaps:
             print(m)
@@ -60,25 +56,6 @@ class cis:
     def get_image_names(self):
         """ Returns list of image names. """
         return list(self.images.keys())
-
-    def get_origin(self):
-        """ Returns the corner at which the image originates. 
-        This is defined by the strings in the Origins list:
-        Upper Left, Upper Right, Lower Left or Lower Right. 
-        """
-
-        return self.origin
-
-    def set_origin(self, origin):
-        """ Set origin to one of UL, UR, LL or LR. """
-        result = False
-        if origin in self.Origins:
-            self.origin = origin
-            result = True;
-        else:
-            print("ERROR: {} is not a valid Origin value".format(origin))
-
-        return result 
 
     def set_parameter_table(self, table):
         """ Set parameter table using a deep copy. """

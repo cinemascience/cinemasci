@@ -85,8 +85,7 @@ class TestCIS(unittest.TestCase):
         results = cview.get_image_parameters()
         self.assertEqual(results,
                          {
-                             'dims': [1024, 768],
-                             'origin': 'UL'
+                             'dims': [1024, 768]
                          }
                          )
 
@@ -178,7 +177,6 @@ class TestCIS(unittest.TestCase):
 
         # check the updated iview object
         self.assertEqual(iview.dims, [1024, 768])
-        self.assertEqual(iview.origin, "UL")
 
         # test render
         (image, depth) = Renderer.render(iview)

@@ -2,6 +2,16 @@
 # layer class
 #
 class layer:
+    """Composible Image Set layer class
+
+    A layer contains:
+    - a set of channels.
+        - one channel may be depth
+        - one channel may be shadow
+    - dimensions: integer width and height.
+    - offset: integer x, y dimension from the image origin.
+    """
+
     def __init__(self, name):
         self.depth = None
         self.shadow = None

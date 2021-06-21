@@ -2,7 +2,6 @@ from enum import Enum
 
 class CISPARAMS(Enum):
         image           = "CISImage"
-        origin          = "CISOrigin"
         version         = "CISVersion" 
         imageFlags      = "CISImageFlags"
         imageWidth      = "CISImageWidth"
@@ -189,14 +188,6 @@ class cdbview:
         data = {
                     "dims": [results[0][0], results[0][1]]
                 }
-
-        if "CISOrigin" in self.CISParams:
-            query = "SELECT CISOrigin from {} LIMIT 1".format(self.cdb.tablename)
-            results = self.cdb.execute(query)
-            data["origin"] = results[0][0]
-
-        else:
-            data["origin"] = "UL"
 
         return data
 

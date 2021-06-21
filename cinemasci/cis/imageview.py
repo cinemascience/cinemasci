@@ -76,14 +76,6 @@ class imageview:
     def dims(self, value):
         self._dims = value
 
-    @property
-    def origin(self):
-        return self._origin
-
-    @origin.setter
-    def origin(self, value):
-        self._origin = value
-
     def __init__(self, cview):
         self.active_layers = []
         self.active_channels = {} 
@@ -147,7 +139,6 @@ class imageview:
     def update(self):
         imdata = self.cisview.get_image_parameters()
         self.dims   = imdata["dims"]
-        self.origin =  imdata["origin"]
 
         # TODO: error if image not set
         for l in self.active_layers:
