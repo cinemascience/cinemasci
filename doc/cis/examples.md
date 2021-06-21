@@ -6,7 +6,9 @@ Because the CIS format contains data values, and not rendered pixels (RGB values
 
 In this simple example, we can graph the values in a histogram, and then look at the image itself as well.
 
+<p align="center">
 <img width="600" src="img/histogram_view.png"></img>
+</p>
 
 ## Interactive rendering
 
