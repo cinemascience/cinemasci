@@ -1,15 +1,16 @@
 import unittest
 import numpy
+import os
 
 import cinemasci
 import cinemasci.cis
 from cinemasci.cis.renderer import Renderer
 
-SAVE_IMAGE_HACK = False
+SAVE_IMAGE_HACK = True
 
 class TestCIS(unittest.TestCase):
     gold_dir            = "testing/gold/cdb"
-    scratch_dir         = "testing/scratch/cdb"
+    scratch_dir         = "testing/scratch"
     cdb_path            = "testing/gold/cis/random/cis.cdb"
     constant_cdb_path   = "testing/gold/cis/constant/cis.cdb"
     linear_cdb_path     = "testing/gold/cis/linear/cis.cdb"
@@ -22,6 +23,10 @@ class TestCIS(unittest.TestCase):
         super(TestCIS, self).__init__(*args, **kwargs)
 
     def setUp(self):
+        try:
+            os.mkdir(TestCIS.scratch_dir)
+        except OSError as error:
+            pass
         print("Running test: {}".format(self._testMethodName))
 
     def test_load_cdb(self):
@@ -182,6 +187,7 @@ class TestCIS(unittest.TestCase):
         (image, depth) = Renderer.render(iview)
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
 
@@ -251,15 +257,17 @@ class TestCIS(unittest.TestCase):
 
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("render.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "test_render.png"), image)
         plt.show()
 
     #
@@ -296,15 +304,17 @@ class TestCIS(unittest.TestCase):
         # display the image
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("paraview.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "paraview.png"), image)
         plt.show()
 
     #
@@ -342,15 +352,17 @@ class TestCIS(unittest.TestCase):
         # display the image
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("ascent.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ascent.png"), image)
         plt.show()
 
     #
@@ -384,41 +396,74 @@ class TestCIS(unittest.TestCase):
         # display the image
         import matplotlib.pyplot as plt
         import skimage.util
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_black_bg.png"), image)
         plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("ttk_composited.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_grey_bg.png"), image)
+        plt.show()
+
+        # show each element (uncomposited) 
+        iview.deactivate_layer("l000")
+        iview.activate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_streamlines.png"), image)
+        plt.show()
+        iview.activate_layer("l000")
+        iview.deactivate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone.png"), image)
+        plt.show()
+        # show composited 
+        iview.activate_layer("l000")
+        iview.activate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited.png"), image)
         plt.show()
 
         # turn on shadows
         iview.use_shadow = True
         iview.update()
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("ttk_composited_with_shadows.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_with_shadows.png"), image)
         plt.show()
 
-        # change the background
+        # change colormap for stone layer
+        iview.use_shadow = False
         iview.activate_layer("l000")
         iview.deactivate_layer("l001")
-        iview.update()
+        achannel = iview.get_channel("l000")
+        achannel.colormap = {
+                    "colorspace" : "rgb",
+                    "name" : "default",
+                    "points" : [{'x': 0.0, 'r': 0.0, 'g': 0.0, 'b': 0.0, 'a': 1.0},
+                                {'x': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0, 'a': 1.0},
+                               ]
+                   }
         (image, depth) = Renderer.render(iview)
+        plt.axis('off')
         plt.imshow(skimage.util.img_as_ubyte(image))
         if SAVE_IMAGE_HACK:
-            plt.imsave("ttk_streamlines.png", image)
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone_grey_colormap.png"), image)
         plt.show()
 
-        iview.activate_layer("l001")
-        iview.deactivate_layer("l000")
-        iview.update()
-        (image, depth) = Renderer.render(iview)
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave("ttk_stones.png", image)
-        plt.show()

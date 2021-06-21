@@ -110,6 +110,14 @@ class imageview:
         data = self.cisview.get_image(self.image).get_layer(layer).get_channel(channel).data
         return data 
 
+    def get_layer(self, layer):
+        # TODO: error check
+        return self.data[self.image]
+
+    def get_channel(self, layername):
+        # TODO: error check
+        return self.data[layername].channel
+
     def get_layer_dims(self, layer):
         return self.cisview.get_image(self.image).get_layer(layer).dims 
 
