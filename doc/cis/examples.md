@@ -42,8 +42,8 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td>
 <table>
 <tr>
-<td><img src="img/ttk_stone.png"</td>
-<td><img src="img/ttk_stone_grey_colormap.png"</td>
+<td><img width="200" src="img/ttk_stone.png"</td>
+<td><img width="200" src="img/ttk_stone_grey_colormap.png"</td>
 </tr>
 <tr>
 <td>Warm to Cool colormap</td>
