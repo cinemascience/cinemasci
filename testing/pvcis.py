@@ -21,7 +21,7 @@ class TestPVCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         # create the cis view and an image view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the image view state

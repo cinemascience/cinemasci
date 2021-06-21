@@ -21,7 +21,6 @@ class imageview:
 
     @background.setter
     def background(self, color):
-        # TODO check type of color
         if (len(color) == 3) and (all(isinstance(value, (float, int)) for value in color)):
             self._background = color
         else:

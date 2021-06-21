@@ -28,11 +28,11 @@ class ParamSliders():
 
 class CISHistogramViewer():
 
-    def __init__(self, cdbview):
+    def __init__(self, cisview):
         self.aspect      = "equal"
         self.size        = (10, 10)
-        self.cdbview     = cdbview
-        self.sliders     = ParamSliders(cdbview.get_cdb_parameters())
+        self.cisview     = cisview
+        self.sliders     = ParamSliders(cisview.get_cdb_parameters())
         self.title       = ""
         self.left_label  = ""
         self.right_label = ""

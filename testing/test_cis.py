@@ -41,7 +41,7 @@ class TestCIS(unittest.TestCase):
         self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
 
         # cis view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
 
         # test the same query with parameters in different order
         images = cview.images
@@ -71,7 +71,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         extracts = cview.get_channel_extracts("i000", "l000")
         expected = [
             "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/CISDepth/data.npz",
@@ -114,7 +114,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # test the cisview 
@@ -192,7 +192,7 @@ class TestCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         # create cis view and an image view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the imageview state
@@ -221,7 +221,7 @@ class TestCIS(unittest.TestCase):
         self.assertTrue(cdb.read_data_from_file())
         cdb.set_extract_parameter_names(["FILE"])
 
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the imageview state
@@ -272,7 +272,7 @@ class TestCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         # create cis view and an image view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the imageview state
@@ -318,7 +318,7 @@ class TestCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         # create cis view and an image view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the imageview state
@@ -363,7 +363,7 @@ class TestCIS(unittest.TestCase):
         cdb.set_extract_parameter_names(["FILE"])
 
         # create cis view and an image view
-        cview = cinemasci.cis.cdbview.cdbview(cdb)
+        cview = cinemasci.cis.cisview.cisview(cdb)
         iview = cinemasci.cis.imageview.imageview(cview)
 
         # set the imageview state

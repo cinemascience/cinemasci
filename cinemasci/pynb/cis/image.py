@@ -3,10 +3,10 @@ from cinemasci.cis.renderer import Renderer
 
 class CISImageViewer():
 
-    def __init__(self, cdbview):
+    def __init__(self, cisview):
         self.aspect      = "equal"
         self.size        = (10, 10)
-        self.cdbview     = cdbview
+        self.cisview     = cisview
         self.title       = ""
         self.figsize     = (1, 1)
         return

@@ -27,7 +27,7 @@ class CISPARAMS(Enum):
             else:
                 return False
 
-class cdbview:
+class cisview:
     """Composible Image Set View Class
        
        Given a cinema database, this class provides access to 

@@ -1,5 +1,5 @@
 from . import imageview
-from . import cdbview
+from . import cisview
 from . import renderer
 from . import convert
 

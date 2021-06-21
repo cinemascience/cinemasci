@@ -7,7 +7,13 @@ import numpy
 class channel:
     """Composible Image Set channel class
 
-    A channel contains a two dimensional array of values. 
+    A channel is:
+    - a name
+    - a variable name
+    - a variable min
+    - a variable max
+    - a variable type
+    - a two dimensional array of values. 
     """
     def __init__(self):
         self.data = None
