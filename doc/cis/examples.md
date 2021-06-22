@@ -5,7 +5,7 @@
 Because the CIS format contains data values, and not rendered pixels (RGB values, for example), the data can be used in a variety of ways. There are use cases which can specifically use the image to understand. In this simple example, implemented in a jupyter notebook, we can graph the values in a histogram, and then look at the image itself as well. These images and graphs are implemented through additions to the `cinemasci` module, which allow programmers and scientists to access the values in the images as python and numpy arrays.
 
 <p align="center">
-<table width="600">
+<table style="width:600">
 <tr>
 <td><img width="600" src="img/histogram_view.png"></img></td>
 </tr>
