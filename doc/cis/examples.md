@@ -7,7 +7,7 @@ Because the CIS format contains data values, and not rendered pixels (RGB values
 <p align="center">
 <img width="500px" src="img/histogram_view.png"></img></td>
 </p>
-<p width="500px" align="center">
+<p style="width:500px" align="center">
 <sub>Screen capture of a CIS viewer in a jupyter notebook. The image is rendered with a 'warm to cool' colormap (left), and the values are presented in a histogram (right).</sub>
 </p>
 
