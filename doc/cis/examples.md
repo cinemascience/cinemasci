@@ -5,7 +5,14 @@
 Because the CIS format contains data values, and not rendered pixels (RGB values, for example), the data can be used in a variety of ways. There are use cases which can specifically use the image to understand. In this simple example, implemented in a jupyter notebook, we can graph the values in a histogram, and then look at the image itself as well. These images and graphs are implemented through additions to the `cinemasci` module, which allow programmers and scientists to access the values in the images as python and numpy arrays.
 
 <p align="center">
-<img width="600" src="img/histogram_view.png"></img>
+<table>
+<tr>
+<td><img width="600" src="img/histogram_view.png"></img></td>
+</tr>
+<tr>
+<td><sub>Screen capture of a CIS viewer in a jupyter notebook. The image is rendered with a 'warm to cool' colormap (left), and the values are presented in a histogram (right).</sub></td>
+</tr>
+</table>
 </p>
 
 ## Interactive rendering
@@ -23,9 +30,9 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td><img width="150" src="img/ttk_composited.png"</img></td>
 </tr>
 <tr>
-<td>Stone Layer</td>
-<td>Streamline Layer</td>
-<td>Composited</td>
+<td><sub>Stone Layer</sub></td>
+<td><sub>Streamline Layer</sub></td>
+<td><sub>Composited</sub></td>
 </tr>
 </table>
 </td>
@@ -40,8 +47,8 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td><img width="225" src="img/ttk_stone_grey_colormap.png"</img></td>
 </tr>
 <tr>
-<td>Warm to Cool colormap</td>
-<td>Grey colormap</td>
+<td><sub>Warm to Cool colormap</sub></td>
+<td><sub>Grey colormap</sub></td>
 </tr>
 </table>
 </td>
@@ -55,8 +62,8 @@ Using data within a CIS dataset, we can perform interactive rendering of images,
 <td><img width="225" src="img/ttk_composited_with_shadows.png"</img></td>
 </tr>
 <tr>
-<td>No shadow map</td>
-<td>With shadow map</td>
+<td><sub>No shadow map</sub></td>
+<td><sub>With shadow map</sub></td>
 </tr>
 </table>
 </td>
