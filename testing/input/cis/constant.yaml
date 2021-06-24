@@ -1,0 +1,58 @@
+layers : 
+  l000 : 
+    offset : [0, 10]
+    dims   : [200, 100]
+    channels :
+        depth :
+            type : constant
+            value : 0.0 
+        lighting : 
+            type : constant
+            value : 0.0 
+        temperature :
+            type : constant
+            value : 0.0 
+        pressure :
+            type : constant
+            value : 0.0 
+        procID :
+            type : constant
+            value : 0.0 
+  l001:
+    offset : [100, 110]
+    dims   : [300, 350]
+    channels :
+        depth :
+            type : constant
+            value : 0.0 
+        lighting : 
+            type : constant
+            value : 0.0 
+        temperature :
+            type : constant
+            value : 0.0 
+        pressure :
+            type : constant
+            value : 0.0 
+        procID :
+            type : constant
+            value : 0.0 
+  l002:
+    offset : [200, 210]
+    dims   : [400, 350]
+    channels :
+        depth :
+            type : constant
+            value : 0.0 
+        lighting : 
+            type : constant
+            value : 0.0 
+        temperature :
+            type : constant
+            value : 0.0 
+        pressure :
+            type : constant
+            value : 0.0 
+        procID' :
+            type : constant
+            value : 0.0 

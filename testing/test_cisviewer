@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mkdir testing/scratch
+pushd testing/scratch
+
+mkdir pynb
+pushd pynb
+
+cp -rf ../../../cinemasci .
+cp -rf ../../gold/cis/linear/cis.cdb .
+cp     ../../data/cisviewer/* .
+
+jupyter notebook cisviewer.ipynb
+
+popd

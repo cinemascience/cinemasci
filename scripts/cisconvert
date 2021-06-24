@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+import cinemasci.cis.convert
+import argparse
+import os
+
+# ----------------------------------------------------------------------------
+#
+# parse command line options
+#
+# ----------------------------------------------------------------------------
+
+CIS_CONVERT_VERSION = 1.0
+
+helptext = "\n\
+\n\
+examples: \n\
+\n\
+    cisconvert --input some/directory --output new-database.cdb\n\
+       find input for conversion in some/directory, write to new-databast.cdb\n\
+  \n\
+" 
+ 
+# normal option parsing 
+parser = argparse.ArgumentParser(  
+            description="cisconvert: transform input data to cinema database", 
+            epilog=helptext, 
+            formatter_class=argparse.RawDescriptionHelpFormatter ) 
+ 
+# parser.add_argument( "year", nargs="?", help="run reports for a single year" )  
+ 
+parser.add_argument(    "--producer", 
+                        required=False,
+                        help="producer of data") 
+
+parser.add_argument(    "--input", 
+                        required=True,
+                        help="directory for input data") 
+
+parser.add_argument(    "--output", 
+                        required=True,
+                        help="output cinema database") 
+
+parser.add_argument(    "--version", 
+                        action='version',
+                        version='%(prog)s 1.0',
+                        help="print version of this script") 
+
+parser.add_argument(    "--verbose", 
+                        action='store_true',
+                        help="be verbose") 
+
+args = parser.parse_args()
+
+if args.verbose:
+    print("Converting:")
+    print("    inputdir : {}".format(args.input))
+    print("    outputcdb: {}".format(args.output))
+
+converter = cinemasci.cis.convert.ascent()
+converter.convert(args.input, args.output)
+
+if args.verbose:
+    print("complete")

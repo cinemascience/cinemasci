@@ -1,0 +1,5 @@
+time,CISImage,CISVersion,CISImageWidth,CISImageHeight,CISLayer,CISLayerOffsetX,CISLayerOffsetY,CISLayerWidth,CISLayerHeight,CISChannel,CISChannelVar,CISChannelVarType,CISChannelVarMin,CISChannelVarMax,CISChannelColormap,FILE
+0000,image0,1.0,2048,1024,layer0,0,0,2048,1024,elevation,elevation,float,0.0002895252837333828,0.9999842047691345,colormap/cooltowarm.json,Elevation.npz
+0000,image0,1.0,2048,1024,layer0,0,0,2048,1024,CISDepth,depth,float,0.2571745812892914,1.0,,Depth.npz
+
+

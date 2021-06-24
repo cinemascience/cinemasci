@@ -11,19 +11,19 @@ setuptools.setup(
     packages=["cinemasci", 
                 "cinemasci.cdb", 
                 "cinemasci.cis",
-                "cinemasci.cis.read",
-                "cinemasci.cis.write",
                 "cinemasci.viewers",
                 "cinemasci.pynb",
                 "cinemasci.server"
             ],
     install_requires=[
         "pandas",
-        "pillow",
-        "h5py",
         "jupyterlab",
-        "ipywidgets"
+        "ipywidgets",
+        "pyyaml",
+        "scikit-image",
+        "h5py"
     ],
+    scripts=['scripts/cisconvert'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",

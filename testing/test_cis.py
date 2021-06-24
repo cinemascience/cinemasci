@@ -1,348 +1,469 @@
 import unittest
-import cinemasci.cis
-import pandas
-import os
 import numpy
-import shutil
-import filecmp
-import PIL
-import sys
-import json
+import os
+
+import cinemasci
+import cinemasci.cis
+from cinemasci.cis.renderer import Renderer
+
+SAVE_IMAGE_HACK = True
 
 class TestCIS(unittest.TestCase):
-    gold_dir     = 'testing/gold/cis'
-    scratch_dir  = 'testing/scratch/cis'
+    gold_dir            = "testing/gold/cdb"
+    scratch_dir         = "testing/scratch"
+    cdb_path            = "testing/gold/cis/random/cis.cdb"
+    constant_cdb_path   = "testing/gold/cis/constant/cis.cdb"
+    linear_cdb_path     = "testing/gold/cis/linear/cis.cdb"
+    random_cdb_path     = "testing/gold/cis/random/cis.cdb"
+    ascent_cdb_path     = "testing/data/pantheon_ascent-clover.cdb"
+    paraview_cdb_path   = "testing/data/paraview_extracts.cdb"
+    ttk_cdb_path        = "testing/data/ttk_extracts_001.cdb"
 
     def __init__(self, *args, **kwargs):
         super(TestCIS, self).__init__(*args, **kwargs)
 
-        self.result_hdf5 = 'hdf5.cis'
-        self.result_hdf5_fullpath = os.path.join(TestCIS.scratch_dir, self.result_hdf5)
-        
-        self.result_file = 'file.cis'
-        self.result_file_fullpath = os.path.join(TestCIS.scratch_dir, self.result_file)
-        
-        self.gold_hdf5   = self.result_hdf5 
-        self.gold_hdf5_fullpath = os.path.join(TestCIS.gold_dir, self.gold_hdf5)
-        
-        self.gold_file   = self.result_file
-        self.gold_file_fullpath = os.path.join(TestCIS.gold_dir, self.gold_file)
-
-        self.xmlColormap = 'colormaps/blue-orange-div.xml'
-        self.jsonColormap = 'colormaps/blue-1.json'
-
-
     def setUp(self):
+        try:
+            os.mkdir(TestCIS.scratch_dir)
+        except OSError as error:
+            pass
         print("Running test: {}".format(self._testMethodName))
 
-    @classmethod
-    def tearDownClass(self):
-        if False:
-            shutil.rmtree(TestCIS.scratch_dir)
+    def test_load_cdb(self):
+        """Load a database from disk and check it
+        """
 
-    def __create_test_cis(self, myCIS):
-        myCIS.set_dims(1024, 768)
-        myCIS.set_origin("UL")
+        # testing a single extract database
+        cdb = cinemasci.new("cdb", {"path": TestCIS.cdb_path})
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-        ptable = pandas.read_csv('testing/data/sphere.cdb/data.csv', dtype=str, keep_default_na=False)
-        myCIS.set_parameter_table(ptable)
+        # testing queries
+        self.assertTrue(cdb.parameter_exists("time"))
+        self.assertTrue(cdb.parameter_exists("CISVersion"))
+        self.assertFalse(cdb.parameter_exists("nothing"))
+        self.assertTrue(cdb.extract_parameter_exists("FILE"))
+        self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
 
-        variables = [ ['temperature', 'float', 10.0, 100.0],
-                      ['pressure',    'float', 20.0, 200.0],
-                      ['procID',      'float', 30.0, 300.0]
-                    ]
-        for v in variables:
-            myCIS.add_variable(v[0], v[1], v[2], v[3])
+        # cis view
+        cview = cinemasci.cis.cisview.cisview(cdb)
 
-        parameters = ['time', 'phi', 'theta', 'isovar', 'isoval']
-        for p in parameters:
-            myCIS.add_parameter(p, 'float')
-
-        images = ['0000', '0001', '0002']
+        # test the same query with parameters in different order
+        images = cview.images
+        # print("images: {}".format(images))
         for i in images:
-            self.add_test_image(myCIS, i)
+            layers = cview.layers
+            # print("layers: {}".format(layers))
+            for l in layers:
+                channels = cview.channels[l]
+                # print("channels: {}".format(channels))
+                for c in channels:
+                    # print("{}:{}:{}".format(i, l, c))
+                    extract = cdb.get_extracts(
+                        {
+                            "CISImage": i,
+                            "CISLayer": l,
+                            "CISChannel": c
+                        })
+                    # print(extract)
+                    self.assertEqual(extract, [
+                        "testing/gold/cis/random/cis.cdb/image/{}/layer/{}/channel/{}/data.npz".format(
+                            i, l, c)])
 
-        colormaps = [os.path.join(TestCIS.gold_dir, 'file.cis', self.xmlColormap),
-                     os.path.join(TestCIS.gold_dir, 'file.cis', self.jsonColormap)]
-        for c in colormaps:
-            self.add_test_colormap(myCIS, c)
+    def test_create_cis_view(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.cdb_path})
 
-    def test_create_hdf5_database(self):
-        myCIS = cinemasci.cis.cis(self.result_hdf5_fullpath)
-        self.__create_test_cis(myCIS)
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-        # write hdf5 format
-        hdf5_writer = cinemasci.cis.write.hdf5.hdf5_writer()
-        hdf5_writer.write(myCIS)
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        extracts = cview.get_channel_extracts("i000", "l000")
+        expected = [
+            "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/CISDepth/data.npz",
+            "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/CISShadow/data.npz",
+            "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/pressure/data.npz",
+            "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/procID/data.npz",
+            "testing/gold/cis/random/cis.cdb/image/i000/layer/l000/channel/temperature/data.npz"
+        ]
+        self.assertEqual(extracts, expected)
 
-        # check
-        self.__check_hdf5_database()
+        results = cview.get_image_parameters()
+        self.assertEqual(results,
+                         {
+                             'dims': [1024, 768]
+                         }
+                         )
 
-    def test_create_file_database(self):
-        myCIS = cinemasci.cis.cis(self.result_file_fullpath)
-        self.__create_test_cis(myCIS)
+        results = cview.get_layer_parameters("i000", "l000")
+        self.assertEqual(results, {'dims': [100, 200], 'offset': [0, 10]})
 
-        # write file format
-        file_writer = cinemasci.cis.write.file.file_writer()
-        file_writer.write(myCIS)
+        results = cview.get_channel_parameters("i000", "l000", "temperature")
+        self.assertEqual(results,
+                         {
+                             'variable': {
+                                 'name' : 'temperature',
+                                 'type' : 'float',
+                                 'min'  : '10.0',
+                                 'max'  : '100.0',
+                             },
+                             'colormap': {
+                                 'type': 'url',
+                                 'url' : 'colormaps/cooltowarm.json'
+                             }
+                         }
+                         )
 
-        # check
-        self.__check_file_database()
+    def test_create_image_views(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.cdb_path})
 
-    def add_test_colormap(self, cis, path):
-        file_extension = os.path.splitext(path)[1]
-        name = os.path.splitext(os.path.basename(path))[0]
-        if (file_extension == ".xml"):
-            newcolormap = cis.add_colormap(name, path)
-        if (file_extension == ".json"):
-            if os.path.isfile(path):
-                with open(path) as jFile:
-                    data = json.load(jFile)
-            newcolormap = cis.add_colormap(name, data['url'])
-#        name = os.path.splitext(os.path.basename(path))[0]
-#        cis.add_colormap(name, path)
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-    def add_test_image(self, cis, imName):
-        channels = ['depth', 'lighting', 'temperature', 'pressure', 'procID']
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
 
-        cis.add_image(imName)
-        image = cis.get_image(imName)
+        # test the cisview 
+        self.assertEqual(cview.images, ['i000', 'i001', 'i002'])
+        self.assertNotEqual(cview.images, ['i000', 'i001', 'i003'])
+        self.assertEqual(cview.layers, ['l000', 'l001', 'l002'])
+        self.assertEqual(cview.channels,
+                         {
+                             "l000": ['CISDepth', 'CISShadow', 'pressure',
+                                      'procID', 'temperature'],
+                             "l001": ['CISDepth', 'CISShadow', 'pressure',
+                                      'procID', 'temperature'],
+                             "l002": ['CISDepth', 'CISShadow', 'pressure',
+                                      'procID', 'temperature']
+                         }
+                         )
+        self.assertEqual(True, cview.depth)
+        self.assertEqual(True, cview.shadow)
 
-        layerData = {
-            'l000' : {
-                'offset' : [0, 10],
-                'dims'   : [100, 200]
-            },
-            'l001': {
-                'offset' : [100, 110],
-                'dims'   : [250, 300]
-            },
-            'l002': {
-                'offset' : [200, 210],
-                'dims'   : [350, 400]
-            }
-        }
+        # set the state
+        self.assertEqual(iview.use_depth, False)
+        self.assertEqual(iview.use_shadow, False)
+        iview.use_depth = True
+        iview.use_shadow = False
+        iview.activate_layer("l000")
+        iview.activate_layer("l001")
+        iview.activate_layer("l002")
+        iview.activate_channel("l000", "temperature")
+        iview.activate_channel("l001", "pressure")
+        iview.activate_channel("l002", "procID")
 
-        for l in layerData:
-            layer = image.add_layer(l)
-            layer.set_offset( layerData[l]['offset'][0], layerData[l]['offset'][1] )
-            layer.set_dims( layerData[l]['dims'][0], layerData[l]['dims'][1] )
-            for c in channels:
-                channel = layer.add_channel(c)
-                channel.data = numpy.random.random_sample(layer.dims)
+        layers = []
+        for l in iview.get_active_layers():
+            layers.append(l)
+        self.assertEqual(layers, ['l000', 'l001', 'l002'])
 
-    def __check_file_database(self):
-        # is the directory there
-        self.assertTrue( os.path.exists(self.result_file_fullpath) )
+        self.assertEqual(iview.get_active_layers(), ['l000', 'l001', 'l002'])
+        self.assertEqual(iview.get_active_channel("l000"), 'temperature')
+        self.assertEqual(iview.get_active_channel("l001"), 'pressure')
+        self.assertEqual(iview.get_active_channel("l002"), 'procID')
 
-        # is the assets file the same
-        gold = os.path.join(self.gold_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
-        result = os.path.join(self.result_file_fullpath, cinemasci.cis.write.file.file_writer.Attribute_file)
-        self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
+        # update
+        iview.image = "i000"
+        iview.update()
 
-        # TODO check the rest of the data
-        # the specs state that in the absense of other information the app will initialize atleast a singel image, layer and channel. Therefore, there must always be atleast one image, layer and channel present
-        # checking for appropriate directories
-        imageFolderPath = os.path.join(self.result_file_fullpath, "image")
-        self.assertTrue( os.path.exists(imageFolderPath) )
-        testImgFolder = os.path.join( imageFolderPath, (next(os.walk(imageFolderPath))[1])[0])
-        layerFolderPath = os.path.join(testImgFolder, "layer")
-        self.assertTrue( os.path.exists(layerFolderPath) )
-        testLayerFolder = os.path.join( layerFolderPath, (next(os.walk(layerFolderPath))[1])[0] )
-        channelFolderPath = os.path.join(testLayerFolder, "channel")
-        self.assertTrue( os.path.exists(channelFolderPath) )
+        # check some float values
+        layers = iview.get_layer_data()
+        self.assertEqual(0.5032877357241973, numpy.nanmean(layers['l000'].channel.data))
 
-        # check if colormap there
-        result_xml = os.path.join(TestCIS.scratch_dir, self.result_file, self.xmlColormap)
-        result_json = os.path.join(TestCIS.scratch_dir, self.result_file, self.jsonColormap)
-        self.assertTrue(os.path.exists(result_xml))
-        self.assertTrue(os.path.exists(result_json))
+        # check a colormap
+        layers = iview.get_layer_data()
+        l = 'l000'
+        self.assertEqual(   'rgb', layers[l].channel.colormap["colorspace"])
+        self.assertEqual(   layers[l].channel.colormap["points"][0], 
+                            {'x': 0.0, 'r': 0.23137254902, 'g': 0.298039215686, 'b': 0.752941176471, 'a': 1.0} ) 
+        self.assertEqual(   layers[l].channel.colormap["points"][1], 
+                            {'x': 0.5, 'r': 0.865, 'g': 0.865, 'b': 0.865, 'a': 1.0} )
+        self.assertEqual(   layers[l].channel.colormap["points"][2], 
+                            {'x': 1, 'r': 0.705882352941, 'g': 0.0156862745098, 'b': 0.149019607843, 'a': 1.0} )
 
-        # are the colormaps the same - filecmp does not have option to disregard white space
-        gold_xml = os.path.join(TestCIS.gold_dir, self.result_file, self.xmlColormap)
-        gold_json = os.path.join(TestCIS.gold_dir, self.result_file, self.jsonColormap)
-        self.assertTrue( filecmp.cmp (result_xml, gold_xml, shallow=False))
-        self.assertTrue( filecmp.cmp (result_json, gold_json, shallow=False))
+        # check the updated iview object
+        self.assertEqual(iview.dims, [1024, 768])
 
-    def __check_hdf5_database(self):
-        self.assertTrue( os.path.exists(self.result_hdf5_fullpath) )
+        # test render
+        (image, depth) = Renderer.render(iview)
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
 
-    def test_read_hdf5_database(self):
-        self.assertTrue( os.path.exists(self.gold_hdf5_fullpath) )
+    def dont_test_imageview(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.ttk_cdb_path})
 
-        myCIS = cinemasci.cis.cis(self.gold_hdf5_fullpath)
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-        hdf5_reader = cinemasci.cis.read.hdf5.Reader()
-        hdf5_reader.read(myCIS)
+        # create cis view and an image view
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
 
-        # check values read in
-        self.assertTrue( myCIS.classname == "COMPOSABLE_IMAGE_SET" )
-        self.assertTrue( numpy.array_equal( myCIS.dims, [1024, 768] ) )
-        self.assertTrue( myCIS.flags     == "CONSTANT_CHANNELS" )
-        self.assertTrue( myCIS.version   == "1.0" )
-        self.assertTrue( myCIS.origin    == "UL" )
-        # myCIS.debug_print()
+        # set the imageview state
+        iview.image = "i000"
+        iview.use_depth = True
+        iview.use_shadow = True
+        iview.activate_layer("l000")
+        iview.activate_channel("l000", "Elevation")
+        iview.activate_layer("l001")
+        iview.activate_channel("l001", "Elevation")
 
-    def test_read_colormap_file(self):
-        pathToColormap = os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml')
-        b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
+        # load data into the image view 
+        iview.update()
 
-        # check values read in
-        self.assertTrue( b_o_div.pathToFile == os.path.join(TestCIS.gold_dir, 'file.cis/colormaps/blue-orange-div.xml'))
-        self.assertTrue( b_o_div.name == 'blue-orange-div')
-        #self.assertTrue( b_o_div.name == 'Divergent 1')
-        self.assertTrue( len(b_o_div.points) == 47 )
+        for im in iview.get_active_layers():
+            print("active layer: {}".format(im))
+            data = iview.get_active_channel_data(im)
 
-    def __test_read_colormap_url(self):
-        pathToColormap = 'https://raw.githubusercontent.com/cinemascience/cinemasci/master/testing/gold/cis/file.cis/colormaps/blue-orange-div.xml'
-        b_o_div = cinemasci.cis.colormap.colormap(pathToColormap)
+    #
+    # an example of loading a cinema dataset that includes CIS data
+    # loading the CIS data, and then passing to a renderer
+    #
+    def test_render(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.linear_cdb_path})
+
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
+
+        # set the imageview state
+        # activate/deactivate depth and shadow
+        iview.use_depth = True
+        iview.use_shadow = False
+        # activate layers
+        iview.activate_layer("l000")
+        iview.activate_layer("l001")
+        iview.activate_layer("l002")
+        # activate channels (one per layer)
+        iview.activate_channel("l000", "temperature")
+        iview.activate_channel("l001", "pressure")
+        iview.activate_channel("l002", "procID")
         
-        # check values read in
-        self.assertTrue( b_o_div.pathToFile == pathToColormap )
-        self.assertTrue( b_o_div.name == 'blue-orange-div')
-        #self.assertTrue( b_o_div.name == 'Divergent 1')
-        self.assertTrue( len(b_o_div.points) == 47 )
+        self.assertEqual(cview.get_image({"time": "0.0"}), "i000")
+        self.assertEqual(cview.get_image({"time": "1.0"}), "i001")
+        self.assertEqual(cview.get_image({"time": "2.0"}), "i002")
 
-    def test_create_image(self):
-        cispath = os.path.join(TestCIS.gold_dir, "file.cis")
-        cis = cinemasci.cis.cis(cispath)
+        # load data into the image view 
+        # set the image
+        iview.image = "i000"
+        # update, which loads data per the state
+        iview.update()
 
-        check = cinemasci.cis.read.file.cisfile(cis)
-        self.assertTrue( check.verify() )
-        fname = "file.cis.dump"
-        scratch_dump = os.path.join(TestCIS.scratch_dir, fname) 
-        gold_dump    = os.path.join(TestCIS.gold_dir,    fname) 
-        with open(scratch_dump, "w") as dumpfile:
-            check.dump(dumpfile)
-        self.assertTrue( filecmp.cmp(scratch_dump, gold_dump, shallow=False), "dump files do not match" )
+        (image, depth) = Renderer.render(iview)
 
-        reader = cinemasci.cis.read.file.reader(cis)
-        reader.read()
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
 
-        iname = "render_image.png"
-        render = cinemasci.cis.render.render()
-        im = render.render(cis, "0000", ["l000", "l001", "l002"], ["temperature"])
-        result = os.path.join(TestCIS.scratch_dir, iname) 
-        im.save(result)
+        # change the background
+        iview.background = [0.5, 0.5, 0.5]
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "test_render.png"), image)
+        plt.show()
 
-        gold = os.path.join(TestCIS.gold_dir, iname) 
-        self.assertTrue( filecmp.cmp( gold, result, shallow=False ) )
+    #
+    # test for loading paraview-generated data 
+    #
+    def test_render_paraview_data(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.paraview_cdb_path})
 
-    def test_read_file_database(self):
-        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
-        cis     = cinemasci.cis.cis(self.gold_file_fullpath)
-        reader  = cinemasci.cis.read.file.reader(cis)
-        reader.read()
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-    def test_imageview(self):
-        # read a CIS file
-        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
-        myCIS = cinemasci.cis.cis(self.gold_file_fullpath)
-        file_reader = cinemasci.cis.read.file.reader(myCIS)
-        file_reader.read()
-        # myCIS.debug_print()
+        # create cis view and an image view
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
 
-        # create an image view
-        i_view = cinemasci.cis.image.imageview()
-        i_view.cis = myCIS
-        i_view.image = "0000"
-        i_view.alpha = True
-        i_view.depth = True
-        i_view.lighting = True
-        i_view.set_active_channel( "l000", "temperature" )
-        i_view.set_colormap( "l000", "blue-orange-div" )
-        i_view.set_active_channel( "l001", "pressure" )
-        i_view.set_colormap( "l001", "blue-orange-div" )
-        i_view.set_active_channel( "l002", "procID" )
-        i_view.set_colormap( "l002", "blue-orange-div" )
+        # set the imageview state
+        iview.image = "i000"
+        iview.use_depth = False
+        iview.use_shadow = False
+        iview.activate_layer("l000")
+        iview.activate_channel("l000", "scalars")
 
-        # test dimensions and offsets
-        self.assertTrue(numpy.array_equal(i_view.get_image_dims(), [1024, 768]))
-        self.assertTrue(i_view.get_layer_dims("l000") == [100, 200])
-        # print(i_view.get_layer_dims("l000"))
-        self.assertTrue(i_view.get_layer_offset("l000") == [0, 10])
-        # print(i_view.get_layer_offset("l000"))
+        # load data into the image view 
+        iview.update()
 
-        # test activate
-        i_view.activate( "l000" )
-        # print("First test ...")
-        for n in i_view.get_layer_names():
-            self.assertTrue( n == "l000" ) 
-            self.assertTrue( i_view.get_active_channel(n) == "temperature" ) 
-            # print(i_view.get_layer_data(n))
-            # print(i_view.get_colormap(n).points)
+        # check some float values
+        # layers = iview.get_layer_data()
+        # self.assertEqual( 2.027437210083008, numpy.nanmean(layers['layer0'].channel.data))
+        # self.assertNotEqual( 0.0, numpy.nanmean(layers['layer0'].channel.data))
 
-        # test activate/deactivate 
-        i_view.activate( "l001" )
-        i_view.deactivate( "l000" )
-        # print("Second test ...")
-        for n in i_view.get_layer_names():
-            self.assertTrue( n == "l001" ) 
-            self.assertTrue( i_view.get_active_channel(n) == "pressure" ) 
-            # print(i_view.get_layer_data(n))
-            # print(i_view.get_colormap(n).points)
+        # render
+        (image, depth) = Renderer.render(iview)
 
-    def test_imageview_example(self):
-        # read a CIS file
-        self.assertTrue( os.path.exists(self.gold_file_fullpath) )
-        myCIS = cinemasci.cis.cis(self.gold_file_fullpath)
-        file_reader = cinemasci.cis.read.file.reader(myCIS)
-        file_reader.read()
+        # display the image
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
 
-        # output if you'd like to see it
-        # myCIS.debug_print()
+        # change the background
+        iview.background = [0.5, 0.5, 0.5]
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "paraview.png"), image)
+        plt.show()
 
-        # create an image view
-        # The data here is from what we know in the test data sets
-        i_view = cinemasci.cis.image.imageview()
-        i_view.cis = myCIS
-            # set the image ID
-        i_view.image = "0000"
-            # turn on or off alpha, depth and lighting
-        i_view.alpha = True
-        i_view.depth = True
-        i_view.lighting = True
-            # create active channels
-            # l000
-        i_view.set_active_channel( "l000", "temperature" )
-        i_view.set_colormap( "l000", "blue-orange-div" )
-            # l001
-        i_view.set_active_channel( "l001", "pressure" )
-        i_view.set_colormap( "l001", "blue-orange-div" )
-            # l002
-        i_view.set_active_channel( "l002", "procID" )
-        i_view.set_colormap( "l002", "blue-orange-div" )
+    #
+    # an example of loading a cinema dataset that includes CIS data
+    # loading the CIS data, and then passing to a renderer
+    #
+    def test_render_ascent_data(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.ascent_cdb_path})
 
-        # activate some layers
-        i_view.activate("l000")
-        i_view.activate("l001")
-        i_view.activate("l002")
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
 
-        # now, there is a set of layers and available colormaps for rendering
-        # use the image view to iterate through the data like this
+        # create cis view and an image view
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
 
-        # get overall dims of the image
-        size = i_view.get_image_dims()
+        # set the imageview state
+        iview.image = "cycle_000100"
+        iview.use_depth = False
+        iview.use_shadow = False
+        iview.activate_layer("layer0")
+        iview.activate_channel("layer0", "energy")
 
-        # pre-load any colormaps, assuming you need to create your own
-        # data structures before the render
-        for l in i_view.get_layer_names():
-            cmap = i_view.get_colormap(l)
-            # print(cmap.points)
+        # load data into the image view 
+        iview.update()
 
-        # iterate over the layers, each of which has only one active channel
-        for l in i_view.get_layer_names():
-            l_channel = i_view.get_active_channel(l)
-            l_dims    = i_view.get_layer_dims(l)
-            l_offset  = i_view.get_layer_offset(l)
-            l_data    = i_view.get_layer_data(l)
-            l_cmap    = i_view.get_colormap_name(l)
-            l_range   = i_view.get_variable_range(l)
-            # print("{}: {}".format(i_view.get_active_channel(l), l_range))
-            # print(l_data)
+        # check some float values
+        layers = iview.get_layer_data()
+        self.assertEqual( 2.027437210083008, numpy.nanmean(layers['layer0'].channel.data))
+        self.assertNotEqual( 0.0, numpy.nanmean(layers['layer0'].channel.data))
 
-            # using what you know about the state, do the composite
-            # composite()
+        # render
+        (image, depth) = Renderer.render(iview)
 
-if __name__ == '__main__':
-    unittest.main()
+        # display the image
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        plt.show()
+
+        # change the background
+        iview.background = [0.5, 0.5, 0.5]
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ascent.png"), image)
+        plt.show()
+
+    #
+    # test for loading paraview-generated data 
+    #
+    def test_render_ttk_data(self):
+        cdb = cinemasci.new("cdb", {"path": TestCIS.ttk_cdb_path})
+
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        # create cis view and an image view
+        cview = cinemasci.cis.cisview.cisview(cdb)
+        iview = cinemasci.cis.imageview.imageview(cview)
+
+        # set the imageview state
+        iview.image = "i000"
+        iview.use_depth = True
+        iview.use_shadow = False
+        iview.activate_layer("l000")
+        iview.activate_channel("l000", "Elevation")
+        iview.activate_layer("l001")
+        iview.activate_channel("l001", "Elevation")
+
+        # load data into the image view 
+        iview.update()
+
+        # render
+        (image, depth) = Renderer.render(iview)
+
+        # display the image
+        import matplotlib.pyplot as plt
+        import skimage.util
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_black_bg.png"), image)
+        plt.show()
+
+        # change the background
+        iview.background = [0.5, 0.5, 0.5]
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_grey_bg.png"), image)
+        plt.show()
+
+        # show each element (uncomposited) 
+        iview.deactivate_layer("l000")
+        iview.activate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_streamlines.png"), image)
+        plt.show()
+        iview.activate_layer("l000")
+        iview.deactivate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone.png"), image)
+        plt.show()
+        # show composited 
+        iview.activate_layer("l000")
+        iview.activate_layer("l001")
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited.png"), image)
+        plt.show()
+
+        # turn on shadows
+        iview.use_shadow = True
+        iview.update()
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_with_shadows.png"), image)
+        plt.show()
+
+        # change colormap for stone layer
+        iview.use_shadow = False
+        iview.activate_layer("l000")
+        iview.deactivate_layer("l001")
+        achannel = iview.get_channel("l000")
+        achannel.colormap = {
+                    "colorspace" : "rgb",
+                    "name" : "default",
+                    "points" : [{'x': 0.0, 'r': 0.0, 'g': 0.0, 'b': 0.0, 'a': 1.0},
+                                {'x': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0, 'a': 1.0},
+                               ]
+                   }
+        (image, depth) = Renderer.render(iview)
+        plt.axis('off')
+        plt.imshow(skimage.util.img_as_ubyte(image))
+        if SAVE_IMAGE_HACK:
+            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone_grey_colormap.png"), image)
+        plt.show()
+

@@ -1,0 +1,7 @@
+object,FILE,CISVersion,CISImage,CISImageWidth,CISImageHeight,CISLayer,CISLayerWidth,CISLayerHeight,CISLayerOffsetX,CISLayerOffsetY,CISChannel,CISChannelVar,CISChannelColormap
+000,000_Depth.npz,"1.0",i000,1024,1024,l000,1024,1024,0,0,CISDepth,Depth,
+000,000_Elevation.npz,"1.0",i000,1024,1024,l000,1024,1024,0,0,Elevation,Elevation,colormap/cooltowarm.json
+000,000_SSSAO.npz,"1.0",i000,1024,1024,l000,1024,1024,0,0,CISShadow,SSSAO,
+012,012_Depth.npz,"1.0",i000,1024,1024,l001,1024,1024,0,0,CISDepth,Depth,
+012,012_Elevation.npz,"1.0",i000,1024,1024,l001,1024,1024,0,0,Elevation,Elevation,colormap/blackbody.json
+012,012_SSSAO.npz,"1.0",i000,1024,1024,l001,1024,1024,0,0,CISShadow,SSSAO,

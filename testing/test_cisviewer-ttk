@@ -1,0 +1,16 @@
+#!/bin/bash
+
+mkdir testing/scratch
+pushd testing/scratch
+
+mkdir pynb
+pushd pynb
+
+cp -rf ../../../cinemasci .
+cp -rf ../../data/ttk_extracts_000.cdb .
+cp -rf ../../data/ttk_extracts_001.cdb .
+cp     ../../data/cisviewer/* .
+
+jupyter notebook ttk-extracts.ipynb 
+
+popd
