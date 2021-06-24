@@ -6,11 +6,15 @@ import cinemasci
 import cinemasci.cis
 from cinemasci.cis.renderer import Renderer
 
+import matplotlib.pyplot as plt
+import skimage.util
+from matplotlib.testing.compare import compare_images
+
 SAVE_IMAGE_HACK = True
 
 class TestCIS(unittest.TestCase):
-    gold_dir            = "testing/gold/cdb"
-    scratch_dir         = "testing/scratch"
+    gold_dir            = "testing/gold/cis/renders"
+    scratch_dir         = "testing/scratch/cis"
     cdb_path            = "testing/gold/cis/random/cis.cdb"
     constant_cdb_path   = "testing/gold/cis/constant/cis.cdb"
     linear_cdb_path     = "testing/gold/cis/linear/cis.cdb"
@@ -24,10 +28,22 @@ class TestCIS(unittest.TestCase):
 
     def setUp(self):
         try:
-            os.mkdir(TestCIS.scratch_dir)
+            os.makedirs(TestCIS.scratch_dir)
         except OSError as error:
             pass
         print("Running test: {}".format(self._testMethodName))
+
+    def compare_to_gold_image(self, image, image_name):
+        # test the image
+        newimg_path = os.path.join(TestCIS.scratch_dir, image_name)
+        goldimg_path = os.path.join(TestCIS.gold_dir, image_name)
+        plt.axis('off')
+        plt.imsave(newimg_path, image)
+
+        # print("Comparing {} to {}".format(newimg_path, goldimg_path))
+        results = compare_images( goldimg_path, newimg_path, 1)
+
+        return (results is None)
 
     def test_load_cdb(self):
         """Load a database from disk and check it
@@ -185,37 +201,12 @@ class TestCIS(unittest.TestCase):
 
         # test render
         (image, depth) = Renderer.render(iview)
-        import matplotlib.pyplot as plt
-        import skimage.util
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        plt.show()
-
-    def dont_test_imageview(self):
-        cdb = cinemasci.new("cdb", {"path": TestCIS.ttk_cdb_path})
-
-        self.assertTrue(cdb.read_data_from_file())
-        cdb.set_extract_parameter_names(["FILE"])
-
-        # create cis view and an image view
-        cview = cinemasci.cis.cisview.cisview(cdb)
-        iview = cinemasci.cis.imageview.imageview(cview)
-
-        # set the imageview state
-        iview.image = "i000"
-        iview.use_depth = True
-        iview.use_shadow = True
-        iview.activate_layer("l000")
-        iview.activate_channel("l000", "Elevation")
-        iview.activate_layer("l001")
-        iview.activate_channel("l001", "Elevation")
-
-        # load data into the image view 
-        iview.update()
-
-        for im in iview.get_active_layers():
-            print("active layer: {}".format(im))
-            data = iview.get_active_channel_data(im)
+        # import matplotlib.pyplot as plt
+        # import skimage.util
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "test_dataset_random.png" ) )
 
     #
     # an example of loading a cinema dataset that includes CIS data
@@ -253,22 +244,27 @@ class TestCIS(unittest.TestCase):
         # update, which loads data per the state
         iview.update()
 
-        (image, depth) = Renderer.render(iview)
+        # (image, depth) = Renderer.render(iview)
 
-        import matplotlib.pyplot as plt
-        import skimage.util
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # import skimage.util
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "test_render.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+
+        # test the image
+        self.assertTrue( self.compare_to_gold_image( image, "test_dataset_linear.png" ) )
+        # cur_img = "test_render.png"
+        # newimg_path = os.path.join(TestCIS.scratch_dir, cur_img)
+        # plt.imsave(newimg_path, image)
+        # results = compare_images( os.path.join(TestCIS.gold_dir, cur_img), newimg_path, 10)
+        # self.assertTrue(results is None)
 
     #
     # test for loading paraview-generated data 
@@ -302,20 +298,18 @@ class TestCIS(unittest.TestCase):
         (image, depth) = Renderer.render(iview)
 
         # display the image
-        import matplotlib.pyplot as plt
-        import skimage.util
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # import skimage.util
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "paraview.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        self.assertTrue( self.compare_to_gold_image( image, "paraview.png" ) )
 
     #
     # an example of loading a cinema dataset that includes CIS data
@@ -350,20 +344,21 @@ class TestCIS(unittest.TestCase):
         (image, depth) = Renderer.render(iview)
 
         # display the image
-        import matplotlib.pyplot as plt
-        import skimage.util
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # import skimage.util
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # plt.show()
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ascent.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ascent.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ascent.png" ) )
 
     #
     # test for loading paraview-generated data 
@@ -394,59 +389,67 @@ class TestCIS(unittest.TestCase):
         (image, depth) = Renderer.render(iview)
 
         # display the image
-        import matplotlib.pyplot as plt
-        import skimage.util
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_black_bg.png"), image)
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # import skimage.util
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_black_bg.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_composited_black_bg.png" ) )
 
         # change the background
         iview.background = [0.5, 0.5, 0.5]
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_grey_bg.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_grey_bg.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_composited_grey_bg.png" ) )
 
         # show each element (uncomposited) 
         iview.deactivate_layer("l000")
         iview.activate_layer("l001")
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_streamlines.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_streamlines.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_streamlines.png" ) )
+
         iview.activate_layer("l000")
         iview.deactivate_layer("l001")
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_stone.png" ) )
+
         # show composited 
         iview.activate_layer("l000")
         iview.activate_layer("l001")
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_composited.png" ) )
 
         # turn on shadows
         iview.use_shadow = True
         iview.update()
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_with_shadows.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_composited_with_shadows.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_composited_with_shadows.png" ) )
 
         # change colormap for stone layer
         iview.use_shadow = False
@@ -461,9 +464,10 @@ class TestCIS(unittest.TestCase):
                                ]
                    }
         (image, depth) = Renderer.render(iview)
-        plt.axis('off')
-        plt.imshow(skimage.util.img_as_ubyte(image))
-        if SAVE_IMAGE_HACK:
-            plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone_grey_colormap.png"), image)
-        plt.show()
+        # plt.axis('off')
+        # plt.imshow(skimage.util.img_as_ubyte(image))
+        # if SAVE_IMAGE_HACK:
+            # plt.imsave(os.path.join(TestCIS.scratch_dir, "ttk_stone_grey_colormap.png"), image)
+        # plt.show()
+        self.assertTrue( self.compare_to_gold_image( image, "ttk_stone_grey_colormap.png" ) )
 
