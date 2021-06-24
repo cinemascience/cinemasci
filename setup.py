@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="cinemasci",
-    version="1.4",
+    version="1.5",
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
     description="Cinema scientific toolset.",
