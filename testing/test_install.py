@@ -5,7 +5,7 @@ import os.path
 import shutil
 
 class TestInstall(unittest.TestCase):
-    data_dir    = "testing/gold/data"
+    data_dir    = "testing/data"
     gold_dir    = "testing/gold/cdb"
     scratch_dir = "testing/scratch/cdb"
 
