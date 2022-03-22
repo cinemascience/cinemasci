@@ -1,4 +1,4 @@
-__all__ = ["cis", "cdb", "viewers", "pynb"]
+__all__ = ["cis", "cdb", "viewers", "pynb", "install"]
 
 #
 # new factory function
