@@ -5,6 +5,7 @@ import os.path
 import shutil
 
 class TestInstall(unittest.TestCase):
+    data_dir    = "testing/gold/data"
     gold_dir    = "testing/gold/cdb"
     scratch_dir = "testing/scratch/cdb"
 
@@ -15,4 +16,8 @@ class TestInstall(unittest.TestCase):
         print("Running test: {}".format(self._testMethodName))
 
     def test_install(self):
-        print("dummy test")
+        source_cdb = os.path.join(TestInstall.data_dir, "phi-theta.cdb")
+        shutil.copytree(source_cdb, ".")
+        names = shutil.listdir(".")
+        for name in names:
+            print(name)
