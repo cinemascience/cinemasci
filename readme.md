@@ -1,5 +1,5 @@
 # `cinemasci` python tools
-[![Build Status](https://travis-ci.org/cinemascience/cinemasci.svg?branch=master)](https://travis-ci.org/cinemascience/cinemasci)
+![client](https://github.com/cinemascience/cinemasci/actions/workflows/full.yml/badge.svg)
 
 A set of python tools for reading, writing and viewing Cinema databases
 
