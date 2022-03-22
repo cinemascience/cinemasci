@@ -29,7 +29,8 @@ setuptools.setup(
         "ipywidgets",
         "pyyaml",
         "scikit-image",
-        "h5py"
+        "h5py",
+        "matplotlib"
     ],
     scripts=['scripts/cisconvert'],
     classifiers=[
