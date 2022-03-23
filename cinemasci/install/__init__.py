@@ -26,16 +26,15 @@ def smoketest():
     cdb = "./testing/scratch/smoketest/sphere.cdb"
         # path expanded here
     abs_cdb = os.path.abspath(os.path.expanduser(cdb))
-    if False:
-        # can print these out if you'd like
-        print("absolute path")
-        print(abs_cdb)
-        destination = os.path.dirname(abs_cdb)
-        print("destination")
-        print(destination)
-        cdb = os.path.basename(abs_cdb)
-        print("cdb")
-        print(cdb)
+    # can print these out if you'd like
+    # print("absolute path")
+    # print(abs_cdb)
+    destination = os.path.dirname(abs_cdb)
+    # print("destination")
+    # print(destination)
+    cdb = os.path.basename(abs_cdb)
+    # print("cdb")
+    # print(cdb)
 
     # explorer install
     if True:
