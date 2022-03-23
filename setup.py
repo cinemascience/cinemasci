@@ -21,6 +21,7 @@ setuptools.setup(
                 "cinemasci.cis",
                 "cinemasci.viewers",
                 "cinemasci.pynb",
+                "cinemasci.install",
                 "cinemasci.server"
             ],
     install_requires=[
