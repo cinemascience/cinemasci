@@ -74,4 +74,5 @@ class TestInstall(unittest.TestCase):
 
             # viewer install
             destination = abs_basepath
-            cinemasci.install.install_viewer( destination, v, dbs[v] )
+            installer = cinemasci.install.install()
+            installer.install_viewer( destination, v, dbs[v] )
