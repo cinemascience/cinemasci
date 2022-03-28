@@ -15,4 +15,63 @@ class TestInstall(unittest.TestCase):
         print("Running test: {}".format(self._testMethodName))
 
     def test_smoketest(self):
-        cinemasci.install.smoketest()
+        viewers = ["explorer", "view"]
+        src_dbs = ["sphere.cdb", "sedov1.cdb", "sedov2.cdb"]
+        dbs = {
+            "explorer": 
+            [ 
+                    {
+                        "name": "sphere",
+                        "directory": "sphere.cdb"
+                    },
+                    {
+                        "name": "sedov",
+                        "directory": "sedov1.cdb"
+                    }
+            ],
+            "view": 
+            [
+                { 
+                    "database_name": "sphere",
+                    "datasets":
+                    [
+                        {
+                            "name": "sphere",
+                            "location": "sphere.cdb"
+                        }
+                    ]
+                },
+                { 
+                    "database_name": "sedov",
+                    "datasets":
+                    [
+                        {
+                            "name": "sedov1",
+                            "location": "sedov1.cdb"
+                        },
+                        {
+                            "name": "sedov2",
+                            "location": "sedov2.cdb"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        src_basepath = "./testing/data"
+        for v in viewers:
+            print("Viewer: {}".format(v))
+            # basics
+            res_basepath = "./testing/scratch/smoketest/{}".format(v)
+
+            # expand path
+            abs_basepath = os.path.abspath(os.path.expanduser(res_basepath))
+
+            # copy data to testing area
+            for db in src_dbs:
+                print("    copying data {}".format(db))
+                shutil.copytree( "{}/{}".format(src_basepath, db), "{}/{}".format(res_basepath, db) ) 
+
+            # viewer install
+            destination = abs_basepath
+            cinemasci.install.install_viewer( destination, v, dbs[v] )

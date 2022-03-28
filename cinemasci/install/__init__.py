@@ -2,6 +2,7 @@ import re
 import os.path
 import shutil
 import glob
+import json
 import cinemasci.viewers
 
 __format__ = {
@@ -14,220 +15,82 @@ __databases__ = {}
 
 __verbose__ = False
 
-def smoketest():
+def old_smoketest():
     print(cinemasci.path())
     print(cinemasci.viewers.version())
 
-    # source
-    shutil.copytree( "testing/data/sedov1.cdb", "testing/scratch/smoketest/sedov1.cdb" ) 
-    shutil.copytree( "testing/data/sphere.cdb", "testing/scratch/smoketest/sphere.cdb" ) 
-
-    # all expansions of the path should work 
-    cdb = "./testing/scratch/smoketest/sphere.cdb"
-        # path expanded here
-    abs_cdb = os.path.abspath(os.path.expanduser(cdb))
-    # can print these out if you'd like
-    # print("absolute path")
-    # print(abs_cdb)
-    destination = os.path.dirname(abs_cdb)
-    # print("destination")
-    # print(destination)
-    cdb = os.path.basename(abs_cdb)
-    # print("cdb")
-    # print(cdb)
-
-    # explorer install
-    if True:
-        copy_cinema_dir_to_destination( destination ) 
-        copy_viewer_to_destination( destination, "explorer" ) 
-        dbs = [
-            {
-                "name": "first",
-                "path": "sphere.cdb"
+    viewers = ["explorer", "view"]
+    src_dbs = ["sphere.cdb", "sedov1.cdb", "sedov2.cdb"]
+    dbs = {
+        "explorer": 
+        [ 
+                {
+                    "name": "sphere",
+                    "directory": "sphere.cdb"
+                },
+                {
+                    "name": "sedov",
+                    "directory": "sedov1.cdb"
+                }
+        ],
+        "view": 
+        [
+            { 
+                "database_name": "sphere",
+                "datasets":
+                [
+                    {
+                        "name": "sphere",
+                        "location": "sphere.cdb"
+                    }
+                ]
             },
-            {
-                "name": "second",
-                "path": "sedov1.cdb"
+            { 
+                "database_name": "sedov",
+                "datasets":
+                [
+                    {
+                        "name": "sedov1",
+                        "location": "sedov1.cdb"
+                    },
+                    {
+                        "name": "sedov2",
+                        "location": "sedov2.cdb"
+                    }
+                ]
             }
         ]
-        write_explorer_database_file( destination, dbs ) 
+    }
 
-    # viewer install
-    if False:
-        copy_cinema_dir_to_destination( destination ) 
-        copy_viewer_to_destination( destination, "view" ) 
+    src_basepath = "./testing/data"
+    for v in viewers:
+        print("Viewer: {}".format(v))
+        # basics
+        res_basepath = "./testing/scratch/smoketest/{}".format(v)
 
-    # clean up
-    if False:
-        os.rmdir("testing/scratch/smoketest")
+        # expand path
+        abs_basepath = os.path.abspath(os.path.expanduser(res_basepath))
 
-def set_databases(dbs):
-    global __databases__
+        # copy data to testing area
+        for db in src_dbs:
+            print("    copying data {}".format(db))
+            shutil.copytree( "{}/{}".format(src_basepath, db), "{}/{}".format(res_basepath, db) ) 
 
-    __databases__ = dbs
+        # viewer install
+        destination = abs_basepath
+        install_viewer( destination, v, dbs[v] )
 
-def write_explorer_database_file( path, databases ):
+def install_viewer(destination, viewer, dbs):
+    copy_cinema_dir_to_destination( destination ) 
+    copy_viewer_to_destination( destination, viewer ) 
+    write_database_file( destination, viewer, dbs ) 
+
+def write_database_file(destination, viewer, dbs):
     version = cinemasci.viewers.version()
-    dbfile = os.path.join( path, "cinema", "explorer", version, "databases.json")
+    dbfile = os.path.join( destination, "cinema", viewer, version, "databases.json")
 
     with open(dbfile, "w") as output:
-        output.write("[\n")
-        first = True
-
-        for db in databases:
-            if first:
-                first = False
-            else:
-                output.write(",\n")
-
-            output.write("{\n")
-            output.write("    \"name\": \"{}\",\n".format(db["name"]))
-            output.write("    \"directory\": \"{}\"".format(db["path"]))
-            output.write("\n}")
-
-        output.write("\n]\n")
-
-def write_view_database_file(path, databases):
-    with open(path, "w") as output:
-        output.write("[\n")
-        first = True
-
-        for db in databases:
-            if first:
-                first = False
-            else:
-                output.write(",\n")
-
-            output.write("{\n")
-            output.write("    \"name\": \"{}\",\n".format(db["name"]))
-            output.write("    \"directory\": \"{}\"".format(db["path"]))
-            output.write("\n}")
-
-        output.write("\n]\n")
-
-def explorer(indir, outdir, outfile, dbs):
-    set_databases(dbs)
-    return install_core("explorer", indir, outdir, outfile)
-
-
-def view(indir, outdir, outfile, dbs):
-    set_databases(dbs)
-    return install_core("view", indir, outdir, outfile)
-
-
-def install_core(viewer, indir, outdir, outfile):
-    print("Trying to install Cinema::{}".format(viewer))
-    print(viewer)
-    print(indir)
-    print(outdir)
-    print(outfile)
-
-    result = False
-
-    if install_check(viewer, indir, outdir, outfile):
-        print("Installing Cinema::{} ...".format(viewer))
-
-        # create a standard installation location
-        if not os.path.isdir(__paths__["cinema_out"]):
-            os.mkdir(__paths__["cinema_out"])
-
-        # install support code 
-        install_libs()
-        install_components()
-
-        # install the basic components in a standard place
-        viewerSrcDir  = os.path.join(__paths__["indir"], viewer)
-        viewerDestDir = os.path.join(__paths__["cinema_out"], viewer)
-        shutil.copytree( viewerSrcDir, viewerDestDir ) 
-
-        # specialized install for this viewer 
-        # -----------------------------------
-        if viewer == "view":
-            result = install_view()
-        elif viewer == "explorer":
-            result = install_explorer()
-        else:
-            print("ERROR: unrecognized viewer type ({})".format(viewer))
-
-        # to make the output nice and formatted ...
-        print("")
-        result = True
-
-    return result
-
-#
-# specific install for view
-#
-# assumes all checks have been done, and that global variables are correct
-#
-def install_view():
-    global __paths__
-    global __databases__
-
-    with open(__paths__["fullInfile"], 'r') as iFile, open(__paths__["fullOutfile"], 'w') as oFile:
-        for line in iFile:
-            oFile.write(line);
-            if re.search('START', line):
-                oFile.write("{}dataSets = [\n".format(__format__["tab"]))
-                first = True
-                for db in __databases__:
-                    if (first):
-                        first = False
-                    else:
-                        oFile.write(",\n")
-
-                    oFile.write("{}    \"{}\"".format(__format__["tab"], db["path"]))
-                oFile.write("\n{}]\n".format(__format__["tab"]))
-                
-def install_explorer():
-    shutil.copyfile(__paths__["fullInfile"], __paths__["fullOutfile"])
-    write_explorer_database_file()
-
-#
-# sets global path variables, and checks status for install
-#
-def install_check(viewer, indir, outdir, outfile):
-    global __paths__
-    global __verbose__
-
-    installState = True
-
-    __paths__["indir"]       = get_abspath(indir) 
-    __paths__["outdir"]      = get_abspath(outdir) 
-    __paths__["cinema_out"]  = os.path.join( __paths__["outdir"], "cinema") 
-    __paths__["fullOutfile"] = os.path.join( __paths__["outdir"], outfile )
-    __paths__["view"]        = os.path.join( __paths__["cinema_out"], "view") 
-    __paths__["explorer"]    = os.path.join( __paths__["cinema_out"], "explorer")
-
-    # must be done after the above are set, so that version function works
-    version = cinemaci.viewers.version() 
-    print("version: {}".format(viewer))
-    __paths__["fullInfile"]  = os.path.join( __paths__["indir"], "cinema_{}.html".format(viewer)) 
-
-    if __verbose__:
-        print("indir       : {}".format(__paths__["indir"]))
-        print("outdir      : {}".format(__paths__["outdir"]))
-        print("cinema_out  : {}".format(__paths__["cinema_out"]))
-        print("explorer    : {}".format(__paths__["explorer"]))
-        print("view        : {}".format(__paths__["view"]))
-        print("fullInfile  : {}".format(__paths__["fullInfile"]))
-        print("fullOutfile : {}".format(__paths__["fullOutfile"]))
-
-    # check status for install
-    if not os.path.isdir(__paths__["indir"]):
-        print("ERROR: {} does not exist".format(__paths__["indir"]))
-        installState = False;
-    elif not os.path.isfile(__paths__["fullInfile"]):
-        print("ERROR: {} does not exist".format(__paths__["fullInfile"]))
-        installState = False;
-    elif not os.path.isdir(__paths__["outdir"]):
-        print("ERROR: {} does not exist".format(__paths__["outdir"]))
-        installState = False;
-    elif os.path.isfile(__paths__["fullOutfile"]):
-        print("ERROR: {} exists".format(__paths__["fullOutfile"]))
-        installState = False;
-
-    return installState
+        json.dump(dbs, output, indent=4)
 
 def install_components():
     compSrc  = os.path.join(__paths__["indir"], "components")
