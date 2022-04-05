@@ -12,11 +12,11 @@ class install:
     def __init__(self):
         """The constructor"""
         self.source = cinemasci.path()
-        print(self.source)
+        # print(self.source)
 
     def install_viewer(self, destination, vtype, dbs, type="remote"):
         status = install.INSTALL_OK
-        print("self.source = {}".format(self.source))
+        # print("self.source = {}".format(self.source))
 
         if not os.path.isdir(os.path.join(destination, "cinema")):
             if os.access(destination, os.W_OK):
@@ -71,6 +71,8 @@ class install:
     def __insert_databases( self, dest, viewer, dbs):
         dest_viewer     = os.path.join( dest, "cinema_{}.html".format(viewer) )
         dest_viewer_tmp = os.path.join( dest, "cinema_{}.tmp.html".format(viewer) )
+
+        # insert the database data into the html
         with open(dest_viewer, 'r') as dviewer:
             with open(dest_viewer_tmp, 'w') as rviewer:
                 writeline = True
@@ -88,6 +90,8 @@ class install:
                             rviewer.write(line)
                     elif "CINEMA_DB_END" in line:
                         writeline = True
+
+        shutil.move(dest_viewer_tmp, dest_viewer)
 
 
     #

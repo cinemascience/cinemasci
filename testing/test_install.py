@@ -64,9 +64,6 @@ class TestInstall(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def test_version(self):
-        print("Version: {}".format( cinemasci.viewers.version()))
-
     def test_remote_install(self):
         for v in self.viewers:
             print("Viewer: {}".format(v))
