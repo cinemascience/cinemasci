@@ -66,7 +66,7 @@ class install:
         shutil.copyfile( source_viewer, dest_viewer )
 
     #
-    #
+    # insert databases in a cinema_simple HTML file
     #
     def __insert_databases( self, dest, viewer, dbs):
         dest_viewer     = os.path.join( dest, "cinema_{}.html".format(viewer) )
@@ -82,7 +82,7 @@ class install:
                             rviewer.write("            var dataSets = ")
                             alldbs = []
                             for db in dbs:
-                                alldbs.append(db["directory"])
+                                alldbs.append(db)
                             rviewer.write(json.dumps(alldbs))
                             rviewer.write("\n")
                             writeline = False

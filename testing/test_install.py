@@ -47,13 +47,7 @@ class TestInstall(unittest.TestCase):
                 ]
             }
         ],
-        "simple": 
-        [ 
-                {
-                    "name": "sedov1",
-                    "directory": "sedov1.cdb"
-                }
-        ]
+        "simple": [ "sedov1.cdb" ]
     }
 
     def __init__(self, *args, **kwargs):

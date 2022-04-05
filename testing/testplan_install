@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# clean
+echo "Cleaning test area"
+rm -rf testing/scratch
+
+# create the installations
+echo "Creating installs ..."
+python3 -m unittest testing/test_install.py
+
+# look at the results 
+echo "Running viewers"
+open testing/scratch/install/local/explorer/cinema_explorer.html
+open testing/scratch/install/local/view/cinema_view.html
+open testing/scratch/install/local/simple/cinema_simple.html
+open testing/scratch/install/remote/explorer/cinema_explorer.html
+open testing/scratch/install/remote/view/cinema_view.html
+open testing/scratch/install/remote/simple/cinema_simple.html
