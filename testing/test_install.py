@@ -78,7 +78,6 @@ class TestInstall(unittest.TestCase):
 
             # copy data to testing area
             for db in self.src_dbs:
-                print("    copying data {}".format(db))
                 shutil.copytree( "{}/{}".format(self.src_basepath, db), "{}/{}".format(res_basepath, db) ) 
 
             # viewer install
