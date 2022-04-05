@@ -14,9 +14,8 @@ class install:
         self.source = cinemasci.path()
         # print(self.source)
 
-    def install_viewer(self, destination, vtype, dbs, type="remote"):
+    def install_viewer(self, destination, vtype, dbs, itype="remote"):
         status = install.INSTALL_OK
-        # print("self.source = {}".format(self.source))
 
         if not os.path.isdir(os.path.join(destination, "cinema")):
             if os.access(destination, os.W_OK):
@@ -28,15 +27,16 @@ class install:
                     else:
                         self.__write_database_file( destination, vtype, dbs ) 
 
-                    if type == "remote":
+                    if itype == "remote":
                         print("Performing remote install")
                         self.__local_file_install_paths(destination, vtype)
 
                     else:
                         print("Performing local install")
-                        self.__install_libs(destination)
-                        self.__install_components(destination)
-                        self.__install_third_party(destination)
+                        # nothing to do
+                        # self.__install_libs(destination)
+                        # self.__install_components(destination)
+                        # self.__install_third_party(destination)
 
                 else:
                     print("ERROR: cannot read from directory {}".format(self.source)) 
@@ -115,16 +115,12 @@ class install:
         libsSrc         = os.path.join(self.source, "viewers", "cinema", "lib") 
         libsDest        = os.path.join(destination, "cinema", "lib")
         print("Installing libs ...")
-        print(libsSrc)
-        print(libsDest)
         shutil.copytree( libsSrc, libsDest ) 
 
     def __install_third_party(self, destination):
         thirdPartySrc   = os.path.join(self.source, "viewers", "third_party") 
         libsDest        = os.path.join(destination, "cinema", "lib")
         print("Installing third party ...")
-        print(libsSrc)
-        print(libsDest)
         shutil.copytree( thirdPartySrc, libsDest ) 
 
     #
@@ -155,22 +151,18 @@ class install:
                                 rviewer.write("    <!-- End:   Cinema Local File Install -->\n")
 
                             writeline = False
-                            print("Begin: local")
 
                         elif "Begin: Cinema External Access Install" in line:
                             writeline = False
-                            print("Begin: external")
 
                         else:
                             rviewer.write(line)
 
                     elif "End:   Cinema Local File Install" in line:
                         writeline = True
-                        print("End: local")
 
                     elif "End:   Cinema External Access Install" in line:
                         writeline = True
-                        print("End: external")
 
         shutil.move(dest_viewer_tmp, dest_viewer)
 

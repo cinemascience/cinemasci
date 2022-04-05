@@ -5,8 +5,6 @@ import os.path
 import shutil
 
 class TestInstall(unittest.TestCase):
-    gold_dir    = "testing/gold/cdb"
-    scratch_dir = "testing/scratch/cdb"
     viewers = ["explorer", "view", "simple"]
     src_basepath = "testing/data"
     src_dbs = ["sphere.cdb", "sedov1.cdb", "sedov2.cdb"]
@@ -64,11 +62,12 @@ class TestInstall(unittest.TestCase):
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
 
-    def test_remote_install(self):
+    def __install(self, itype):
         for v in self.viewers:
             print("Viewer: {}".format(v))
             # basics
-            res_basepath = "./testing/scratch/smoketest/{}".format(v)
+            res_basepath = "./testing/scratch/install/{}/{}".format(itype, v)
+            print(res_basepath)
 
             # expand path
             abs_basepath = os.path.abspath(os.path.expanduser(res_basepath))
@@ -80,4 +79,10 @@ class TestInstall(unittest.TestCase):
             # viewer install
             destination = abs_basepath
             installer = cinemasci.install.install()
-            installer.install_viewer( destination, v, self.dbs[v] )
+            installer.install_viewer( destination, v, self.dbs[v], itype )
+
+    def test_local_install(self):
+        self.__install("local")
+
+    def test_remote_install(self):
+        self.__install("remote")
