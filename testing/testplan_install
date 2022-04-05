@@ -16,3 +16,15 @@ open testing/scratch/install/local/simple/cinema_simple.html
 open testing/scratch/install/remote/explorer/cinema_explorer.html
 open testing/scratch/install/remote/view/cinema_view.html
 open testing/scratch/install/remote/simple/cinema_simple.html
+
+# install a scratch database
+CL_PATH="testing/scratch/install/commandline"
+mkdir $CL_PATH 
+
+# copy the data
+cp -rf testing/data/sphere.cdb $CL_PATH 
+
+# do a python-based install
+python3 -m cinemasci.install --path $CL_PATH --database sphere.cdb --viewer simple --type local
+open testing/scratch/install/commandline/cinema_simple.html
+
