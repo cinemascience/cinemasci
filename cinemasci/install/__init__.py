@@ -23,7 +23,10 @@ class install:
                 if os.access(self.source, os.R_OK):
                     self.__copy_cinema_dir_to_destination( destination ) 
                     self.__copy_viewer_to_destination( destination, vtype ) 
-                    self.__write_database_file( destination, vtype, dbs ) 
+                    if vtype == "simple" :
+                        self.__insert_databases( destination, vtype, dbs )
+                    else:
+                        self.__write_database_file( destination, vtype, dbs ) 
 
                     if type == "remote":
                         print("Performing remote install")
@@ -61,6 +64,31 @@ class install:
         source_viewer = os.path.join( cinemasci.path(), "viewers", "cinema_{}.html".format(viewer) )
         dest_viewer   = os.path.join( dest, "cinema_{}.html".format(viewer) )
         shutil.copyfile( source_viewer, dest_viewer )
+
+    #
+    #
+    #
+    def __insert_databases( self, dest, viewer, dbs):
+        dest_viewer     = os.path.join( dest, "cinema_{}.html".format(viewer) )
+        dest_viewer_tmp = os.path.join( dest, "cinema_{}.tmp.html".format(viewer) )
+        with open(dest_viewer, 'r') as dviewer:
+            with open(dest_viewer_tmp, 'w') as rviewer:
+                writeline = True
+                for line in dviewer:
+                    if writeline:
+                        if "CINEMA_DB_START" in line:
+                            rviewer.write("            var dataSets = ")
+                            alldbs = []
+                            for db in dbs:
+                                alldbs.append(db["directory"])
+                            rviewer.write(json.dumps(alldbs))
+                            rviewer.write("\n")
+                            writeline = False
+                        else:
+                            rviewer.write(line)
+                    elif "CINEMA_DB_END" in line:
+                        writeline = True
+
 
     #
     # write a json-compliant db datset to a file

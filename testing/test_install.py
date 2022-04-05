@@ -7,7 +7,7 @@ import shutil
 class TestInstall(unittest.TestCase):
     gold_dir    = "testing/gold/cdb"
     scratch_dir = "testing/scratch/cdb"
-    viewers = ["explorer", "view"]
+    viewers = ["explorer", "view", "simple"]
     src_basepath = "testing/data"
     src_dbs = ["sphere.cdb", "sedov1.cdb", "sedov2.cdb"]
     dbs = {
@@ -48,6 +48,13 @@ class TestInstall(unittest.TestCase):
                     }
                 ]
             }
+        ],
+        "simple": 
+        [ 
+                {
+                    "name": "sedov1",
+                    "directory": "sedov1.cdb"
+                }
         ]
     }
 
@@ -56,6 +63,9 @@ class TestInstall(unittest.TestCase):
 
     def setUp(self):
         print("Running test: {}".format(self._testMethodName))
+
+    def test_version(self):
+        print("Version: {}".format( cinemasci.viewers.version()))
 
     def test_remote_install(self):
         for v in self.viewers:
