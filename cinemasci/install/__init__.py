@@ -30,7 +30,7 @@ class install:
 
                     if type == "remote":
                         print("Performing remote install")
-                        # nothing to do
+                        self.__local_file_install_paths(destination, vtype)
 
                     else:
                         print("Performing local install")
@@ -126,4 +126,51 @@ class install:
         print(libsSrc)
         print(libsDest)
         shutil.copytree( thirdPartySrc, libsDest ) 
+
+    #
+    # remove external
+    #
+    def __local_file_install_paths(self, dest, viewer):
+        dest_viewer     = os.path.join( dest, "cinema_{}.html".format(viewer) )
+        dest_viewer_tmp = os.path.join( dest, "cinema_{}.tmp.html".format(viewer) )
+
+        with open(dest_viewer, 'r') as dviewer:
+            with open(dest_viewer_tmp, 'w') as rviewer:
+                writeline = True
+                for line in dviewer:
+                    if writeline:
+                        if "Begin: Cinema Local File Install" in line:
+                            if viewer == "explorer": 
+                                rviewer.write("    <!-- Begin: Cinema Local File Install -->\n")
+                                rviewer.write("    <!-- d3 -->\n")
+                                rviewer.write("    <script src=\'cinema/lib/d3.v5.min.js\'></script>\n")
+                                rviewer.write("    <!-- components -->\n")
+                                rviewer.write("    <link rel=\'stylesheet\' href=\'cinema/lib/CinemaComponents.v2.7.1.min.css\'>\n")
+                                rviewer.write("    <script src=\'cinema/lib/CinemaComponents.v2.7.1.min.js\'></script>\n")
+                                rviewer.write("    <!-- End:   Cinema Local File Install -->\n")
+                            elif viewer in ["view", "simple"]:
+                                rviewer.write("    <!-- Begin: Cinema Local File Install -->\n")
+                                rviewer.write("    <!-- d3 -->\n")
+                                rviewer.write("    <script src=\'cinema/lib/d3.v4.min.js\'></script>\n")
+                                rviewer.write("    <!-- End:   Cinema Local File Install -->\n")
+
+                            writeline = False
+                            print("Begin: local")
+
+                        elif "Begin: Cinema External Access Install" in line:
+                            writeline = False
+                            print("Begin: external")
+
+                        else:
+                            rviewer.write(line)
+
+                    elif "End:   Cinema Local File Install" in line:
+                        writeline = True
+                        print("End: local")
+
+                    elif "End:   Cinema External Access Install" in line:
+                        writeline = True
+                        print("End: external")
+
+        shutil.move(dest_viewer_tmp, dest_viewer)
 
