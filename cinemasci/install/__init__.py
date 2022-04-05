@@ -26,14 +26,14 @@ class install:
                     self.__write_database_file( destination, vtype, dbs ) 
 
                     if type == "remote":
-                        # remove libs and components
                         print("Performing remote install")
-                        libDir = os.path.join(destination, "cinema", "lib")
-                        shutil.rmtree(libDir)
+                        # nothing to do
 
                     else:
                         print("Performing local install")
                         self.__install_libs(destination)
+                        self.__install_components(destination)
+                        self.__install_third_party(destination)
 
                 else:
                     print("ERROR: cannot read from directory {}".format(self.source)) 
@@ -80,10 +80,18 @@ class install:
             shutil.copytree( compSrc, compDest ) 
 
     def __install_libs(self, destination):
-        libsSrc  = os.path.join(self.source, "viewers", "third_party") 
-        libsDest = os.path.join(destination, "cinema", "lib")
+        libsSrc         = os.path.join(self.source, "viewers", "cinema", "lib") 
+        libsDest        = os.path.join(destination, "cinema", "lib")
         print("Installing libs ...")
         print(libsSrc)
         print(libsDest)
         shutil.copytree( libsSrc, libsDest ) 
+
+    def __install_third_party(self, destination):
+        thirdPartySrc   = os.path.join(self.source, "viewers", "third_party") 
+        libsDest        = os.path.join(destination, "cinema", "lib")
+        print("Installing third party ...")
+        print(libsSrc)
+        print(libsDest)
+        shutil.copytree( thirdPartySrc, libsDest ) 
 
