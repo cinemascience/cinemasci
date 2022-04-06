@@ -4,7 +4,7 @@ import setuptools
 from os import path
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'doc/description.md'), encoding='utf-8') as f:
-    long_description = f.read()
+    long_description_text = f.read()
 
 setuptools.setup(
     name="cinemasci",
@@ -12,7 +12,7 @@ setuptools.setup(
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
     description="Cinema scientific toolset.",
-    long_description=long_description,
+    long_description=long_description_text,
     long_description_content_type='text/markdown',
     url="https://github.com/cinemascience",
     include_package_data=True,
@@ -33,7 +33,7 @@ setuptools.setup(
         "h5py",
         "matplotlib"
     ],
-    scripts=['scripts/cisconvert'],
+    scripts=['scripts/cisconvert', 'doc/description.md'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
