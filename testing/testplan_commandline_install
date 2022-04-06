@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# clean
+echo "Cleaning test area"
+rm -rf testing/scratch
+
+# install a scratch database
+CL_PATH="testing/scratch/install/commandline"
+mkdir testing/scratch
+mkdir testing/scratch/install
+mkdir $CL_PATH 
+
+VIEWERS="explorer view simple"
+for item in $VIEWERS; do
+    echo "viewer: $item"
+    IPATH=$CL_PATH/$item
+    echo $IPATH
+    mkdir $IPATH
+
+    # copy the data
+    cp -rf testing/data/sphere.cdb $IPATH 
+
+    # do a python-based install
+    python3 -m cinemasci.install --path $IPATH --database sphere.cdb --viewer $item --type local
+    open $IPATH/cinema_${item}.html
+
+    echo ""
+
+done
+
+

@@ -5,6 +5,12 @@ import glob
 import json
 import cinemasci.viewers
 
+#
+# class to install current cinema viewers
+#
+# can install with local references to required javascript/css libs,
+# or with remote, which will make requests to URLS for them.
+#
 class install:
     INSTALL_ERROR = 0
     INSTALL_OK    = 1
@@ -33,10 +39,7 @@ class install:
 
                     else:
                         print("Performing local install")
-                        # nothing to do
-                        # self.__install_libs(destination)
-                        # self.__install_components(destination)
-                        # self.__install_third_party(destination)
+                        # TODO: remove files that are not required
 
                 else:
                     print("ERROR: cannot read from directory {}".format(self.source)) 
