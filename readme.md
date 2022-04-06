@@ -1,5 +1,7 @@
 # `cinemasci` python tools
 ![full](https://github.com/cinemascience/cinemasci/actions/workflows/full.yml/badge.svg)
+![install](https://github.com/cinemascience/cinemasci/actions/workflows/install.yml/badge.svg)
+
 
 A set of python tools for reading, writing and viewing Cinema databases
 

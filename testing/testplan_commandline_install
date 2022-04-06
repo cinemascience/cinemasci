@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# clean
+echo "Cleaning test area"
+rm -rf testing/scratch
+
+# install a scratch database
+CL_PATH="testing/scratch/install/commandline"
+mkdir testing/scratch
+mkdir testing/scratch/install
+mkdir $CL_PATH 
+
+VIEWERS="explorer view simple"
+NUMDBS="one two"
+for item in $VIEWERS; do
+    VPATH=$CL_PATH/$item
+    mkdir $VPATH
+
+    for num in $NUMDBS; do
+        IPATH=$VPATH/$num
+        mkdir $IPATH
+
+        # copy the data
+        cp -rf testing/data/sphere.cdb $IPATH 
+        cp -rf testing/data/sedov1.cdb $IPATH 
+        cp -rf testing/data/sedov2.cdb $IPATH 
+
+        if [ "$num" = "one" ]; then
+            # do a python-based install for a single database
+            python3 -m cinemasci.install --path $IPATH --database sphere.cdb --viewer $item --type local
+            open $IPATH/cinema_${item}.html
+        else
+            # do a python-based install for two databases
+            python3 -m cinemasci.install --path $IPATH --database sedov1.cdb sedov2.cdb --viewer $item --type local
+            open $IPATH/cinema_${item}.html
+        fi
+    done
+done
+
+
