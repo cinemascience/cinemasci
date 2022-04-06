@@ -34,12 +34,17 @@ class install:
                         self.__write_database_file( destination, vtype, dbs ) 
 
                     if itype == "remote":
-                        print("Performing remote install")
+                        # print("Performing remote install")
                         self.__local_file_install_paths(destination, vtype)
 
                     else:
-                        print("Performing local install")
-                        # TODO: remove files that are not required
+                        # print("Performing local install")
+                        libsDest = os.path.join(destination, "cinema", "lib")
+                        os.remove(os.path.join(libsDest, "CinemaComponents.v2.7.1.min.css"))
+                        os.remove(os.path.join(libsDest, "CinemaComponents.v2.7.1.min.js"))
+                        os.remove(os.path.join(libsDest, "d3.license.md"))
+                        os.remove(os.path.join(libsDest, "d3.v4.min.js"))
+                        os.remove(os.path.join(libsDest, "d3.v5.min.js"))
 
                 else:
                     print("ERROR: cannot read from directory {}".format(self.source)) 
@@ -168,4 +173,33 @@ class install:
                         writeline = True
 
         shutil.move(dest_viewer_tmp, dest_viewer)
+
+
+    #
+    # get the database datastructure needed for a single database for each type of viewer
+    #
+    def get_database_json( self, viewer, dbs ):
+        dbj = [] 
+        if   viewer == "explorer": 
+            for db in dbs:
+                dbj.append({    "name": db,
+                                "directory": db 
+                           })
+        elif viewer == "view":
+            for db in dbs:
+                dbj.append({    
+                            "database_name": db,
+                            "datasets":
+                            [
+                                {
+                                    "name": db,
+                                    "location": db
+                                }
+                            ]
+                           })
+        elif viewer == "simple": 
+            for db in dbs:
+                dbj.append(db)
+
+        return dbj
 
