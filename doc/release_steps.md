@@ -2,6 +2,7 @@
 
 - update version information in repository by editing the following files:
 ```
+    version.md
     cinemasci/version.py
     setup.py
 ```
