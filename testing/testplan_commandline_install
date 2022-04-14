@@ -6,35 +6,46 @@ rm -rf testing/scratch
 
 # install a scratch database
 CL_PATH="testing/scratch/install/commandline"
+HTMLFILE="$CL_PATH/index.html"
 mkdir testing/scratch
 mkdir testing/scratch/install
 mkdir $CL_PATH 
+printf "<html>\n" > $HTMLFILE
 
+ITYPES="local remote"
 VIEWERS="explorer view simple"
 NUMDBS="one two"
-for item in $VIEWERS; do
-    VPATH=$CL_PATH/$item
-    mkdir $VPATH
+echo "Creating viewer installs ..."
+for itype in $ITYPES; do
+    echo "    $itype"
+    TPATH=$CL_PATH/$itype
+    mkdir $TPATH
 
-    for num in $NUMDBS; do
-        IPATH=$VPATH/$num
-        mkdir $IPATH
+    for viewer in $VIEWERS; do
+        VPATH=$TPATH/$viewer
+        mkdir $VPATH
 
-        # copy the data
-        cp -rf testing/data/sphere.cdb $IPATH 
-        cp -rf testing/data/sedov1.cdb $IPATH 
-        cp -rf testing/data/sedov2.cdb $IPATH 
+        for num in $NUMDBS; do
+            NPATH=$VPATH/$num
+            mkdir $NPATH
 
-        if [ "$num" = "one" ]; then
-            # do a python-based install for a single database
-            python3 -m cinemasci.install --path $IPATH --database sphere.cdb --viewer $item --type local
-            open $IPATH/cinema_${item}.html
-        else
-            # do a python-based install for two databases
-            python3 -m cinemasci.install --path $IPATH --database sedov1.cdb sedov2.cdb --viewer $item --type local
-            open $IPATH/cinema_${item}.html
-        fi
+            # copy the data
+            cp -rf testing/data/sphere.cdb $NPATH 
+            cp -rf testing/data/sedov1.cdb $NPATH 
+            cp -rf testing/data/sedov2.cdb $NPATH 
+
+            # write an entry in the testplan html file
+            HREF="$itype/$viewer/$num/cinema_${viewer}.html"
+            printf "<p><a href=\"$HREF\">$HREF</a></p>\n" >> $HTMLFILE
+
+            if [ "$num" = "one" ]; then
+                # do a python-based install for a single database
+                python3 -m cinemasci.install --path $NPATH --database sphere.cdb --viewer $viewer --type $itype
+            else
+                # do a python-based install for two databases
+                python3 -m cinemasci.install --path $NPATH --database sedov1.cdb sedov2.cdb --viewer $viewer --type $itype
+            fi
+        done
     done
 done
-
-
+printf "</html>\n" >> $HTMLFILE

@@ -28,3 +28,4 @@ jobs:
     - name: Run the tests 
       run: |
         python -m unittest testing/test_install.py 
+        ./testing/testplan_commandline_install

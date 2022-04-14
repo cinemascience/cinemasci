@@ -58,10 +58,10 @@ class TestInstall(unittest.TestCase):
 
     def __install(self, itype):
         for v in self.viewers:
-            print("Viewer: {}".format(v))
+            # print("Viewer: {}".format(v))
             # basics
             res_basepath = "./testing/scratch/install/{}/{}".format(itype, v)
-            print(res_basepath)
+            # print(res_basepath)
 
             # expand path
             abs_basepath = os.path.abspath(os.path.expanduser(res_basepath))
@@ -80,3 +80,9 @@ class TestInstall(unittest.TestCase):
 
     def test_remote_install(self):
         self.__install("remote")
+
+    def test_verify_results(self):
+        for v in self.viewers: 
+            self.assertFalse(   filecmp.cmp(f"testing/scratch/install/local/{v}/cinema_{v}.html",
+                                            f"testing/scratch/install/remote/{v}/cinema_{v}.html")
+                            )
