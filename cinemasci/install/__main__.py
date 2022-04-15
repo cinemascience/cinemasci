@@ -12,7 +12,7 @@ if __name__ == "__main__":
                                 default=[], 
                                 help="database to view (required)") 
     parser.add_argument("--type", default="remote", help="type of install (local, remote)") 
-    parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use. One of [explorer, view] (required)") 
+    parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use. One of [explorer, simple, view] (required)") 
     args = parser.parse_args()
 
     installer = install()

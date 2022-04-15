@@ -32,6 +32,7 @@ You can also install it locally from source using the `setup.py` file.
 
 - [cdb](doc/cdb.md): Tools for reading, writing and manipulating a cinema database.
 - [cis](doc/cis.md): Tools for reading, writing and manipulating *composable image sets*.
+- [install](doc/install.md): Tools for installing viewers. 
 - [pynb](doc/pynb.md): A Jupyter notebook viewer for simple databases.
 - [server](doc/server.md): A simple server to help view databases, using the `viewers` submodule.
 - [viewers](https://github.com/cinemascience/cinema_viewers): Viewers (submodule)
