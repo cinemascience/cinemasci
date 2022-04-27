@@ -1,4 +1,5 @@
 import unittest
+import cinemasci
 import cinemasci.pynb
 import warnings
 
