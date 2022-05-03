@@ -23,4 +23,4 @@ def path():
     return os.path.dirname(path)
 
 def version():
-    return "1.7.6"
+    return "1.7.7"
