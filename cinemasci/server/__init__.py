@@ -3,7 +3,6 @@ import socketserver
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from os import chdir
-from os import listdir
 from os import path
 from os.path import relpath
 from os import getcwd
@@ -120,12 +119,14 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # the request is for a viewer
         if self.path == "/":
-            if not path.isdir(self.base_path):
-                self.log("ERROR")
-                self.path = ServerInstallPath + "/error_no-database.html"
-                return http.server.SimpleHTTPRequestHandler.do_GET(self)
+            if False:
+                # this was an old test; still here as an example error
+                if not path.isdir(self.base_path):
+                    self.log("ERROR")
+                    self.path = ServerInstallPath + "/error_no-database.html"
+                    return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-            elif self.viewer == "explorer": 
+            if self.viewer == "explorer": 
                 # handle a request for the Cinema:Explorer viewer
                 self.log("EXPLORER")
                 self.path = CinemaInstallPath + "/cinema_explorer.html"
@@ -218,13 +219,9 @@ def run_cinema_server( viewer, rundir, databases, port, assetname="FILE"):
     localhost = "http://127.0.0.1"
 
     chdir(rundir)
-    fullpath  = path.abspath(rundir)
-    cinemadir = path.basename(fullpath)
-
     if verify_cinema_databases(viewer, databases, assetname) :
         set_install_path()
         cin_handler = CinemaSimpleRequestHandler
-        cin_handler.base_path = cinemadir
         cin_handler.verbose   = False
         cin_handler.viewer    = viewer
         cin_handler.assetname = assetname
