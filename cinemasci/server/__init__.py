@@ -58,6 +58,14 @@ def verify_cinema_databases( runpath, databases ):
 class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     @property
+    def silent(self):
+        return self._silent
+
+    @silent.setter
+    def silent(self, value):
+        self._silent = value
+
+    @property
     def rundir(self):
         return self._rundir
 
@@ -212,7 +220,7 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         return json.dumps(dbj, indent=4)
 
-def run_cinema_server( viewer, rundir, databases, port, assetname="FILE", verbose=False):
+def run_cinema_server( viewer, rundir, databases, port, assetname="FILE", verbose=False, silent=False):
     localhost = "http://127.0.0.1"
 
     if (verbose):
@@ -234,8 +242,14 @@ def run_cinema_server( viewer, rundir, databases, port, assetname="FILE", verbos
         cin_handler.viewer    = viewer
         cin_handler.assetname = assetname
         cin_handler.databases = databases
+        socketserver.TCPServer.allow_reuse_address = True
         with socketserver.TCPServer(("", port), cin_handler) as httpd:
             urlstring = "{}:{}".format(localhost, port)
-            print(urlstring)
-            httpd.serve_forever()
+            if not silent:
+                print(urlstring)
+            try:
+                httpd.serve_forever()
+            except( KeyboardInterrupt, Exception ) as e:
+                if not silent:
+                    print(str(e))
 
