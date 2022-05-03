@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'doc/description.md'), encoding='utf-8') as 
 
 setuptools.setup(
     name="cinemasci",
-    version="1.7.2",
+    version="1.7.3",
     author="David H. Rogers",
     author_email="dhr@lanl.gov",
     description="Cinema scientific toolset.",
