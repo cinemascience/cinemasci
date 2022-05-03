@@ -36,9 +36,12 @@ def browse(args):
         print(args.assetname)
         print(args.verbose)
 
-    webbrowser.open("http://localhost:{}".format(args.port), new=2)
-    cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose)
+    if cinemasci.server.verify_cinema_databases( args.rundir, args.databases ):
+        webbrowser.open("http://localhost:{}".format(args.port), new=2)
+        cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose)
 
+    else:
+        sys.exit(1)
 
 helptext = "\n\
 \n\

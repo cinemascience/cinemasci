@@ -32,6 +32,8 @@ def set_install_path():
 def verify_cinema_databases( runpath, databases ):
     result = False
 
+    curdir = getcwd()
+    chdir(runpath)
     for db in databases:
         if not path.isdir(db):
             print("")
@@ -45,6 +47,7 @@ def verify_cinema_databases( runpath, databases ):
         else:
             result = True
 
+    chdir(curdir)
     return result 
 
 #
@@ -223,8 +226,8 @@ def run_cinema_server( viewer, rundir, databases, port, assetname="FILE", verbos
 
     expanded_rundir = path.expanduser(rundir)
     fullpath = path.abspath(expanded_rundir)
-    chdir(fullpath)
-    if verify_cinema_databases(rundir, databases) :
+    if verify_cinema_databases(fullpath, databases) :
+        chdir(fullpath)
         set_install_path()
         cin_handler = CinemaSimpleRequestHandler
         cin_handler.verbose   = verbose
