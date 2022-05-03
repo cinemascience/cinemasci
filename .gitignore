@@ -6,3 +6,4 @@ html/
 build/
 *.egg-info/
 dist/
+venv/
