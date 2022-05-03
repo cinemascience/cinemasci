@@ -3,6 +3,7 @@
 import cinemasci
 import cinemasci.server
 import argparse
+import sys
 
 # ----------------------------------------------------------------------------
 #
@@ -19,6 +20,25 @@ def server(args):
         print(args.assetname)
         print(args.verbose)
     cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose)
+
+def browse(args):
+    try:
+        import webbrowser
+    except ImportError or ModuleNotFoundError:
+        print("This can only be run if the python module webbrowser is available")
+        sys.exit(1)
+
+    if args.verbose:
+        print(args.viewer)
+        print(args.rundir)
+        print(args.databases)
+        print(args.port)
+        print(args.assetname)
+        print(args.verbose)
+
+    webbrowser.open("http://localhost:{}".format(args.port), new=2)
+    cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose)
+
 
 helptext = "\n\
 \n\
@@ -41,7 +61,7 @@ parent_parser = argparse.ArgumentParser( description="cinema: transform input da
 
 subparsers = parent_parser.add_subparsers()
 
-# view subcommand
+# subcommand
 parser_server = subparsers.add_parser('server', 
                                     add_help=False,
                                     parents=[parent_parser],
@@ -57,6 +77,23 @@ parser_server.add_argument("--viewer",
                             help="directory in which to run the server") 
 parser_server.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
 parser_server.set_defaults(func=server)
+
+# subcommand
+parser_browse = subparsers.add_parser('browse', 
+                                    add_help=False,
+                                    parents=[parent_parser],
+                                    help="run a cinema server and browser to view databases" )
+parser_browse.add_argument("--assetname", default=None, help="asset name to use (optional)") 
+parser_browse.add_argument("-d", "--databases", required=True, nargs="+", default=None, help="database to view (required)") 
+parser_browse.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
+parser_browse.add_argument("--rundir", default=".", help="directory in which to run the server") 
+parser_browse.add_argument("--viewer", 
+                            default="view", 
+                            type=str, 
+                            choices={"explorer", "view"}, 
+                            help="directory in which to run the server") 
+parser_browse.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
+parser_browse.set_defaults(func=browse)
 
 args = parent_parser.parse_args()
 args.func(args)
