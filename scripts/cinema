@@ -24,8 +24,9 @@ helptext = "\n\
 \n\
 examples: \n\
 \n\
+    cinema server -d first.cdb second.cdb\n\
     cinema server --databases first.cdb second.cdb\n\
-        run a cinema server that uses the \'view\' viewer to view databases\n\
+        both commands run a cinema server that uses the \'view\' viewer to view databases\n\
   \n\
     cinema server --viewer explorer --databases first.cdb second.cdb --port XXXX\n\
         run a cinema server that uses the \'explorer\' viewer to view databases over port XXXX\n\
