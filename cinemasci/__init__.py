@@ -21,3 +21,6 @@ def new( vtype, args ):
 def path():
     path = os.path.abspath(__file__)
     return os.path.dirname(path)
+
+def version():
+    return "1.7.2"

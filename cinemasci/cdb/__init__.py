@@ -1,7 +1,6 @@
 import os.path
 import sqlite3
 import pandas
-from ..  import version 
 
 class cdb:
     """Cinema Database Class
@@ -347,7 +346,7 @@ class cdb:
             cfile.write("    \"specversion\": \"{}\"\n".format(cdb.CinemaSpecVersion))
             cfile.write("  },\n" )
             cfile.write("  \"cinemasci\": {\n" )
-            cfile.write("    \"version\": \"{}\"\n".format(version.Version))
+            cfile.write("    \"version\": \"{}\"\n".format(cinemasci.version()))
             cfile.write("  }\n" )
             cfile.write("}\n")
 

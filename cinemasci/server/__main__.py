@@ -14,10 +14,14 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="run a Cinema Viewer")
-    parser.add_argument("--data", required=True, default=None, help="database to view (required)") 
+    parser.add_argument("--databases", required=True, nargs="+", default=None, help="database to view (required)") 
     parser.add_argument("--viewer", required=True, default='explorer', help="viewer type to use. One of [explorer, view] (required)") 
     parser.add_argument("--assetname", default=None, help="asset name to use (optional)") 
     parser.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
+    parser.add_argument("--rundir", required=True, help="directory in which to run the server") 
     args = parser.parse_args()
 
-    run_cinema_server(args.viewer, args.data, args.port, args.assetname)
+    if (args.databases is None):
+        print("Error")
+    else:
+        run_cinema_server(args.viewer, args.rundir, args.databases, args.port, args.assetname)

@@ -30,31 +30,34 @@ def set_install_path():
     CinemaInstallPath = CinemaInstallPath.strip("/server")
     CinemaInstallPath = "/" + CinemaInstallPath + "/viewers"
 
-def verify_cinema_database( viewer, cdatabase, assetname ):
+def verify_cinema_databases( viewer, databases, assetname ):
     result = False
 
-    if viewer == "view":
-        # this is the default case
-        if assetname is None:
-            assetname = "FILE"
+    for db in databases:
+        if viewer == "view":
+            # this is the default case
+            if assetname is None:
+                assetname = "FILE"
 
-        db = cdb.cdb(cdatabase)
-        db.read_data_from_file()
+            db = cdb.cdb(db)
+            db.read_data_from_file()
 
-        if db.parameter_exists(assetname):
-            result = True
+            if db.parameter_exists(assetname):
+                result = True
+            else:
+                print("")
+                print("ERROR: Cinema viewer \'view\' is looking for a column named \'{}\', but the".format(assetname)) 
+                print("       the cinema database \'{}\' doesn't have one.".format(db)) 
+                print("")
+                print("       use \'--assetname <name>\' where <name> is one of these possible values") 
+                print("       that were found in \'{}\':".format(db))
+                print("")
+                print("           \"" + ' '.join(db.get_parameter_names()) + "\"")
+                print("")
+                result = False
+                break;
         else:
-            print("")
-            print("ERROR: Cinema viewer \'view\' is looking for a column named \'{}\', but the".format(assetname)) 
-            print("       the cinema database \'{}\' doesn't have one.".format(cdatabase)) 
-            print("")
-            print("       use \'--assetname <name>\' where <name> is one of these possible values") 
-            print("       that were found in \'{}\':".format(cdatabase))
-            print("")
-            print("           \"" + ' '.join(db.get_parameter_names()) + "\"")
-            print("")
-    else:
-        result = True
+            result = True
 
     return result 
 
@@ -64,6 +67,14 @@ def verify_cinema_database( viewer, cdatabase, assetname ):
 # Processes GET requests to find viewers and databases
 #
 class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
+
+    @property
+    def databases(self):
+        return self._databases
+
+    @databases.setter
+    def databases(self, value):
+        self._databases = value
 
     @property
     def verbose(self):
@@ -142,23 +153,23 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.log("ATTRIBUTE REQUEST") 
 
             if (not self.assetname == None):
-                json = "{{\"assetname\" : \"{}\"}}".format(self.assetname)
+                json_string = "{{\"assetname\" : \"{}\"}}".format(self.assetname)
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
-                self.send_header("Content-length", len(json))
+                self.send_header("Content-length", len(json_string))
                 self.end_headers()
-                self.wfile.write(str.encode(json))
+                self.wfile.write(str.encode(json_string))
             return
 
         if self.path.endswith("databases.json"):
             self.log("DATABASES   : {}".format(self.path))
-            json = self.create_database_list()
+            json_string = self.get_database_json()
 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
-            self.send_header("Content-length", len(json))
+            self.send_header("Content-length", len(json_string))
             self.end_headers()
-            self.wfile.write(str.encode(json))
+            self.wfile.write(json_string.encode())
             return
 
 
@@ -178,57 +189,46 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             # self.log("UPDATED  : {}".format(self.path))
             return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-    def create_database_list( self ):
-        json_string = ""
-        if self.viewer == "view":
-            dbs = [self.base_path]
-            cdbname = path.basename(dbs[0])
-            json_string = "[{{ \"database_name\": \"{}\", \"datasets\": [ ".format(cdbname)
+    def get_database_json( self ):
+        dbj = [] 
+        if   self.viewer == "explorer": 
+            for db in self.databases:
+                dbj.append({    "name": db,
+                                "directory": db 
+                           })
+        elif self.viewer == "view":
+            dbs = []
+            for db in self.databases:
+                dbs.append( {
+                                "name": db,
+                                "location": db
+                            }
+                          )
+            dbj.append({    
+                        "database_name": db,
+                        "datasets": dbs,
+                       })
+        elif self.viewer == "simple": 
+            for db in self.databases:
+                dbj.append(db)
 
-            for db in dbs:
-                cdbname = path.basename(db)
-                json_string += "{{ \"name\" : \"{}\", \"location\" : \"{}\" }},".format(cdbname, db)
+        return json.dumps(dbj, indent=4)
 
-            # remove the last comma
-            json_string = json_string[:-1]
-            # close the string
-            json_string += "]}]"
-
-        elif self.viewer == "explorer":
-            dbs = [self.base_path]
-            cdbname = path.basename(dbs[0])
-            json_string = "["
-
-            for db in dbs:
-                cdbname = path.basename(db)
-                json_string += "{{ \"name\" : \"{}\", \"directory\" : \"{}\" }},".format(cdbname, db)
-
-            # remove the last comma
-            json_string = json_string[:-1]
-            # close the string
-            json_string += "]"
-
-        else:
-            self.log("ERROR: invalid view type {}".format(this.viewer))
-
-        return json_string 
-
-def run_cinema_server( viewer, data, port, assetname="FILE"):
+def run_cinema_server( viewer, rundir, databases, port, assetname="FILE"):
     localhost = "http://127.0.0.1"
 
-    fullpath  = path.abspath(data)
-    datadir   = path.dirname(fullpath)
+    chdir(rundir)
+    fullpath  = path.abspath(rundir)
     cinemadir = path.basename(fullpath)
 
-    chdir(datadir)
-
-    if verify_cinema_database(viewer, cinemadir, assetname) :
+    if verify_cinema_databases(viewer, databases, assetname) :
         set_install_path()
         cin_handler = CinemaSimpleRequestHandler
         cin_handler.base_path = cinemadir
         cin_handler.verbose   = False
         cin_handler.viewer    = viewer
         cin_handler.assetname = assetname
+        cin_handler.databases = databases
         with socketserver.TCPServer(("", port), cin_handler) as httpd:
             urlstring = "{}:{}".format(localhost, port)
             print(urlstring)

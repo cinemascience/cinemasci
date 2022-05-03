@@ -3,7 +3,7 @@
 - update version information in repository by editing the following files:
 ```
     version.md
-    cinemasci/version.py
+    cinemasci/__init__.py
     setup.py
 ```
 - push changes to github
