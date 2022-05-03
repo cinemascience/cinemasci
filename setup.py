@@ -33,7 +33,7 @@ setuptools.setup(
         "h5py",
         "matplotlib"
     ],
-    scripts=['scripts/cisconvert', 'doc/description.md'],
+    scripts=['scripts/cisconvert', 'scripts/cinema', 'doc/description.md'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
