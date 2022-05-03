@@ -29,32 +29,19 @@ def set_install_path():
     CinemaInstallPath = CinemaInstallPath.strip("/server")
     CinemaInstallPath = "/" + CinemaInstallPath + "/viewers"
 
-def verify_cinema_databases( viewer, databases, assetname ):
+def verify_cinema_databases( runpath, databases ):
     result = False
 
     for db in databases:
-        if viewer == "view":
-            # this is the default case
-            if assetname is None:
-                assetname = "FILE"
-
-            db = cdb.cdb(db)
-            db.read_data_from_file()
-
-            if db.parameter_exists(assetname):
-                result = True
-            else:
-                print("")
-                print("ERROR: Cinema viewer \'view\' is looking for a column named \'{}\', but the".format(assetname)) 
-                print("       the cinema database \'{}\' doesn't have one.".format(db)) 
-                print("")
-                print("       use \'--assetname <name>\' where <name> is one of these possible values") 
-                print("       that were found in \'{}\':".format(db))
-                print("")
-                print("           \"" + ' '.join(db.get_parameter_names()) + "\"")
-                print("")
-                result = False
-                break;
+        if not path.isdir(db):
+            print("")
+            print("ERROR: Cinema server is looking for the database:") 
+            print("           '{}\',".format(db)) 
+            print("       but it does not exist relative to the server runpath:")
+            print("           '{}\',".format(runpath)) 
+            print("")
+            result = False
+            break;
         else:
             result = True
 
@@ -66,6 +53,14 @@ def verify_cinema_databases( viewer, databases, assetname ):
 # Processes GET requests to find viewers and databases
 #
 class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
+
+    @property
+    def rundir(self):
+        return self._rundir
+
+    @rundir.setter
+    def rundir(self, value):
+        self._rundir = value
 
     @property
     def databases(self):
@@ -119,9 +114,8 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # the request is for a viewer
         if self.path == "/":
-            if False:
-                # this was an old test; still here as an example error
-                if not path.isdir(self.base_path):
+            for db in self.databases:
+                if not path.isdir(db):
                     self.log("ERROR")
                     self.path = ServerInstallPath + "/error_no-database.html"
                     return http.server.SimpleHTTPRequestHandler.do_GET(self)
@@ -215,14 +209,25 @@ class CinemaSimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         return json.dumps(dbj, indent=4)
 
-def run_cinema_server( viewer, rundir, databases, port, assetname="FILE"):
+def run_cinema_server( viewer, rundir, databases, port, assetname="FILE", verbose=False):
     localhost = "http://127.0.0.1"
 
-    chdir(rundir)
-    if verify_cinema_databases(viewer, databases, assetname) :
+    if (verbose):
+        print("Running cinema server:")
+        print("    rundir   : {}".format(rundir))
+        print("    viewer   : {}".format(viewer))
+        print("    databases: {}".format(databases))
+        print("    port     : {}".format(port))
+        print("    assetname: {}".format(assetname))
+        print("")
+
+    expanded_rundir = path.expanduser(rundir)
+    fullpath = path.abspath(expanded_rundir)
+    chdir(fullpath)
+    if verify_cinema_databases(rundir, databases) :
         set_install_path()
         cin_handler = CinemaSimpleRequestHandler
-        cin_handler.verbose   = False
+        cin_handler.verbose   = verbose
         cin_handler.viewer    = viewer
         cin_handler.assetname = assetname
         cin_handler.databases = databases
