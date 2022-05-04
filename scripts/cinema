@@ -47,11 +47,18 @@ helptext = "\n\
 \n\
 examples: \n\
 \n\
-    cinema server -d first.cdb second.cdb\n\
+  BROWSE\n\
+    cinema browse --databases first.cdb second.cdb\n\
+        run a cinema server and browse it with the \'view\' viewer\n\
+\n\
+    cinema browse --databases first.cdb second.cdb --viewer explorer --port XXXX\n\
+        run a cinema server and browse it with the \'explorer\' viewer\n\
+\n\
+  SERVER\n\
     cinema server --databases first.cdb second.cdb\n\
         both commands run a cinema server that uses the \'view\' viewer to view databases\n\
   \n\
-    cinema server --viewer explorer --databases first.cdb second.cdb --port XXXX\n\
+    cinema server --databases first.cdb second.cdb --viewer explorer --port XXXX\n\
         run a cinema server that uses the \'explorer\' viewer to view databases over port XXXX\n\
   \n\
 " 
@@ -66,9 +73,11 @@ subparsers = parent_parser.add_subparsers()
 
 # subcommand
 parser_server = subparsers.add_parser('server', 
-                                    add_help=False,
-                                    parents=[parent_parser],
-                                    help="run a cinema server to view databases" )
+                                        add_help=False,
+                                        epilog=helptext, 
+                                        formatter_class=argparse.RawDescriptionHelpFormatter,
+                                        parents=[parent_parser],
+                                        help="run a cinema server to view databases" )
 parser_server.add_argument("--assetname", default=None, help="asset name to use (optional)") 
 parser_server.add_argument("-d", "--databases", required=True, nargs="+", default=None, help="database to view (required)") 
 parser_server.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
@@ -83,9 +92,11 @@ parser_server.set_defaults(func=server)
 
 # subcommand
 parser_browse = subparsers.add_parser('browse', 
-                                    add_help=False,
-                                    parents=[parent_parser],
-                                    help="run a cinema server and browser to view databases" )
+                                        add_help=False,
+                                        epilog=helptext, 
+                                        formatter_class=argparse.RawDescriptionHelpFormatter,
+                                        parents=[parent_parser],
+                                        help="run a cinema server and browser to view databases" )
 parser_browse.add_argument("--assetname", default=None, help="asset name to use (optional)") 
 parser_browse.add_argument("-d", "--databases", required=True, nargs="+", default=None, help="database to view (required)") 
 parser_browse.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
