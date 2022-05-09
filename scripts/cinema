@@ -37,8 +37,12 @@ def browse(args):
         print(args.verbose)
 
     if cinemasci.server.verify_cinema_databases( args.rundir, args.databases ):
-        webbrowser.open("http://localhost:{}".format(args.port), new=2)
-        cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose, silent=True)
+        try:
+            webbrowser.get(using=args.browser).open("http://localhost:{}".format(args.port), new=2)
+            cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose, silent=True)
+        except Exception as e:
+            print(str(e))
+            sys.exit(1)
 
     else:
         sys.exit(1)
@@ -86,7 +90,7 @@ parser_server.add_argument("--viewer",
                             default="view", 
                             type=str, 
                             choices={"explorer", "view"}, 
-                            help="directory in which to run the server") 
+                            help="which viewer to use") 
 parser_server.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
 parser_server.set_defaults(func=server)
 
@@ -105,7 +109,12 @@ parser_browse.add_argument("--viewer",
                             default="view", 
                             type=str, 
                             choices={"explorer", "view"}, 
-                            help="directory in which to run the server") 
+                            help="which viewer to use") 
+parser_browse.add_argument("--browser", 
+                            default="chrome", 
+                            type=str, 
+                            choices={"chrome", "firefox", "safari", "nothing"}, 
+                            help="which browser to use") 
 parser_browse.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
 parser_browse.set_defaults(func=browse)
 
