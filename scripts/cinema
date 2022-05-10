@@ -113,7 +113,7 @@ parser_browse.add_argument("--viewer",
 parser_browse.add_argument("--browser", 
                             default="chrome", 
                             type=str, 
-                            choices={"chrome", "firefox", "safari", "nothing"}, 
+                            choices={"chrome", "firefox", "safari"}, 
                             help="which browser to use") 
 parser_browse.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
 parser_browse.set_defaults(func=browse)
