@@ -21,7 +21,7 @@ def server(args):
         print(args.verbose)
     cinemasci.server.run_cinema_server( args.viewer, args.rundir, args.databases, args.port, args.assetname, args.verbose)
 
-def browse(args):
+def view(args):
     try:
         import webbrowser
     except ImportError or ModuleNotFoundError:
@@ -52,11 +52,11 @@ helptext = "\n\
 examples: \n\
 \n\
   BROWSE\n\
-    cinema browse --databases first.cdb second.cdb\n\
-        run a cinema server and browse it with the \'view\' viewer\n\
+    cinema view --databases first.cdb second.cdb\n\
+        run a cinema server and view it with the \'view\' viewer\n\
 \n\
-    cinema browse --databases first.cdb second.cdb --viewer explorer --port XXXX\n\
-        run a cinema server and browse it with the \'explorer\' viewer\n\
+    cinema view --databases first.cdb second.cdb --viewer explorer --port XXXX\n\
+        run a cinema server and view it with the \'explorer\' viewer\n\
 \n\
   SERVER\n\
     cinema server --databases first.cdb second.cdb\n\
@@ -95,28 +95,28 @@ parser_server.add_argument("--verbose", action="store_true", help="directory in 
 parser_server.set_defaults(func=server)
 
 # subcommand
-parser_browse = subparsers.add_parser('browse', 
+parser_view = subparsers.add_parser('view', 
                                         add_help=False,
                                         epilog=helptext, 
                                         formatter_class=argparse.RawDescriptionHelpFormatter,
                                         parents=[parent_parser],
-                                        help="run a cinema server and browser to view databases" )
-parser_browse.add_argument("--assetname", default=None, help="asset name to use (optional)") 
-parser_browse.add_argument("-d", "--databases", required=True, nargs="+", default=None, help="database to view (required)") 
-parser_browse.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
-parser_browse.add_argument("--rundir", default=".", help="directory in which to run the server") 
-parser_browse.add_argument("--viewer", 
+                                        help="run a cinema server and viewer to view databases" )
+parser_view.add_argument("--assetname", default=None, help="asset name to use (optional)") 
+parser_view.add_argument("-d", "--databases", required=True, nargs="+", default=None, help="database to view (required)") 
+parser_view.add_argument("--port", type=int, default=8000, help="port to use (optional)") 
+parser_view.add_argument("--rundir", default=".", help="directory in which to run the server") 
+parser_view.add_argument("--viewer", 
                             default="view", 
                             type=str, 
                             choices={"explorer", "view"}, 
                             help="which viewer to use") 
-parser_browse.add_argument("--browser", 
+parser_view.add_argument("--browser", 
                             default="chrome", 
                             type=str, 
                             choices={"chrome", "firefox", "safari"}, 
                             help="which browser to use") 
-parser_browse.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
-parser_browse.set_defaults(func=browse)
+parser_view.add_argument("--verbose", action="store_true", help="directory in which to run the server") 
+parser_view.set_defaults(func=view)
 
 args = parent_parser.parse_args()
 args.func(args)
