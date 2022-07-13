@@ -77,9 +77,9 @@ class cdb:
         parameterValues = []
         if parameter in self.parameternames:
             cur = self.con.cursor()
-            query = "SELECT {} from {}".format(parameter, self.tablename)
+            query = "SELECT DISTINCT {} from {}".format(parameter, self.tablename)
             vals = [float(entry[0]) for entry in cur.execute(query)]
-            parameterValues = set(vals)
+            parameterValues = sorted(vals)
         return parameterValues
         
     def getFilepathMap(self, selectedParameters, selectedFilepaths):

@@ -23,6 +23,28 @@ class TestCDB(unittest.TestCase):
         self.assertFalse(cdb.initialize())
         self.assertTrue(cdb.initialize(dirExistCheck=False))
 
+    def test_unique_values(self):
+        """Load a database from disk and check unique values for a column 
+        """
+
+        # testing a single extract database
+        cdb_path = "testing/data/sphere.cdb"
+        cdb = cinemasci.new("cdb", {"path": cdb_path})
+        self.assertTrue(cdb.read_data_from_file())
+        cdb.set_extract_parameter_names(["FILE"])
+
+        # testing queries
+        self.assertTrue(cdb.parameter_exists("theta"))
+        self.assertFalse(cdb.parameter_exists("nothing"))
+        self.assertTrue(cdb.extract_parameter_exists("FILE"))
+        self.assertFalse(cdb.extract_parameter_exists("FILE_NONE"))
+
+        # test return values 
+        values = cdb.getParameterValues("phi")
+        self.assertTrue(values, [0])
+        values = cdb.getParameterValues("theta")
+        self.assertTrue(values, [-180.0, -162.0, -144.0, -126.0, -108.0, -90.0, -72.0, -54.0, -36.0, -18.0, 0.0, 18.0, 36.0, 54.0, 72.0, 90.0, 108.0, 126.0, 144.0, 162.0])
+
     def test_load_cdb(self):
         """Load a database from disk and check it
         """
